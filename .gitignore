@@ -24,6 +24,9 @@ build/astra_htsim/build/
 # vscode
 .vscode
 
+# Project metadata
+docs/project/
+
 # logs
 **/*.log
 
