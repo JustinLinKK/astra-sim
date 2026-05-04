@@ -1,0 +1,42 @@
+{
+  "e2e_ns": {
+    "count": 2,
+    "max": 300000000.0,
+    "mean": 250000000.0,
+    "p50": 200000000.0,
+    "p90": 300000000.0,
+    "p99": 300000000.0
+  },
+  "makespan_ns": 400000000,
+  "num_requests": 2,
+  "output_token_throughput_tokens_per_sec": 50.0,
+  "queue_delay_ns": {
+    "count": 2,
+    "max": 100000000.0,
+    "mean": 50000000.0,
+    "p50": 0.0,
+    "p90": 100000000.0,
+    "p99": 100000000.0
+  },
+  "request_throughput_reqs_per_sec": 5.0,
+  "simulation_end_time_ns": 400000000,
+  "simulation_start_time_ns": 0,
+  "total_output_tokens": 20,
+  "total_prompt_tokens": 200,
+  "tpot_ns": {
+    "count": 2,
+    "max": 10000000.0,
+    "mean": 10000000.0,
+    "p50": 10000000.0,
+    "p90": 10000000.0,
+    "p99": 10000000.0
+  },
+  "ttft_ns": {
+    "count": 2,
+    "max": 210000000.0,
+    "mean": 160000000.0,
+    "p50": 110000000.0,
+    "p90": 210000000.0,
+    "p99": 210000000.0
+  }
+}

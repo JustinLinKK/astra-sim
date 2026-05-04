@@ -111,7 +111,10 @@ enum class EventType {
     CollectiveCommunicationFinished,
     CompFinished,
     MemLoadFinished,
-    MemStoreFinished
+    MemStoreFinished,
+    ServingRequestArrival,
+    ServingStageCompleted,
+    ServingCollectiveCompleted
 };
 
 }  // namespace AstraSim

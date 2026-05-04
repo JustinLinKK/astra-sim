@@ -1,0 +1,45 @@
+mode: tp_pp_crossover
+model:
+  name: 70B Dense
+  parameter_count: 70000000000
+  num_layers: 80
+  hidden_size: 8192
+  ffn_hidden_size: 28672
+  attention_heads: 64
+  kv_heads: 8
+  max_sequence_length: 8192
+  bytes_per_parameter: 2
+  bytes_per_activation: 2
+  bytes_per_kv_element: 2
+cluster:
+  workspace_reserve_bytes: 4294967296
+  seed: 7
+  devices:
+    - name: h100
+      type: GPU
+      count: 16
+      memory_capacity_bytes: 85899345920
+      peak_flops: 9.89e14
+      memory_bandwidth_bytes_per_s: 3.35e12
+      active_power_w: 700
+      idle_power_w: 120
+interconnects:
+  - name: nvlink
+    src_type: GPU
+    dst_type: GPU
+    bandwidth_bytes_per_s: 9.00e11
+    latency_ns: 800
+    full_duplex: true
+    efficiency: 0.85
+outputs:
+  results_csv: ../tests/rt_analytical/outputs/tp_pp_results.csv
+  summary_json: ../tests/rt_analytical/outputs/tp_pp_summary.json
+sweep:
+  tp_degrees: [1, 2, 4, 8]
+  pp_degrees: [1, 2, 4, 8]
+  batch_sizes: [1, 4]
+  sequence_lengths: [512, 2048]
+compute_efficiency: 0.42
+all_reduce_efficiency: 0.80
+activation_transfer_efficiency: 0.90
+activation_multiplier: 8.0

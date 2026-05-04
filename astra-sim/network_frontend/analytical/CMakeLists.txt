@@ -29,6 +29,14 @@ file(GLOB srcs_congestion_aware
         ${CMAKE_CURRENT_SOURCE_DIR}/congestion_aware/*.cc
 )
 
+set(serving_logic_test_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/ServingLogicTests.cc
+)
+
+set(analytical_logic_test_src
+        ${CMAKE_CURRENT_SOURCE_DIR}/tests/AnalyticalLogicTests.cc
+)
+
 # Compile Congestion Unaware Backend
 if (BUILDTARGET STREQUAL "all" OR BUILDTARGET STREQUAL "congestion_unaware")
     add_executable(AstraSim_Analytical_Congestion_Unaware ${srcs_congestion_unaware} ${srcs_common})
@@ -53,6 +61,32 @@ if (BUILDTARGET STREQUAL "all" OR BUILDTARGET STREQUAL "congestion_unaware")
             ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib/
     )
 endif ()
+
+add_executable(AstraSim_Serving_Logic_Tests ${serving_logic_test_src})
+target_link_libraries(AstraSim_Serving_Logic_Tests LINK_PRIVATE AstraSim)
+target_include_directories(AstraSim_Serving_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_include_directories(AstraSim_Serving_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../extern/)
+target_include_directories(AstraSim_Serving_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../extern/helper)
+set_target_properties(AstraSim_Serving_Logic_Tests PROPERTIES COMPILE_WARNING_AS_ERROR OFF)
+set_target_properties(AstraSim_Serving_Logic_Tests
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../bin/
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib/
+)
+
+add_executable(AstraSim_Analytical_Logic_Tests ${analytical_logic_test_src})
+target_link_libraries(AstraSim_Analytical_Logic_Tests LINK_PRIVATE AstraSim)
+target_include_directories(AstraSim_Analytical_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+target_include_directories(AstraSim_Analytical_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../extern/)
+target_include_directories(AstraSim_Analytical_Logic_Tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../../../extern/helper)
+set_target_properties(AstraSim_Analytical_Logic_Tests PROPERTIES COMPILE_WARNING_AS_ERROR OFF)
+set_target_properties(AstraSim_Analytical_Logic_Tests
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../bin/
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib/
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../lib/
+)
 
 # Compile Congestion Aware Backend
 if (BUILDTARGET STREQUAL "all" OR BUILDTARGET STREQUAL "congestion_aware")

@@ -1,0 +1,27 @@
+{
+  "batch_size": 16,
+  "mode": "attention_ffn_disaggregation",
+  "model_name": "1T MoE",
+  "placements": {
+    "heterogeneous_gpu_lpu": {
+      "gpu_utilization": 0.10037825174896109,
+      "joules_per_token": 1.009954147779436,
+      "lpu_utilization": 0.7787099449540621,
+      "tokens_per_joule": 0.9901439606923522,
+      "tokens_per_sec": 3693.3016939565937,
+      "tokens_per_sec_per_w": 0.9901439606923522,
+      "transfer_overhead_ns": 523810
+    },
+    "homogeneous_gpu": {
+      "gpu_utilization": 1.0,
+      "joules_per_token": 0.7491283714517878,
+      "lpu_utilization": 0.0,
+      "tokens_per_joule": 1.3348846981486373,
+      "tokens_per_sec": 7475.354309632369,
+      "tokens_per_sec_per_w": 1.3348846981486373,
+      "transfer_overhead_ns": 0
+    }
+  },
+  "seed": 11,
+  "sequence_length": 4096
+}

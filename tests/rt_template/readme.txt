@@ -13,3 +13,7 @@ INPUTS:
 		Describe the memory configuration under test. e.g., no remote memory expansion. 
 OUTPUTS & REFERENCES: 
 	Describe the validation method. e.g., standard output comparison. 
+
+NOTE:
+	Generating the Chakra ET inputs requires the Chakra Python package path to be visible to python3.
+	In this environment, the template generator currently fails with ModuleNotFoundError: chakra unless PYTHONPATH is configured.

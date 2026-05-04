@@ -18,15 +18,17 @@ CmdLineParser::CmdLineParser(const char* const argv0) noexcept
 void CmdLineParser::define_options() noexcept {
     options.set_width(70).allow_unrecognised_options().add_options()(
         "workload-configuration", "Workload configuration file",
-        cxxopts::value<std::string>())(
+        cxxopts::value<std::string>()->default_value("empty"))(
+        "analytical-config", "Analytical configuration file",
+        cxxopts::value<std::string>()->default_value("empty"))(
         "comm-group-configuration", "Communicator group configuration fi`le",
         cxxopts::value<std::string>()->default_value("empty"))(
         "system-configuration", "System configuration file",
-        cxxopts::value<std::string>())("remote-memory-configuration",
-                                       "Remote memory configuration file",
-                                       cxxopts::value<std::string>())(
+        cxxopts::value<std::string>()->default_value("empty"))(
+        "remote-memory-configuration", "Remote memory configuration file",
+        cxxopts::value<std::string>()->default_value("empty"))(
         "network-configuration", "Network configuration file",
-        cxxopts::value<std::string>())(
+        cxxopts::value<std::string>()->default_value("empty"))(
         "logging-configuration", "Logging configuration file",
         cxxopts::value<std::string>()->default_value("empty"))(
         "logging-folder", "Logging folder",

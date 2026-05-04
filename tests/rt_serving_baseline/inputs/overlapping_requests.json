@@ -1,0 +1,32 @@
+{
+    "requests": [
+        {
+            "request_id": 0,
+            "arrival_time_ns": 0,
+            "prompt_tokens": 1,
+            "output_tokens": 2
+        },
+        {
+            "request_id": 1,
+            "arrival_time_ns": 500,
+            "prompt_tokens": 1,
+            "output_tokens": 2
+        }
+    ],
+    "baseline": {
+        "prefill_base_latency_ns": 0,
+        "prefill_compute_ns_per_token": 1000,
+        "decode_base_latency_ns": 0,
+        "decode_compute_ns_per_token": 500,
+        "prefill_collective": {
+            "enabled": false,
+            "type": "all-reduce",
+            "size_bytes": 0
+        },
+        "decode_collective": {
+            "enabled": false,
+            "type": "all-reduce",
+            "size_bytes": 0
+        }
+    }
+}

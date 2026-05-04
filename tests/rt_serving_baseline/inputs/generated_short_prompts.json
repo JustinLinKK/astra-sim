@@ -1,0 +1,34 @@
+{
+    "trace": {
+        "seed": 11,
+        "num_requests": 32,
+        "arrival_process": "poisson",
+        "request_rate_per_second": 100.0,
+        "prompt_tokens": {
+            "distribution": "uniform",
+            "min": 128,
+            "max": 256
+        },
+        "output_tokens": {
+            "distribution": "uniform",
+            "min": 16,
+            "max": 32
+        }
+    },
+    "baseline": {
+        "prefill_base_latency_ns": 0,
+        "prefill_compute_ns_per_token": 1000,
+        "decode_base_latency_ns": 0,
+        "decode_compute_ns_per_token": 500,
+        "prefill_collective": {
+            "enabled": false,
+            "type": "all-reduce",
+            "size_bytes": 0
+        },
+        "decode_collective": {
+            "enabled": false,
+            "type": "all-reduce",
+            "size_bytes": 0
+        }
+    }
+}

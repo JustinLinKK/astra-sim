@@ -1,0 +1,11 @@
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=1 output_tokens=1 service_start_ns=0 prefill_end_time_ns=1000 first_token_time_ns=4639 finish_time_ns=4639 queue_delay_ns=0 prefill_duration_ns=1000 decode_duration_ns=3639 ttft_ns=4639 tpot_ns=3639.00 e2e_ns=4639
+SUMMARY metric=QUEUE_DELAY count=1 avg_ns=0.00 p50_ns=0.00 p90_ns=0.00 p99_ns=0.00 max_ns=0.00
+SUMMARY metric=TTFT count=1 avg_ns=4639.00 p50_ns=4639.00 p90_ns=4639.00 p99_ns=4639.00 max_ns=4639.00
+SUMMARY metric=TPOT count=1 avg_ns=3639.00 p50_ns=3639.00 p90_ns=3639.00 p99_ns=3639.00 max_ns=3639.00
+SUMMARY metric=E2E count=1 avg_ns=4639.00 p50_ns=4639.00 p90_ns=4639.00 p99_ns=4639.00 max_ns=4639.00
+THROUGHPUT total_requests=1 total_output_tokens=1 makespan_ns=4639 request_throughput_reqs_per_sec=215563.699073 output_token_throughput_tokens_per_sec=215563.699073
+Exiting

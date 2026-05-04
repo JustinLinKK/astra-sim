@@ -20,6 +20,21 @@ endif()
 # Setup project
 project(AstraSim)
 
+# Capture repository metadata for serving-mode run metadata output.
+set(ASTRA_SIM_GIT_COMMIT "unknown")
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    RESULT_VARIABLE ASTRA_SIM_GIT_COMMIT_RESULT
+    OUTPUT_VARIABLE ASTRA_SIM_GIT_COMMIT_OUTPUT
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+if(ASTRA_SIM_GIT_COMMIT_RESULT EQUAL 0 AND NOT ASTRA_SIM_GIT_COMMIT_OUTPUT STREQUAL "")
+    set(ASTRA_SIM_GIT_COMMIT "${ASTRA_SIM_GIT_COMMIT_OUTPUT}")
+endif()
+set(ASTRA_SIM_VERSION "serving-week2-v1")
+
 # Add libraries.
 include(FetchContent)
 
@@ -34,15 +49,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(yaml-cpp)
 
 
-# Find Protobuf
-# TODO: We want to use the advanced semantics 'protobuf CONFIG REQUIRED'.
-# However, this requires protobuf to be compiled from source,
-# which is enabled only in Docker containers. (Our documentation makes users install protobuc from apt-get)
-# Therefore, enable 'protobuf CONFIG REQUIRED' only when we are building in Docker.
-# TODO: Find a better way to detect if protobuf has been compiled by source, OR
-# find a way to enable 'protobuf CONFIG REQUIRED' regardless of how protubuf was installed.
-if(DEFINED ENV{PROTOBUF_FROM_SOURCE} AND "$ENV{PROTOBUF_FROM_SOURCE}" STREQUAL "True")
-    find_package(protobuf CONFIG REQUIRED)
+# Find Protobuf.
+# Prefer the config package when it is available because it carries transitive
+# dependencies such as Abseil for newer protobuf releases. Fall back to the
+# classic module mode for environments that only expose FindProtobuf.cmake.
+set(ASTRASIM_USE_PROTOBUF_CONFIG OFF)
+find_package(protobuf CONFIG QUIET)
+if(protobuf_FOUND)
+    set(ASTRASIM_USE_PROTOBUF_CONFIG ON)
 else()
     find_package(Protobuf REQUIRED)
 endif()
@@ -51,6 +65,7 @@ endif()
 file(GLOB srcs
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/analytical/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/astraccl/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/astraccl/native_collectives/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/astraccl/native_collectives/logical_topology/*.cc"
@@ -71,9 +86,14 @@ add_library(AstraSim STATIC ${srcs})
 target_link_libraries(AstraSim PUBLIC fmt::fmt)
 target_link_libraries(AstraSim PUBLIC spdlog::spdlog)
 target_link_libraries(AstraSim PUBLIC yaml-cpp)
+target_compile_definitions(
+    AstraSim
+    PUBLIC ASTRA_SIM_GIT_COMMIT="${ASTRA_SIM_GIT_COMMIT}"
+           ASTRA_SIM_VERSION="${ASTRA_SIM_VERSION}"
+)
 
 # Same as above.
-if(DEFINED ENV{PROTOBUF_FROM_SOURCE} AND "$ENV{PROTOBUF_FROM_SOURCE}" STREQUAL "True")
+if(ASTRASIM_USE_PROTOBUF_CONFIG)
     target_link_libraries(AstraSim PUBLIC protobuf::libprotobuf)
 else()
     target_link_libraries(AstraSim PUBLIC ${Protobuf_LIBRARIES})
@@ -89,7 +109,7 @@ target_include_directories(AstraSim PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/extern/h
 target_include_directories(AstraSim PUBLIC ${Protobuf_INCLUDE_DIR})
 
 # Same as above.
-if(DEFINED ENV{PROTOBUF_FROM_SOURCE} AND "$ENV{PROTOBUF_FROM_SOURCE}" STREQUAL "True")
+if(ASTRASIM_USE_PROTOBUF_CONFIG)
     target_include_directories(AstraSim PUBLIC ${Protobuf_INCLUDE_DIRS})
 endif()
 

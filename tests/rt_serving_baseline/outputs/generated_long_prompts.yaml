@@ -1,0 +1,17 @@
+mode: serving_disagg_colocated
+request_configuration: /home/justin/astra-sim/tests/rt_serving_baseline/inputs/generated_long_prompts.json
+request_metrics_output: empty
+request_summary_output: /home/justin/astra-sim/tests/rt_serving_baseline/outputs/generated_long.json
+request_run_metadata_output: empty
+workload_configuration: empty
+comm_group_configuration: empty
+system_configuration: /home/justin/astra-sim/tests/rt_serving_baseline/inputs/system_cfg.json
+remote_memory_configuration: /home/justin/astra-sim/tests/rt_serving_baseline/inputs/remote_memory_cfg.json
+network_configuration: /home/justin/astra-sim/tests/rt_serving_baseline/inputs/network_cfg.yml
+logging_configuration: empty
+logging_folder: /home/justin/astra-sim/tests/rt_serving_baseline/outputs/log
+num_queues_per_dim: 1
+compute_scale: 1.0
+comm_scale: 1.0
+injection_scale: 1.0
+rendezvous_protocol: false

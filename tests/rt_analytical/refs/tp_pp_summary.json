@@ -1,0 +1,45 @@
+{
+  "crossover_points": [
+    {
+      "batch_size": 1,
+      "best_pure_pp_degree": 2,
+      "best_pure_pp_tokens_per_sec": 2644.842271637043,
+      "best_pure_tp_degree": 8,
+      "best_pure_tp_tokens_per_sec": 17504.580079965985,
+      "pp_meets_or_exceeds_tp": false,
+      "sequence_length": 512
+    },
+    {
+      "batch_size": 1,
+      "best_pure_pp_degree": 2,
+      "best_pure_pp_tokens_per_sec": 2578.744231140493,
+      "best_pure_tp_degree": 8,
+      "best_pure_tp_tokens_per_sec": 17948.614452016198,
+      "pp_meets_or_exceeds_tp": false,
+      "sequence_length": 2048
+    },
+    {
+      "batch_size": 4,
+      "best_pure_pp_degree": 8,
+      "best_pure_pp_tokens_per_sec": 7691.427056821697,
+      "best_pure_tp_degree": 8,
+      "best_pure_tp_tokens_per_sec": 17504.580079965985,
+      "pp_meets_or_exceeds_tp": false,
+      "sequence_length": 512
+    },
+    {
+      "batch_size": 4,
+      "best_pure_pp_degree": 8,
+      "best_pure_pp_tokens_per_sec": 7499.409028413033,
+      "best_pure_tp_degree": 8,
+      "best_pure_tp_tokens_per_sec": 17948.614452016198,
+      "pp_meets_or_exceeds_tp": false,
+      "sequence_length": 2048
+    }
+  ],
+  "feasible_rows": 48,
+  "mode": "tp_pp_crossover",
+  "model_name": "70B Dense",
+  "seed": 7,
+  "total_rows": 64
+}
