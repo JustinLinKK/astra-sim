@@ -19,6 +19,7 @@ LaTeX package contents:
 - [latex/sections/03_topology_aware_formulas.tex](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/sections/03_topology_aware_formulas.tex)
 - [latex/sections/04_colocated_vs_pd_composition.tex](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/sections/04_colocated_vs_pd_composition.tex)
 - [latex/sections/05_symbol_to_config_mapping.tex](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/sections/05_symbol_to_config_mapping.tex)
+- [latex/sections/06_calibration_knobs.tex](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/sections/06_calibration_knobs.tex)
 - [latex/build.sh](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/build.sh)
 
 The LaTeX report is the canonical formula reference for this serving refactor.

@@ -102,10 +102,12 @@ The topology features change goodput through two paths:
 \mathrm{TTFT} \uparrow \text{ or } \downarrow
 \Longleftarrow
 \left\{
-\text{replica-local admission},
-\text{batch shape},
-\text{TP or PP or EP or DP-attention stage costs},
+\begin{array}{l}
+\text{replica-local admission}, \\
+\text{batch shape}, \\
+\text{TP, PP, EP, or DP-attention costs}, \\
 \text{optional PD transfer}
+\end{array}
 \right\}
 \end{equation*}
 
@@ -113,10 +115,12 @@ The topology features change goodput through two paths:
 \mathrm{TPOT} \uparrow \text{ or } \downarrow
 \Longleftarrow
 \left\{
-\text{decode batch size},
-\text{decode layout},
-\text{decode-side communication terms},
+\begin{array}{l}
+\text{decode batch size}, \\
+\text{decode layout}, \\
+\text{decode-side communication terms}, \\
 \text{decode queue pressure}
+\end{array}
 \right\}
 \end{equation*}
 

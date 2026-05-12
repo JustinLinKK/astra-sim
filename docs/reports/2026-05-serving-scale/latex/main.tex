@@ -7,12 +7,19 @@
 \usepackage{hyperref}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{seqsplit}
+
+\let\originaltexttt\texttt
+\renewcommand{\texttt}[1]{\originaltexttt{\seqsplit{#1}}}
+\setlength{\emergencystretch}{3em}
 
 \title{Serving-Scale Simulator Formula Report}
 \author{ASTRA-sim Serving Refactor}
 \date{May 11, 2026}
 
 \begin{document}
+
+\sloppy
 
 \maketitle
 \tableofcontents
@@ -22,5 +29,6 @@
 \input{sections/03_topology_aware_formulas}
 \input{sections/04_colocated_vs_pd_composition}
 \input{sections/05_symbol_to_config_mapping}
+\input{sections/06_calibration_knobs}
 
 \end{document}

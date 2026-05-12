@@ -93,22 +93,26 @@ The new \texttt{serving\_scale} mode splits ownership across two inputs:
 \begin{equation*}
 \text{YAML} \rightarrow
 \left\{
-\text{model},
-\text{cluster},
-\text{interconnects},
-\text{topology},
+\begin{array}{l}
+\text{model}, \\
+\text{cluster}, \\
+\text{interconnects}, \\
+\text{topology}, \\
 \text{analytical scales}
+\end{array}
 \right\}
 \end{equation*}
 
 \begin{equation*}
 \text{request JSON} \rightarrow
 \left\{
-\text{runtime architecture},
-\text{scheduler},
-\text{request trace},
-\text{SLO},
+\begin{array}{l}
+\text{runtime architecture}, \\
+\text{scheduler}, \\
+\text{request trace}, \\
+\text{SLO}, \\
 \text{optional PD transfer override}
+\end{array}
 \right\}
 \end{equation*}
 

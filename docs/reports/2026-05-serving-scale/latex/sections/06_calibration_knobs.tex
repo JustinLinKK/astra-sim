@@ -1,0 +1,291 @@
+\section{Calibration Knobs for vLLM or SGLang}
+
+This section summarizes which simulator parameters should be adjusted when the
+goal is to match measured request-level behavior from a real serving system such
+as vLLM or SGLang. The code paths that consume these knobs are primarily
+\texttt{ServingScaleModel::run()} in
+\texttt{astra-sim/analytical/ServingScaleModel.cc},
+\texttt{ServingCostModel::estimate\_stage\_breakdown(...)} in
+\texttt{astra-sim/workload/ServingCostModel.cc}, and the runtime schedulers in
+\texttt{ColocatedServingRuntime.cc} and \texttt{PdServingRuntime.cc}.
+
+\subsection{Calibration Objective}
+
+Let \(\theta\) denote the set of simulator knobs selected for fitting. A useful
+request-level calibration objective is:
+
+\begin{equation*}
+\begin{aligned}
+\theta^\star
+= \arg\min_{\theta} \\
+& \sum_{r \in \mathcal{R}}
+\Bigl[
+w_{\mathrm{ttft}}
+\bigl(
+\mathrm{TTFT}_{\mathrm{sim}}(r; \theta) -
+\mathrm{TTFT}_{\mathrm{meas}}(r)
+\bigr)^2 \\
+& {}+ w_{\mathrm{tpot}}
+\bigl(
+\mathrm{TPOT}_{\mathrm{sim}}(r; \theta) -
+\mathrm{TPOT}_{\mathrm{meas}}(r)
+\bigr)^2 \\
+& {}+ w_{\mathrm{e2e}}
+\bigl(
+\mathrm{E2E}_{\mathrm{sim}}(r; \theta) -
+\mathrm{E2E}_{\mathrm{meas}}(r)
+\bigr)^2
+\Bigr]
+\end{aligned}
+\end{equation*}
+
+If the goal is SLO goodput rather than raw latency alignment, the objective can
+be extended with a goodput term:
+
+\begin{equation*}
+\begin{aligned}
+\theta^\star
+= \arg\min_{\theta} \\
+& \Bigl(
+\mathcal{L}_{\mathrm{latency}}(\theta) \\
+& {}+ w_{\mathrm{goodput}}
+\bigl(
+\mathrm{Goodput}_{\mathrm{sim}}(\theta) -
+\mathrm{Goodput}_{\mathrm{meas}}
+\bigr)^2
+\Bigr)
+\end{aligned}
+\end{equation*}
+
+\subsection{Parameters That Should Usually Be Fixed, Not Fit}
+
+These fields should normally be copied from the real deployment rather than
+treated as free parameters:
+
+\begin{longtable}{p{0.28\textwidth} p{0.62\textwidth}}
+\toprule
+Config field family & Why it should usually be fixed from the real system \\
+\midrule
+\endhead
+\texttt{topology.*\_layout.tp\_degree} &
+Tensor-parallel degree is an explicit engine launch choice. \\
+\texttt{topology.*\_layout.pp\_degree} &
+Pipeline-parallel degree is a structural deployment choice. \\
+\texttt{topology.*\_layout.ep\_degree} &
+Expert-parallel degree is fixed by the MoE serving configuration. \\
+\texttt{topology.*\_layout.dp\_attention\_degree} &
+KV sharding ownership should follow the real decode-side layout. \\
+\texttt{topology.*\_layout.dp\_replica\_count} &
+Replica count should match the number of independent serving domains. \\
+\texttt{cluster.devices[*]} &
+Peak FLOPs, memory size, and memory bandwidth should reflect the real GPU SKU. \\
+\texttt{interconnects[*]} &
+Link bandwidth, latency, and efficiency should reflect NVLink, PCIe, or network fabric. \\
+\texttt{model.*} &
+Layer count, hidden size, KV heads, expert count, and byte widths should match the deployed model. \\
+\texttt{runtime.architecture} &
+Choose colocated or \texttt{pd\_disaggregated} to match the real engine architecture. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Primary Fit Knobs}
+
+Once the structural deployment is fixed, the main calibration parameters are:
+
+\begin{longtable}{p{0.30\textwidth} p{0.28\textwidth} p{0.32\textwidth}}
+\toprule
+Knob family & Config fields & What measured behavior it mainly controls \\
+\midrule
+\endhead
+Global compute scaling &
+\texttt{compute\_scale} &
+Uniform up or down adjustment of all compute-side terms. \\
+Global communication scaling &
+\texttt{comm\_scale} &
+Uniform up or down adjustment of TP, PP, EP, and DP-attention communication terms. \\
+Prefill stage compute overrides &
+\texttt{cost\_model.prefill.attention\_compute\_ns\_per\_token},
+\texttt{cost\_model.prefill.ffn\_or\_expert\_compute\_ns\_per\_token} &
+Single-request prefill TTFT and prompt-length scaling. \\
+Decode stage compute overrides &
+\texttt{cost\_model.decode.attention\_compute\_ns\_per\_token},
+\texttt{cost\_model.decode.ffn\_or\_expert\_compute\_ns\_per\_token} &
+Single-request TPOT and output-length scaling. \\
+TP communication overrides &
+\texttt{cost\_model.<stage>.tp\_collective\_ns\_per\_token} &
+Sensitivity to tensor-parallel degree and collective cost. \\
+PP communication overrides &
+\texttt{cost\_model.<stage>.pp\_activation\_ns\_per\_token} &
+Sensitivity to pipeline activation traffic and stage bubble cost. \\
+EP communication overrides &
+\texttt{cost\_model.<stage>.ep\_dispatch\_ns\_per\_token} &
+MoE token dispatch and combine overhead. \\
+DP-attention overrides &
+\texttt{cost\_model.<stage>.dp\_attention\_sync\_ns\_per\_token} &
+Decode-side KV synchronization overhead. \\
+Batching efficiency &
+\texttt{cost\_model.prefill.batch\_efficiency},
+\texttt{cost\_model.decode.batch\_efficiency} &
+How stage runtime scales with batch size rather than single-request cost. \\
+Decode contention factor &
+\texttt{cost\_model.decode.interference\_factor} &
+How much decode slows under continuous batching or mixed load. \\
+PD transfer model &
+\texttt{pd.transfer.latency\_ns},
+\texttt{pd.transfer.bandwidth\_bytes\_per\_s},
+\texttt{pd.transfer.efficiency},
+\texttt{pd.transfer.bytes\_per\_prompt\_token} &
+Prefill-to-decode handoff overhead in disaggregated serving. \\
+Scheduler concurrency caps &
+\texttt{scheduler.max\_running\_requests},
+\texttt{scheduler.max\_decode\_batch\_requests},
+\texttt{scheduler.max\_prefill\_batch\_tokens},
+\texttt{scheduler.prefill\_max\_requests} &
+Queueing delay, batch shape, and admission pressure. \\
+PD worker counts &
+\texttt{pd.prefill\_workers},
+\texttt{pd.decode\_workers} &
+Stage-level concurrency and overlap in PD mode. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Direct Estimators for the Main Fit Knobs}
+
+If stage measurements are available from profiling or tracing, the global scale
+factors can be initialized from:
+
+\begin{equation*}
+s_c \approx
+\frac{T_{\mathrm{compute,meas}}}
+{\widehat{T}_{\mathrm{compute,model}}}
+\end{equation*}
+
+\begin{equation*}
+s_m \approx
+\frac{T_{\mathrm{comm,meas}}}
+{\widehat{T}_{\mathrm{comm,model}}}
+\end{equation*}
+
+If the calibration is performed through direct per-token overrides, a stage
+component coefficient can be initialized from:
+
+\begin{equation*}
+c_x^{\mathrm{stage}} \approx
+\frac{T_{x,\mathrm{meas}}}
+{m_{\mathrm{stage}} N_{\mathrm{tok}}}
+\end{equation*}
+
+For PD transfer, if \(Q_{\mathrm{KV}}\) is known and latency is measured
+separately, a first estimate of effective bandwidth is:
+
+\begin{equation*}
+BW_{\mathrm{pd}} \epsilon_{\mathrm{pd}} \approx
+\frac{Q_{\mathrm{KV}}}
+{T_{\mathrm{transfer,meas}} - L_{\mathrm{pd}}}
+\end{equation*}
+
+If the transfer bytes are not directly observable, the override field can be
+fit from:
+
+\begin{equation*}
+q_{\mathrm{kv,override}} \approx
+\frac{Q_{\mathrm{KV,meas}}}{N_p}
+\end{equation*}
+
+\subsection{Recommended Calibration Order}
+
+\begin{enumerate}
+\item Fix \texttt{model}, \texttt{cluster}, \texttt{interconnects}, and
+\texttt{topology} to match the real deployment. Do not use cost overrides to
+hide a topology mismatch.
+\item Fit \texttt{compute\_scale} and \texttt{comm\_scale} on clean,
+single-request measurements with minimal queueing.
+\item Fit prefill component overrides using prompt-only or TTFT-dominated runs:
+\texttt{cost\_model.prefill.*}.
+\item Fit decode component overrides using long-generation runs:
+\texttt{cost\_model.decode.*}.
+\item Fit \texttt{batch\_efficiency} and
+\texttt{cost\_model.decode.interference\_factor} using concurrency sweeps and continuous
+batching experiments.
+\item If using PD, fit \texttt{pd.transfer.*} and then tune
+\texttt{pd.prefill\_workers}, \texttt{pd.decode\_workers},
+\texttt{topology.prefill\_layout}, and \texttt{topology.decode\_layout} to match overlap and
+handoff behavior.
+\item Finish with trace-level validation against TTFT, TPOT, E2E, and SLO
+goodput on realistic request mixes.
+\end{enumerate}
+
+\subsection{vLLM-Specific Emphasis}
+
+For colocated vLLM-style calibration, the highest-leverage knobs are usually:
+
+\begin{itemize}
+\item \texttt{compute\_scale}
+\item \texttt{comm\_scale}
+\item \texttt{cost\_model.decode.batch\_efficiency}
+\item \texttt{cost\_model.decode.interference\_factor}
+\item \texttt{scheduler.max\_decode\_batch\_requests}
+\item \texttt{scheduler.max\_running\_requests}
+\end{itemize}
+
+The reason is that vLLM latency is often dominated by decode-side continuous
+batching behavior, so the decode stage and admission caps usually matter more
+than PD transfer parameters.
+
+\subsection{SGLang-Specific Emphasis}
+
+For SGLang-style PD or prefill or decode disaggregation, the highest-leverage
+knobs are usually:
+
+\begin{itemize}
+\item \texttt{prefill\_layout}
+\item \texttt{decode\_layout}
+\item \texttt{pd.prefill\_workers}
+\item \texttt{pd.decode\_workers}
+\item \texttt{pd.transfer.latency\_ns}
+\item \texttt{pd.transfer.bandwidth\_bytes\_per\_s}
+\item \texttt{pd.transfer.efficiency}
+\item \texttt{pd.transfer.bytes\_per\_prompt\_token}
+\end{itemize}
+
+The reason is that disaggregated serving is highly sensitive to handoff cost,
+decode concurrency, and whether the prefill and decode tiers use the same or
+different TP, PP, EP, and DP-attention layouts.
+
+\subsection{What Should Be Changed First When the Fit Is Wrong}
+
+If TTFT is wrong but TPOT is reasonable, change:
+
+\begin{itemize}
+\item \texttt{cost\_model.prefill.*}
+\item \texttt{scheduler.max\_prefill\_batch\_tokens}
+\item \texttt{scheduler.prefill\_max\_requests}
+\item \texttt{pd.transfer.*}
+\end{itemize}
+
+If TPOT is wrong but TTFT is reasonable, change:
+
+\begin{itemize}
+\item \texttt{cost\_model.decode.*}
+\item \texttt{cost\_model.decode.batch\_efficiency}
+\item \texttt{cost\_model.decode.interference\_factor}
+\item \texttt{scheduler.max\_decode\_batch\_requests}
+\end{itemize}
+
+If both TTFT and TPOT are wrong in the same direction, change:
+
+\begin{itemize}
+\item \texttt{compute\_scale}
+\item \texttt{comm\_scale}
+\item \texttt{cluster.devices[*]}
+\item \texttt{interconnects[*]}
+\end{itemize}
+
+If latency percentiles are wrong mainly because queueing is wrong, change:
+
+\begin{itemize}
+\item \texttt{scheduler.max\_running\_requests}
+\item \texttt{pd.prefill\_workers}
+\item \texttt{pd.decode\_workers}
+\item \texttt{topology.*\_layout.dp\_replica\_count}
+\end{itemize}
