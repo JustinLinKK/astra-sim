@@ -1,0 +1,84 @@
+{
+  "architecture": "pd_disaggregated",
+  "decode_queue_delay_ns": {
+    "count": 8,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "e2e_ns": {
+    "count": 8,
+    "max": 14566.0,
+    "mean": 11030.875,
+    "p50": 10500.0,
+    "p90": 14566.0,
+    "p99": 14566.0
+  },
+  "goodput": {
+    "bad_requests": 0,
+    "failure_reasons": {
+      "e2e": 0,
+      "tpot": 0,
+      "ttft": 0
+    },
+    "good_requests": 8,
+    "goodput_reqs_per_sec": 437373.5717019299,
+    "slo_attainment_fraction": 1.0
+  },
+  "makespan_ns": 18291,
+  "num_requests": 8,
+  "output_token_throughput_tokens_per_sec": 984090.5363293423,
+  "prefill_queue_delay_ns": {
+    "count": 8,
+    "max": 4066.0,
+    "mean": 1405.875,
+    "p50": 515.0,
+    "p90": 4066.0,
+    "p99": 4066.0
+  },
+  "queue_delay_ns": {
+    "count": 8,
+    "max": 4066.0,
+    "mean": 1405.875,
+    "p50": 515.0,
+    "p90": 4066.0,
+    "p99": 4066.0
+  },
+  "request_throughput_reqs_per_sec": 437373.5717019299,
+  "simulation_end_time_ns": 18291,
+  "simulation_start_time_ns": 0,
+  "slo": {
+    "configured": false,
+    "e2e_ns": null,
+    "tpot_ns": 0.0,
+    "ttft_ns": 0
+  },
+  "total_output_tokens": 18,
+  "total_prompt_tokens": 20,
+  "tpot_ns": {
+    "count": 8,
+    "max": 500.0,
+    "mean": 500.0,
+    "p50": 500.0,
+    "p90": 500.0,
+    "p99": 500.0
+  },
+  "transfer_duration_ns": {
+    "count": 8,
+    "max": 6000.0,
+    "mean": 5500.0,
+    "p50": 6000.0,
+    "p90": 6000.0,
+    "p99": 6000.0
+  },
+  "ttft_ns": {
+    "count": 8,
+    "max": 13566.0,
+    "mean": 10405.875,
+    "p50": 9500.0,
+    "p90": 13566.0,
+    "p99": 13566.0
+  }
+}

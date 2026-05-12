@@ -1,0 +1,98 @@
+\section{Current Default Formulas}
+
+This section documents the pre-refactor serving formulas that still remain
+available through compatibility shims. The relevant implementations live in
+\texttt{calculate\_scaled\_serving\_duration(...)} in
+\texttt{astra-sim/workload/ServingUtils.cc} and in the legacy-compatible paths
+of \texttt{ServingCostModel::estimate\_serial\_*} and
+\texttt{ServingCostModel::estimate\_stage\_breakdown(...)} in
+\texttt{astra-sim/workload/ServingCostModel.cc}.
+
+\subsection{Serial Prefill and Decode}
+
+Let \(B_p\) and \(C_p\) denote the configured prefill base latency and per-token
+cost, and let \(s_c\) denote \texttt{compute\_scale}. The serial prefill model is:
+
+\begin{equation*}
+T_{\mathrm{prefill,serial}} =
+s_c B_p + s_c N_p C_p
+\end{equation*}
+
+where \(N_p\) is the prompt-token count for the request.
+
+Let \(B_d\) and \(C_d\) denote the configured decode base latency and per-token
+cost, and let \(\phi_d\) denote
+\texttt{cost\_model.decode.interference\_factor}. The serial decode-step model
+for a decode batch of \(N_d\) tokens is:
+
+\begin{equation*}
+T_{\mathrm{decode,serial}} =
+s_c \mathbf{1}_{\mathrm{first}} B_d + \phi_d s_c N_d C_d
+\end{equation*}
+
+In the serial runtime, \(N_d = 1\) per emitted token.
+
+\subsection{Batched Prefill and Decode}
+
+For colocated or PD batch scheduling, the legacy-compatible batched terms use
+\texttt{batch\_efficiency} and decode \texttt{interference\_factor}. Let
+\(\eta_p\) and \(\eta_d\) denote the prefill and decode batch-efficiency
+scalars. With \(N_{\mathrm{batch}}\) equal to the sum of tokens in the batch:
+
+\begin{equation*}
+T_{\mathrm{prefill,batch}} =
+s_c B_p + \eta_p s_c N_{\mathrm{batch}} C_p
+\end{equation*}
+
+\begin{equation*}
+T_{\mathrm{decode,batch}} =
+s_c \mathbf{1}_{\mathrm{first}} B_d +
+\eta_d \phi_d s_c N_{\mathrm{batch}} C_d
+\end{equation*}
+
+When the component-wise stage fields are left unset, these equations are the
+exact fallback used by \texttt{ServingCostModel::estimate\_stage\_breakdown(...)}.
+
+\subsection{Compatibility-Mode KV Transfer}
+
+For PD transfer, the default prompt-to-KV byte estimate comes from
+\texttt{ServingCostModel::estimate\_kv\_transfer\_bytes(...)}. If no override is
+provided, the simulator uses:
+
+\begin{equation*}
+Q_{\mathrm{KV}} =
+N_p L H_{\mathrm{kv}} D_h \cdot 2 b_{\mathrm{kv}}
+\end{equation*}
+
+If \texttt{override\_bytes\_per\_prompt\_token} is enabled, the simulator uses:
+
+\begin{equation*}
+Q_{\mathrm{KV}} =
+N_p q_{\mathrm{kv,override}}
+\end{equation*}
+
+The transfer delay itself is:
+
+\begin{equation*}
+T_{\mathrm{transfer}} =
+L_{\mathrm{pd}} +
+\frac{Q_{\mathrm{KV}}}{BW_{\mathrm{pd}} \epsilon_{\mathrm{pd}}}
+\end{equation*}
+
+where \(L_{\mathrm{pd}}\) is the configured transfer latency,
+\(BW_{\mathrm{pd}}\) is the configured bandwidth, and
+\(\epsilon_{\mathrm{pd}}\) is the configured efficiency.
+
+\subsection{Optional Collective Addenda}
+
+If \texttt{prefill\_collective} or \texttt{decode\_collective} is enabled, the
+runtime issues a real ASTRA collective after the stage compute term. The
+requested collective size is first scaled by \texttt{comm\_scale}:
+
+\begin{equation*}
+Q'_{\mathrm{collective}} =
+s_m Q_{\mathrm{collective}}
+\end{equation*}
+
+The realized extra latency is then the collective completion time returned by
+the ASTRA system model rather than a closed-form serving-side estimate.

@@ -99,6 +99,9 @@ AnalyticalMode parse_analytical_mode(const std::string& name,
     if (name == "attention_ffn_disaggregation") {
         return AnalyticalMode::attention_ffn_disaggregation;
     }
+    if (name == "serving_scale") {
+        return AnalyticalMode::serving_scale;
+    }
 
     analytical_config_error("Unsupported analytical mode '" + name + "' in " +
                             source_name);
@@ -114,6 +117,74 @@ DeviceType parse_device_type(const std::string& name,
     }
     analytical_config_error("Unsupported device type '" + name + "' in " +
                             source_name);
+}
+
+ServingTopologyDeployment parse_topology_deployment(
+    const std::string& name,
+    const std::string& source_name) {
+    if (name == "colocated") {
+        return ServingTopologyDeployment::Colocated;
+    }
+    if (name == "prefill_decode_disaggregated" || name == "pd_disaggregated") {
+        return ServingTopologyDeployment::PrefillDecodeDisaggregated;
+    }
+    analytical_config_error("Unsupported serving topology deployment '" + name +
+                            "' in " + source_name);
+}
+
+ParallelismLayoutSpec parse_parallelism_layout(const YAML::Node& node,
+                                               const std::string& source_name,
+                                               const std::string& default_name) {
+    ParallelismLayoutSpec layout{};
+    layout.name = default_name;
+    if (node["name"]) {
+        layout.name = node["name"].as<std::string>();
+    }
+    if (node["tp_degree"]) {
+        layout.tp_degree = node["tp_degree"].as<uint64_t>();
+    }
+    if (node["pp_degree"]) {
+        layout.pp_degree = node["pp_degree"].as<uint64_t>();
+    }
+    if (node["ep_degree"]) {
+        layout.ep_degree = node["ep_degree"].as<uint64_t>();
+    }
+    if (node["dp_attention_degree"]) {
+        layout.dp_attention_degree = node["dp_attention_degree"].as<uint64_t>();
+    }
+    if (node["dp_replica_count"]) {
+        layout.dp_replica_count = node["dp_replica_count"].as<uint64_t>();
+    }
+    if (layout.tp_degree == 0 || layout.pp_degree == 0 || layout.ep_degree == 0 ||
+        layout.dp_attention_degree == 0 || layout.dp_replica_count == 0) {
+        analytical_config_error("Parallelism layout '" + layout.name +
+                                "' must use positive degrees in " + source_name);
+    }
+    return layout;
+}
+
+ServingTopologySpec parse_serving_topology(const YAML::Node& node,
+                                           const std::string& source_name) {
+    ServingTopologySpec topology{};
+    if (node["deployment"]) {
+        topology.deployment = parse_topology_deployment(
+            node["deployment"].as<std::string>(), source_name);
+    }
+    if (node["colocated_layout"]) {
+        topology.colocated_layout = parse_parallelism_layout(
+            node["colocated_layout"], source_name, "colocated");
+    } else {
+        topology.colocated_layout.name = "colocated";
+    }
+    if (node["prefill_layout"]) {
+        topology.prefill_layout = parse_parallelism_layout(
+            node["prefill_layout"], source_name, "prefill");
+    }
+    if (node["decode_layout"]) {
+        topology.decode_layout = parse_parallelism_layout(
+            node["decode_layout"], source_name, "decode");
+    }
+    return topology;
 }
 
 void apply_dense_model_overrides(DenseModelSpec& spec,
@@ -486,6 +557,78 @@ AttentionFfnDisaggregationConfig parse_attention_ffn_disaggregation_config(
     return config;
 }
 
+ServingScaleConfig parse_serving_scale_config(
+    const YAML::Node& node,
+    const std::string& source_name,
+    const std::filesystem::path& base_directory) {
+    ServingScaleConfig config{};
+    const bool has_dense_model = static_cast<bool>(node["dense_model"]);
+    const bool has_moe_model = static_cast<bool>(node["moe_model"]);
+    if (has_dense_model == has_moe_model) {
+        analytical_config_error(
+            "serving_scale requires exactly one of dense_model or moe_model in " +
+            source_name);
+    }
+    if (has_dense_model) {
+        config.dense_model = parse_dense_model(
+            require_node(node, "dense_model", source_name), source_name);
+    } else {
+        config.moe_model = parse_moe_model(
+            require_node(node, "moe_model", source_name), source_name);
+    }
+    config.cluster =
+        parse_cluster(require_node(node, "cluster", source_name), source_name);
+    config.interconnects = parse_interconnects(node, source_name);
+    config.topology = parse_serving_topology(
+        require_node(node, "topology", source_name), source_name);
+    config.request_configuration = resolve_path(
+        parse_scalar<std::string>(node, "request_configuration", source_name),
+        base_directory);
+    config.request_metrics_output = resolve_path(
+        parse_scalar<std::string>(node, "request_metrics_output", source_name),
+        base_directory);
+    config.request_summary_output = resolve_path(
+        parse_scalar<std::string>(node, "request_summary_output", source_name),
+        base_directory);
+    config.request_run_metadata_output = resolve_path(
+        parse_scalar<std::string>(node, "request_run_metadata_output",
+                                  source_name),
+        base_directory);
+    config.workload_configuration = resolve_path(
+        parse_scalar<std::string>(node, "workload_configuration", source_name),
+        base_directory);
+    config.comm_group_configuration = resolve_path(
+        parse_scalar<std::string>(node, "comm_group_configuration",
+                                  source_name),
+        base_directory);
+    config.system_configuration = resolve_path(
+        parse_scalar<std::string>(node, "system_configuration", source_name),
+        base_directory);
+    config.remote_memory_configuration = resolve_path(
+        parse_scalar<std::string>(node, "remote_memory_configuration",
+                                  source_name),
+        base_directory);
+    config.network_configuration = resolve_path(
+        parse_scalar<std::string>(node, "network_configuration", source_name),
+        base_directory);
+    config.logging_configuration = resolve_path(
+        parse_scalar<std::string>(node, "logging_configuration", source_name),
+        base_directory);
+    config.logging_folder = resolve_path(
+        parse_scalar<std::string>(node, "logging_folder", source_name),
+        base_directory);
+    config.num_queues_per_dim =
+        parse_scalar<int>(node, "num_queues_per_dim", source_name);
+    config.compute_scale =
+        parse_scalar<double>(node, "compute_scale", source_name);
+    config.comm_scale = parse_scalar<double>(node, "comm_scale", source_name);
+    config.injection_scale =
+        parse_scalar<double>(node, "injection_scale", source_name);
+    config.rendezvous_protocol =
+        parse_scalar<bool>(node, "rendezvous_protocol", source_name);
+    return config;
+}
+
 AnalyticalConfig parse_analytical_config(const YAML::Node& root,
                                          const std::string& source_name) {
     if (!root.IsMap()) {
@@ -514,6 +657,10 @@ AnalyticalConfig parse_analytical_config(const YAML::Node& root,
         config.attention_ffn_disaggregation =
             parse_attention_ffn_disaggregation_config(root, source_name,
                                                       base_directory);
+        break;
+    case AnalyticalMode::serving_scale:
+        config.serving_scale =
+            parse_serving_scale_config(root, source_name, base_directory);
         break;
     }
 
@@ -599,6 +746,8 @@ std::string to_string(AnalyticalMode mode) {
         return "serving_disagg_colocated";
     case AnalyticalMode::attention_ffn_disaggregation:
         return "attention_ffn_disaggregation";
+    case AnalyticalMode::serving_scale:
+        return "serving_scale";
     }
     return "unknown";
 }

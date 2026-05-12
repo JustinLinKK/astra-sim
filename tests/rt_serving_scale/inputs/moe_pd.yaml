@@ -1,0 +1,76 @@
+mode: serving_scale
+moe_model:
+  name: Test MoE
+  total_parameter_count: 1000000000
+  attention_parameter_count: 300000000
+  router_parameter_count: 100000000
+  expert_parameter_count: 600000000
+  num_layers: 24
+  hidden_size: 4096
+  attention_heads: 32
+  kv_heads: 8
+  experts_per_layer: 8
+  active_experts_per_token: 2
+  expert_hidden_size: 14336
+  max_sequence_length: 8192
+  bytes_per_parameter: 2
+  bytes_per_activation: 2
+  bytes_per_kv_element: 2
+cluster:
+  workspace_reserve_bytes: 2147483648
+  devices:
+    - name: gpu
+      type: GPU
+      count: 8
+      memory_capacity_bytes: 85899345920
+      peak_flops: 9.0e14
+      memory_bandwidth_bytes_per_s: 3.0e12
+      active_power_w: 700
+      idle_power_w: 120
+interconnects:
+  - name: gpu-fabric
+    src_type: GPU
+    dst_type: GPU
+    bandwidth_bytes_per_s: 9.0e11
+    latency_ns: 800
+    full_duplex: true
+    efficiency: 0.85
+topology:
+  deployment: pd_disaggregated
+  colocated_layout:
+    name: moe-colocated
+    tp_degree: 1
+    pp_degree: 1
+    ep_degree: 1
+    dp_attention_degree: 1
+    dp_replica_count: 2
+  prefill_layout:
+    name: moe-prefill
+    tp_degree: 2
+    pp_degree: 1
+    ep_degree: 1
+    dp_attention_degree: 1
+    dp_replica_count: 2
+  decode_layout:
+    name: moe-decode
+    tp_degree: 4
+    pp_degree: 2
+    ep_degree: 4
+    dp_attention_degree: 4
+    dp_replica_count: 2
+request_configuration: ./moe_pd_requests.json
+request_metrics_output: ../outputs/moe_metrics.csv
+request_summary_output: ../outputs/moe_summary.json
+request_run_metadata_output: ../outputs/moe_metadata.json
+workload_configuration: empty
+comm_group_configuration: empty
+system_configuration: ../../rt_serving_baseline/inputs/system_cfg.json
+remote_memory_configuration: ../../rt_serving_baseline/inputs/remote_memory_cfg.json
+network_configuration: ../../rt_serving_baseline/inputs/network_cfg.yml
+logging_configuration: empty
+logging_folder: ../outputs/log
+num_queues_per_dim: 1
+compute_scale: 1.0
+comm_scale: 1.0
+injection_scale: 1.0
+rendezvous_protocol: false

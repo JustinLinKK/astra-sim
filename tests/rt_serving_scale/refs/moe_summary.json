@@ -1,0 +1,119 @@
+{
+  "architecture": "pd_disaggregated",
+  "decode_breakdown": {
+    "attention_compute_ns": 11708,
+    "base_latency_ns": 0,
+    "dp_attention_sync_ns": 38712,
+    "ep_dispatch_ns": 43418,
+    "ffn_or_expert_compute_ns": 15272,
+    "pd_kv_transfer_ns": 0,
+    "pp_activation_ns": 1303052,
+    "total_ns": 3265388,
+    "tp_collective_ns": 1853226
+  },
+  "decode_queue_delay_ns": {
+    "count": 2,
+    "max": 78297.0,
+    "mean": 39148.5,
+    "p50": 0.0,
+    "p90": 78297.0,
+    "p99": 78297.0
+  },
+  "e2e_ns": {
+    "count": 2,
+    "max": 2994305.0,
+    "mean": 2636212.0,
+    "p50": 2278119.0,
+    "p90": 2994305.0,
+    "p99": 2994305.0
+  },
+  "goodput": {
+    "bad_requests": 0,
+    "failure_reasons": {
+      "e2e": 0,
+      "tpot": 0,
+      "ttft": 0
+    },
+    "good_requests": 2,
+    "goodput_reqs_per_sec": 667.7116353760301,
+    "slo_attainment_fraction": 1.0
+  },
+  "makespan_ns": 2995305,
+  "num_requests": 2,
+  "output_token_throughput_tokens_per_sec": 5341.693083008241,
+  "prefill_breakdown": {
+    "attention_compute_ns": 172806,
+    "base_latency_ns": 0,
+    "dp_attention_sync_ns": 0,
+    "ep_dispatch_ns": 0,
+    "ffn_or_expert_compute_ns": 902028,
+    "pd_kv_transfer_ns": 0,
+    "pp_activation_ns": 0,
+    "total_ns": 1277778,
+    "tp_collective_ns": 202944
+  },
+  "prefill_queue_delay_ns": {
+    "count": 2,
+    "max": 637889.0,
+    "mean": 318944.5,
+    "p50": 0.0,
+    "p90": 637889.0,
+    "p99": 637889.0
+  },
+  "queue_delay_ns": {
+    "count": 2,
+    "max": 637889.0,
+    "mean": 318944.5,
+    "p50": 0.0,
+    "p90": 637889.0,
+    "p99": 637889.0
+  },
+  "request_throughput_reqs_per_sec": 667.7116353760301,
+  "simulation_end_time_ns": 2995305,
+  "simulation_start_time_ns": 0,
+  "slo": {
+    "configured": false,
+    "e2e_ns": null,
+    "tpot_ns": 0.0,
+    "ttft_ns": 0
+  },
+  "total_kv_resident_bytes": 24576,
+  "total_kv_transfer_bytes": 98304,
+  "total_output_tokens": 16,
+  "total_prompt_tokens": 96,
+  "tpot_ns": {
+    "count": 2,
+    "max": 204086.75,
+    "mean": 204086.75,
+    "p50": 204086.75,
+    "p90": 204086.75,
+    "p99": 204086.75
+  },
+  "transfer_breakdown": {
+    "attention_compute_ns": 0,
+    "base_latency_ns": 10000,
+    "dp_attention_sync_ns": 0,
+    "ep_dispatch_ns": 0,
+    "ffn_or_expert_compute_ns": 0,
+    "pd_kv_transfer_ns": 3072,
+    "pp_activation_ns": 0,
+    "total_ns": 13072,
+    "tp_collective_ns": 0
+  },
+  "transfer_duration_ns": {
+    "count": 2,
+    "max": 6536.0,
+    "mean": 6536.0,
+    "p50": 6536.0,
+    "p90": 6536.0,
+    "p99": 6536.0
+  },
+  "ttft_ns": {
+    "count": 2,
+    "max": 1544711.0,
+    "mean": 1214599.0,
+    "p50": 884487.0,
+    "p90": 1544711.0,
+    "p99": 1544711.0
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "runtime": {
+    "architecture": "colocated_chunked",
+    "seed": 20260511
+  },
+  "scheduler": {
+    "max_running_requests": 128,
+    "scheduler_policy": "balanced",
+    "max_prefill_batch_tokens": 8192,
+    "max_decode_batch_requests": 32,
+    "chunked_prefill_size": 2048,
+    "prefill_max_requests": 16,
+    "enable_mixed_chunk": false
+  },
+  "slo": {
+    "ttft_ns": 250000000,
+    "tpot_ns": 30000000.0,
+    "e2e_ns": 2000000000
+  },
+  "model": {
+    "name": "llama-70b-class",
+    "num_layers": 80,
+    "hidden_size": 8192,
+    "attention_heads": 64,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "bytes_per_kv_element": 2
+  },
+  "pd": {
+    "prefill_workers": 8,
+    "decode_workers": 8,
+    "prefill_max_batch_tokens": 8192,
+    "prefill_max_requests": 16,
+    "decode_max_batch_requests": 32,
+    "prefill_tp_degree": 8,
+    "decode_tp_degree": 8,
+    "transfer": {
+      "enabled": true,
+      "latency_ns": 3000,
+      "bandwidth_bytes_per_s": 50000000000.0,
+      "efficiency": 0.85,
+      "overlap_enabled": false,
+      "bytes_per_prompt_token": 0,
+      "override_bytes_per_prompt_token": false
+    }
+  },
+  "trace": {
+    "seed": 2026,
+    "num_requests": 512,
+    "arrival_process": "poisson",
+    "request_rate_per_second": 32.0,
+    "prompt_tokens": {
+      "distribution": "uniform",
+      "min": 64,
+      "max": 1536
+    },
+    "output_tokens": {
+      "distribution": "uniform",
+      "min": 16,
+      "max": 192
+    }
+  },
+  "cost_model": {
+    "prefill_base_latency_ns": 2000000,
+    "prefill_ns_per_token": 120000,
+    "decode_base_latency_ns": 1000000,
+    "decode_ns_per_token": 300000,
+    "prefill_batch_efficiency": 0.72,
+    "decode_batch_efficiency": 0.82,
+    "decode_interference_factor": 1.05,
+    "mixed_prefill_weight": 1.0
+  }
+}

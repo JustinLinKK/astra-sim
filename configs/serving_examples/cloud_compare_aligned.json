@@ -1,0 +1,68 @@
+{
+  "runtime": {
+    "architecture": "serial_baseline",
+    "seed": 101
+  },
+  "scheduler": {
+    "max_running_requests": 16,
+    "scheduler_policy": "balanced",
+    "max_prefill_batch_tokens": 1024,
+    "max_decode_batch_requests": 8,
+    "chunked_prefill_size": 0,
+    "prefill_max_requests": 4,
+    "enable_mixed_chunk": false
+  },
+  "model": {
+    "name": "cloud-compare-llm",
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "attention_heads": 32,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "bytes_per_kv_element": 2
+  },
+  "pd": {
+    "prefill_workers": 2,
+    "decode_workers": 2,
+    "prefill_max_batch_tokens": 1024,
+    "prefill_max_requests": 4,
+    "decode_max_batch_requests": 8,
+    "prefill_tp_degree": 2,
+    "decode_tp_degree": 2,
+    "transfer": {
+      "enabled": true,
+      "latency_ns": 3000,
+      "bandwidth_bytes_per_s": 50000000000.0,
+      "efficiency": 0.85,
+      "overlap_enabled": false,
+      "bytes_per_prompt_token": 0,
+      "override_bytes_per_prompt_token": false
+    }
+  },
+  "trace": {
+    "seed": 2026,
+    "num_requests": 64,
+    "arrival_process": "poisson",
+    "request_rate_per_second": 10000.0,
+    "prompt_tokens": {
+      "distribution": "uniform",
+      "min": 128,
+      "max": 512
+    },
+    "output_tokens": {
+      "distribution": "uniform",
+      "min": 16,
+      "max": 64
+    }
+  },
+  "cost_model": {
+    "prefill_base_latency_ns": 0,
+    "prefill_ns_per_token": 1000,
+    "decode_base_latency_ns": 0,
+    "decode_ns_per_token": 500,
+    "prefill_batch_efficiency": 0.75,
+    "decode_batch_efficiency": 0.85,
+    "decode_interference_factor": 1.0,
+    "mixed_prefill_weight": 1.0
+  }
+}

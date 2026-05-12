@@ -65,6 +65,11 @@ endif()
 file(GLOB srcs
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/serving/schema/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/serving/topology/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/serving/cost/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/serving/runtime/*.cc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/workload/serving/reporting/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/analytical/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/astraccl/*.cc"
     "${CMAKE_CURRENT_SOURCE_DIR}/astra-sim/system/astraccl/native_collectives/*.cc"

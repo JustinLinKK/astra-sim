@@ -1,0 +1,47 @@
+{
+  "runtime": {
+    "architecture": "colocated",
+    "seed": 17
+  },
+  "scheduler": {
+    "max_running_requests": 4,
+    "scheduler_policy": "decode_first",
+    "max_prefill_batch_tokens": 4,
+    "max_decode_batch_requests": 2,
+    "chunked_prefill_size": 0,
+    "prefill_max_requests": 2,
+    "enable_mixed_chunk": false
+  },
+  "trace": {
+    "seed": 7,
+    "num_requests": 8,
+    "arrival_process": "poisson",
+    "request_rate_per_second": 500000.0,
+    "prompt_tokens": {
+      "distribution": "uniform",
+      "min": 1,
+      "max": 3
+    },
+    "output_tokens": {
+      "distribution": "uniform",
+      "min": 1,
+      "max": 3
+    }
+  },
+  "baseline": {
+    "prefill_base_latency_ns": 0,
+    "prefill_compute_ns_per_token": 1000,
+    "decode_base_latency_ns": 0,
+    "decode_compute_ns_per_token": 500,
+    "prefill_collective": {
+      "enabled": false,
+      "type": "all-reduce",
+      "size_bytes": 0
+    },
+    "decode_collective": {
+      "enabled": false,
+      "type": "all-reduce",
+      "size_bytes": 0
+    }
+  }
+}

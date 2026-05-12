@@ -1,0 +1,126 @@
+\section{Metric Definitions}
+
+This section documents the request-level metrics assembled in
+\texttt{ServingRuntimeBase::build\_request\_metrics} in
+\texttt{astra-sim/workload/ServingRuntime.cc}, together with helper functions in
+\texttt{astra-sim/workload/ServingUtils.cc}.
+
+\subsection{Recorded Timestamps}
+
+For each request \(r\), the runtime records arrival, queue-entry, stage-start,
+stage-end, first-token, and finish timestamps. The interval metrics written to
+CSV and summary JSON are:
+
+\begin{equation*}
+W_q(r) = t_{\mathrm{service\_start}}(r) - t_{\mathrm{arrival}}(r)
+\end{equation*}
+
+\begin{equation*}
+W_p(r) = t_{\mathrm{prefill\_start}}(r) - t_{\mathrm{prefill\_queue\_enter}}(r)
+\end{equation*}
+
+\begin{equation*}
+W_d(r) = t_{\mathrm{decode\_start}}(r) - t_{\mathrm{decode\_queue\_enter}}(r)
+\end{equation*}
+
+\begin{equation*}
+W_t(r) = t_{\mathrm{transfer\_start}}(r) - t_{\mathrm{transfer\_queue\_enter}}(r)
+\end{equation*}
+
+\begin{equation*}
+T_{\mathrm{prefill}}(r) = t_{\mathrm{prefill\_end}}(r) - t_{\mathrm{prefill\_start}}(r)
+\end{equation*}
+
+\begin{equation*}
+T_{\mathrm{transfer}}(r) = t_{\mathrm{transfer\_end}}(r) - t_{\mathrm{transfer\_start}}(r)
+\end{equation*}
+
+\begin{equation*}
+T_{\mathrm{decode}}(r) = t_{\mathrm{finish}}(r) - t_{\mathrm{decode\_start}}(r)
+\end{equation*}
+
+\subsection{User-Visible Request Metrics}
+
+The request-level serving metrics are:
+
+\begin{equation*}
+\mathrm{TTFT}(r) = t_{\mathrm{first\_token}}(r) - t_{\mathrm{arrival}}(r)
+\end{equation*}
+
+\begin{equation*}
+\mathrm{TPOT}(r) = \frac{T_{\mathrm{decode}}(r)}{N_{\mathrm{out}}(r)}
+\end{equation*}
+
+\begin{equation*}
+\mathrm{E2E}(r) = t_{\mathrm{finish}}(r) - t_{\mathrm{arrival}}(r)
+\end{equation*}
+
+The code path for \(\mathrm{TPOT}\) is
+\texttt{calculate\_serving\_tpot\_ns(...)} in
+\texttt{astra-sim/workload/ServingUtils.cc}.
+
+\subsection{Run-Level Throughput and Goodput}
+
+Let \(N_{\mathrm{req}}\) be the number of completed requests,
+\(N_{\mathrm{out,tok}}\) the total emitted output tokens, and
+\(T_{\mathrm{makespan}}\) the run makespan in nanoseconds. The reported
+throughput metrics are:
+
+\begin{equation*}
+\mathrm{Throughput}_{\mathrm{req}} =
+\frac{10^9 \, N_{\mathrm{req}}}{T_{\mathrm{makespan}}}
+\end{equation*}
+
+\begin{equation*}
+\mathrm{Throughput}_{\mathrm{tok}} =
+\frac{10^9 \, N_{\mathrm{out,tok}}}{T_{\mathrm{makespan}}}
+\end{equation*}
+
+These are implemented by
+\texttt{calculate\_throughput\_per\_second(...)} in
+\texttt{astra-sim/workload/ServingUtils.cc}.
+
+The per-request goodput predicate evaluated by
+\texttt{evaluate\_serving\_goodput(...)} is:
+
+\begin{equation*}
+\mathrm{Good}(r) =
+\mathbf{1}\!\left[
+\mathrm{TTFT}(r) \le S_{\mathrm{ttft}}
+\land
+\mathrm{TPOT}(r) \le S_{\mathrm{tpot}}
+\land
+\mathrm{E2E}(r) \le S_{\mathrm{e2e}}
+\right]
+\end{equation*}
+
+The summary JSON then reports:
+
+\begin{equation*}
+N_{\mathrm{good}} = \sum_r \mathrm{Good}(r)
+\end{equation*}
+
+\begin{equation*}
+\mathrm{Goodput}_{\mathrm{req/s}} =
+\frac{10^9 \, N_{\mathrm{good}}}{T_{\mathrm{makespan}}}
+\end{equation*}
+
+\begin{equation*}
+\mathrm{SLOAttainment} =
+\frac{N_{\mathrm{good}}}{N_{\mathrm{req}}}
+\end{equation*}
+
+\subsection{Summary Statistics}
+
+For each metric family, the report writer in
+\texttt{astra-sim/workload/ServingMetrics.cc} computes:
+
+\begin{equation*}
+\mathrm{mean}(X) = \frac{1}{|X|} \sum_{x \in X} x
+\end{equation*}
+
+\begin{equation*}
+\mathrm{p}q(X) = X_{\left\lceil q |X| \right\rceil}
+\end{equation*}
+
+where the vector is sorted first and \(q \in \{0.50, 0.90, 0.99\}\).

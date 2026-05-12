@@ -1,0 +1,11 @@
+{
+  "architecture": "colocated_chunked",
+  "binary": "/home/justin/astra-sim/tests/rt_serving_chunked/../../build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
+  "config_path": "/home/justin/astra-sim/tests/rt_serving_chunked/inputs/seeded_trace_chunked.json",
+  "git_commit": "bacc3e4",
+  "runtime_seed": 19,
+  "seed": 19,
+  "simulator_version": "serving-week2-v1",
+  "timestamp_utc": "2026-05-12T00:58:29Z",
+  "trace_seed": 13
+}

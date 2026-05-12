@@ -6,12 +6,15 @@
 #include <string>
 #include <vector>
 
+#include "astra-sim/common/ParallelismLayout.hh"
+
 namespace AstraSim {
 
 enum class AnalyticalMode {
     tp_pp_crossover = 0,
     serving_disagg_colocated,
     attention_ffn_disaggregation,
+    serving_scale,
 };
 
 enum class DeviceType {
@@ -142,12 +145,37 @@ struct AttentionFfnDisaggregationConfig {
     double transfer_efficiency;
 };
 
+struct ServingScaleConfig {
+    std::optional<DenseModelSpec> dense_model;
+    std::optional<MoEModelSpec> moe_model;
+    ClusterSpec cluster;
+    std::vector<InterconnectSpec> interconnects;
+    ServingTopologySpec topology;
+    std::string request_configuration;
+    std::string request_metrics_output;
+    std::string request_summary_output;
+    std::string request_run_metadata_output;
+    std::string workload_configuration;
+    std::string comm_group_configuration;
+    std::string system_configuration;
+    std::string remote_memory_configuration;
+    std::string network_configuration;
+    std::string logging_configuration;
+    std::string logging_folder;
+    int num_queues_per_dim = 1;
+    double compute_scale = 1.0;
+    double comm_scale = 1.0;
+    double injection_scale = 1.0;
+    bool rendezvous_protocol = false;
+};
+
 struct AnalyticalConfig {
     AnalyticalMode mode;
     std::string source_path;
     std::optional<TpPpCrossoverConfig> tp_pp_crossover;
     std::optional<ServingDisaggColocatedConfig> serving_disagg_colocated;
     std::optional<AttentionFfnDisaggregationConfig> attention_ffn_disaggregation;
+    std::optional<ServingScaleConfig> serving_scale;
 
     static AnalyticalConfig load_from_file(const std::string& path);
     static AnalyticalConfig load_from_yaml_text(const std::string& yaml_text,

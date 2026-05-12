@@ -1,0 +1,22 @@
+{
+  "cost_model": {
+    "prefill_base_latency_ns": 100,
+    "prefill_ns_per_token": 20,
+    "decode_base_latency_ns": 200,
+    "decode_ns_per_token": 5,
+    "prefill_batch_efficiency": 1.0,
+    "decode_batch_efficiency": 1.0,
+    "decode_interference_factor": 1.0,
+    "mixed_prefill_weight": 1.0
+  },
+  "fit_stats": {
+    "prefill_samples": 3,
+    "decode_samples": 3,
+    "fit_method": {
+      "prefill": "ols",
+      "decode": "ols"
+    },
+    "prefill_rmse_ns": 0.0,
+    "decode_rmse_ns": 0.0
+  }
+}

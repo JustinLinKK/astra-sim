@@ -1,0 +1,22 @@
+{
+  "runtime": {
+    "architecture": "colocated",
+    "seed": 11
+  },
+  "scheduler": {
+    "max_running_requests": 4,
+    "scheduler_policy": "decode_first",
+    "max_prefill_batch_tokens": 256,
+    "max_decode_batch_requests": 2,
+    "chunked_prefill_size": 0,
+    "prefill_max_requests": 2
+  },
+  "outputs": {
+    "event_trace_output": "../outputs/dense_events.csv"
+  },
+  "cost_model": {},
+  "requests": [
+    {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 64, "output_tokens": 8},
+    {"request_id": 1, "arrival_time_ns": 0, "prompt_tokens": 64, "output_tokens": 8}
+  ]
+}

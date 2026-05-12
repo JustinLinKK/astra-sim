@@ -4,6 +4,7 @@
 
 #include "astra-sim/analytical/AttentionFfnDisaggregationModel.hh"
 #include "astra-sim/analytical/ServingDisaggColocatedModel.hh"
+#include "astra-sim/analytical/ServingScaleModel.hh"
 #include "astra-sim/analytical/TpPpCrossoverModel.hh"
 
 namespace AstraSim {
@@ -32,6 +33,12 @@ std::unique_ptr<AnalyticalModel> AnalyticalModelFactory::create(
         }
         return std::make_unique<AttentionFfnDisaggregationModel>(
             *analytical_config.attention_ffn_disaggregation);
+    case AnalyticalMode::serving_scale:
+        if (!analytical_config.serving_scale.has_value()) {
+            throw std::runtime_error("Missing serving scale config");
+        }
+        return std::make_unique<ServingScaleModel>(
+            *analytical_config.serving_scale, context);
     }
 
     throw std::runtime_error("Unsupported analytical mode");

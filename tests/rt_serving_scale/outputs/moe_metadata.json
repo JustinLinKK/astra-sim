@@ -1,0 +1,12 @@
+{
+  "architecture": "pd_disaggregated",
+  "binary": "/home/justin/astra-sim/tests/rt_serving_scale/../../build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
+  "config_path": "/home/justin/astra-sim/tests/rt_serving_scale/inputs/moe_pd_requests.json",
+  "git_commit": "bacc3e4",
+  "runtime_seed": 22,
+  "seed": 22,
+  "simulator_version": "serving-week2-v1",
+  "timestamp_utc": "2026-05-12T00:58:37Z",
+  "topology_deployment": "prefill_decode_disaggregated",
+  "trace_seed": null
+}

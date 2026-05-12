@@ -1,0 +1,46 @@
+{
+  "runtime": {
+    "architecture": "colocated_chunked",
+    "seed": 17
+  },
+  "scheduler": {
+    "max_running_requests": 8,
+    "scheduler_policy": "balanced",
+    "max_prefill_batch_tokens": 512,
+    "max_decode_batch_requests": 4,
+    "chunked_prefill_size": 128,
+    "prefill_max_requests": 4,
+    "enable_mixed_chunk": false
+  },
+  "slo": {
+    "ttft_ns": 250000,
+    "tpot_ns": 1500.0,
+    "e2e_ns": 800000
+  },
+  "trace": {
+    "seed": 11,
+    "num_requests": 64,
+    "arrival_process": "poisson",
+    "request_rate_per_second": 75.0,
+    "prompt_tokens": {
+      "distribution": "uniform",
+      "min": 128,
+      "max": 512
+    },
+    "output_tokens": {
+      "distribution": "uniform",
+      "min": 16,
+      "max": 64
+    }
+  },
+  "cost_model": {
+    "prefill_base_latency_ns": 0,
+    "prefill_ns_per_token": 1000,
+    "decode_base_latency_ns": 0,
+    "decode_ns_per_token": 500,
+    "prefill_batch_efficiency": 0.7,
+    "decode_batch_efficiency": 0.85,
+    "decode_interference_factor": 1.1,
+    "mixed_prefill_weight": 1.0
+  }
+}

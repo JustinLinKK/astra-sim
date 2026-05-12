@@ -32,3 +32,22 @@ docs/project/
 
 # runs
 runs
+
+# Local planning notes
+astra_sim_serving_coding_agent_plan.md
+
+# Generated report artifacts
+docs/reports/**/latex/build/
+docs/reports/**/latex/*.aux
+docs/reports/**/latex/*.fdb_latexmk
+docs/reports/**/latex/*.fls
+docs/reports/**/latex/*.out
+docs/reports/**/latex/*.pdf
+docs/reports/**/latex/*.synctex.gz
+docs/reports/**/latex/*.toc
+
+# Generated local study outputs
+build/cloud_compare/
+build/report_goodput_16gpu_default_*.csv
+build/report_goodput_16gpu_default_*.json
+build/report_goodput_16gpu_dryrun/

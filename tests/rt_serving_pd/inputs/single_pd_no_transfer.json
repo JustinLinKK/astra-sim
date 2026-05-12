@@ -1,0 +1,48 @@
+{
+  "runtime": {
+    "architecture": "pd_disaggregated"
+  },
+  "scheduler": {
+    "max_running_requests": 1,
+    "scheduler_policy": "decode_first",
+    "max_prefill_batch_tokens": 1,
+    "max_decode_batch_requests": 1,
+    "chunked_prefill_size": 0,
+    "prefill_max_requests": 1,
+    "enable_mixed_chunk": false
+  },
+  "pd": {
+    "prefill_workers": 1,
+    "decode_workers": 1,
+    "prefill_max_batch_tokens": 1,
+    "prefill_max_requests": 1,
+    "decode_max_batch_requests": 1,
+    "transfer": {
+      "enabled": false
+    }
+  },
+  "requests": [
+    {
+      "request_id": 0,
+      "arrival_time_ns": 0,
+      "prompt_tokens": 1,
+      "output_tokens": 1
+    }
+  ],
+  "baseline": {
+    "prefill_base_latency_ns": 0,
+    "prefill_compute_ns_per_token": 1000,
+    "decode_base_latency_ns": 0,
+    "decode_compute_ns_per_token": 500,
+    "prefill_collective": {
+      "enabled": false,
+      "type": "all-reduce",
+      "size_bytes": 0
+    },
+    "decode_collective": {
+      "enabled": false,
+      "type": "all-reduce",
+      "size_bytes": 0
+    }
+  }
+}

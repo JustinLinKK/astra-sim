@@ -1,0 +1,12 @@
+[2026-05-11 17:58:37.744] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:37.744] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:37.744] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:37.744] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:37.745] [serving] [info] REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=48 output_tokens=8 service_start_ns=0 prefill_end_time_ns=638889 first_token_time_ns=884487 finish_time_ns=2278119 queue_delay_ns=0 prefill_duration_ns=638889 decode_duration_ns=1632694 ttft_ns=884487 tpot_ns=204086.75 e2e_ns=2278119
+[2026-05-11 17:58:37.745] [serving] [info] REQUEST request_id=1 arrival_time_ns=1000 prompt_tokens=48 output_tokens=8 service_start_ns=638889 prefill_end_time_ns=1277778 first_token_time_ns=1545711 finish_time_ns=2995305 queue_delay_ns=637889 prefill_duration_ns=638889 decode_duration_ns=1632694 ttft_ns=1544711 tpot_ns=204086.75 e2e_ns=2994305
+[2026-05-11 17:58:37.745] [serving] [info] SUMMARY metric=QUEUE_DELAY count=2 avg_ns=318944.50 p50_ns=0.00 p90_ns=637889.00 p99_ns=637889.00 max_ns=637889.00
+[2026-05-11 17:58:37.745] [serving] [info] SUMMARY metric=TTFT count=2 avg_ns=1214599.00 p50_ns=884487.00 p90_ns=1544711.00 p99_ns=1544711.00 max_ns=1544711.00
+[2026-05-11 17:58:37.745] [serving] [info] SUMMARY metric=TPOT count=2 avg_ns=204086.75 p50_ns=204086.75 p90_ns=204086.75 p99_ns=204086.75 max_ns=204086.75
+[2026-05-11 17:58:37.745] [serving] [info] SUMMARY metric=E2E count=2 avg_ns=2636212.00 p50_ns=2278119.00 p90_ns=2994305.00 p99_ns=2994305.00 max_ns=2994305.00
+[2026-05-11 17:58:37.745] [serving] [info] THROUGHPUT total_requests=2 total_output_tokens=16 makespan_ns=2995305 request_throughput_reqs_per_sec=667.711635 output_token_throughput_tokens_per_sec=5341.693083
+[2026-05-11 17:58:37.745] [system] [warning] Exiting

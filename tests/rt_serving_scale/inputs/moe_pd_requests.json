@@ -1,0 +1,37 @@
+{
+  "runtime": {
+    "architecture": "pd_disaggregated",
+    "seed": 22
+  },
+  "scheduler": {
+    "max_running_requests": 4,
+    "scheduler_policy": "decode_first",
+    "max_prefill_batch_tokens": 128,
+    "max_decode_batch_requests": 2,
+    "chunked_prefill_size": 0,
+    "prefill_max_requests": 2
+  },
+  "pd": {
+    "prefill_workers": 2,
+    "decode_workers": 2,
+    "prefill_max_batch_tokens": 128,
+    "prefill_max_requests": 2,
+    "decode_max_batch_requests": 2,
+    "transfer": {
+      "enabled": true,
+      "latency_ns": 5000,
+      "bandwidth_bytes_per_s": 40000000000.0,
+      "efficiency": 0.8,
+      "bytes_per_prompt_token": 1024,
+      "override_bytes_per_prompt_token": true
+    }
+  },
+  "outputs": {
+    "event_trace_output": "../outputs/moe_pd_events.csv"
+  },
+  "cost_model": {},
+  "requests": [
+    {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 48, "output_tokens": 8},
+    {"request_id": 1, "arrival_time_ns": 1000, "prompt_tokens": 48, "output_tokens": 8}
+  ]
+}

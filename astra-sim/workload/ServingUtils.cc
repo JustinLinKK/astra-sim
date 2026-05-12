@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <numeric>
+#include <vector>
 
 namespace AstraSim {
 
@@ -63,6 +64,50 @@ ServingMetricStats summarize_serving_metric(const std::vector<double>& values) {
     std::sort(sorted_values.begin(), sorted_values.end());
     stats.max = sorted_values.back();
     return stats;
+}
+
+ServingGoodputResult evaluate_serving_goodput(const ServingSloConfig& slo,
+                                              Tick ttft_ns,
+                                              double tpot_ns,
+                                              Tick e2e_ns) {
+    ServingGoodputResult result;
+    result.slo_configured = slo.enabled;
+    if (!slo.enabled) {
+        return result;
+    }
+
+    std::vector<std::string> fail_reasons;
+    if (slo.ttft_ns > 0) {
+        result.ttft_pass = ttft_ns <= slo.ttft_ns;
+        if (!result.ttft_pass) {
+            fail_reasons.push_back("ttft");
+        }
+    }
+    if (slo.tpot_ns > 0.0) {
+        result.tpot_pass = tpot_ns <= slo.tpot_ns;
+        if (!result.tpot_pass) {
+            fail_reasons.push_back("tpot");
+        }
+    }
+    if (slo.e2e_ns.has_value()) {
+        result.e2e_pass = e2e_ns <= *slo.e2e_ns;
+        if (!result.e2e_pass) {
+            fail_reasons.push_back("e2e");
+        }
+    }
+
+    result.request_good = fail_reasons.empty();
+    if (fail_reasons.empty()) {
+        return result;
+    }
+
+    for (size_t index = 0; index < fail_reasons.size(); ++index) {
+        if (index > 0) {
+            result.fail_reason += "+";
+        }
+        result.fail_reason += fail_reasons[index];
+    }
+    return result;
 }
 
 }  // namespace AstraSim

@@ -1,0 +1,12 @@
+{
+  "architecture": "colocated",
+  "binary": "/home/justin/astra-sim/tests/rt_serving_scale/../../build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
+  "config_path": "/home/justin/astra-sim/tests/rt_serving_scale/inputs/dense_colocated_requests.json",
+  "git_commit": "bacc3e4",
+  "runtime_seed": 11,
+  "seed": 11,
+  "simulator_version": "serving-week2-v1",
+  "timestamp_utc": "2026-05-12T00:58:37Z",
+  "topology_deployment": "colocated",
+  "trace_seed": null
+}

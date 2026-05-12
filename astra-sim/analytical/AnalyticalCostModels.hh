@@ -30,6 +30,16 @@ double ring_all_reduce_time_seconds(uint64_t bytes,
                                     double bandwidth_bytes_per_s,
                                     uint64_t latency_ns,
                                     double efficiency);
+double ring_all_gather_time_seconds(uint64_t bytes,
+                                    uint32_t participants,
+                                    double bandwidth_bytes_per_s,
+                                    uint64_t latency_ns,
+                                    double efficiency);
+double all_to_all_time_seconds(uint64_t bytes,
+                               uint32_t participants,
+                               double bandwidth_bytes_per_s,
+                               uint64_t latency_ns,
+                               double efficiency);
 double point_to_point_time_seconds(uint64_t bytes,
                                    double bandwidth_bytes_per_s,
                                    uint64_t latency_ns,

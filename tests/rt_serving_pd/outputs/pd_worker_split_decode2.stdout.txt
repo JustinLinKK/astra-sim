@@ -1,0 +1,14 @@
+[2026-05-11 17:58:32.367] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:32.367] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:32.367] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:32.367] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:32.367] [serving] [info] REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=1 output_tokens=4 service_start_ns=0 prefill_end_time_ns=1000 first_token_time_ns=1500 finish_time_ns=4500 queue_delay_ns=0 prefill_duration_ns=1000 decode_duration_ns=3500 ttft_ns=1500 tpot_ns=875.00 e2e_ns=4500
+[2026-05-11 17:58:32.367] [serving] [info] REQUEST request_id=1 arrival_time_ns=0 prompt_tokens=1 output_tokens=4 service_start_ns=0 prefill_end_time_ns=1000 first_token_time_ns=1500 finish_time_ns=4500 queue_delay_ns=0 prefill_duration_ns=1000 decode_duration_ns=3500 ttft_ns=1500 tpot_ns=875.00 e2e_ns=4500
+[2026-05-11 17:58:32.367] [serving] [info] REQUEST request_id=2 arrival_time_ns=0 prompt_tokens=1 output_tokens=4 service_start_ns=0 prefill_end_time_ns=1000 first_token_time_ns=2000 finish_time_ns=5000 queue_delay_ns=0 prefill_duration_ns=1000 decode_duration_ns=3500 ttft_ns=2000 tpot_ns=875.00 e2e_ns=5000
+[2026-05-11 17:58:32.367] [serving] [info] REQUEST request_id=3 arrival_time_ns=0 prompt_tokens=1 output_tokens=4 service_start_ns=0 prefill_end_time_ns=1000 first_token_time_ns=2000 finish_time_ns=5000 queue_delay_ns=0 prefill_duration_ns=1000 decode_duration_ns=3500 ttft_ns=2000 tpot_ns=875.00 e2e_ns=5000
+[2026-05-11 17:58:32.367] [serving] [info] SUMMARY metric=QUEUE_DELAY count=4 avg_ns=0.00 p50_ns=0.00 p90_ns=0.00 p99_ns=0.00 max_ns=0.00
+[2026-05-11 17:58:32.367] [serving] [info] SUMMARY metric=TTFT count=4 avg_ns=1750.00 p50_ns=1500.00 p90_ns=2000.00 p99_ns=2000.00 max_ns=2000.00
+[2026-05-11 17:58:32.367] [serving] [info] SUMMARY metric=TPOT count=4 avg_ns=875.00 p50_ns=875.00 p90_ns=875.00 p99_ns=875.00 max_ns=875.00
+[2026-05-11 17:58:32.367] [serving] [info] SUMMARY metric=E2E count=4 avg_ns=4750.00 p50_ns=4500.00 p90_ns=5000.00 p99_ns=5000.00 max_ns=5000.00
+[2026-05-11 17:58:32.367] [serving] [info] THROUGHPUT total_requests=4 total_output_tokens=16 makespan_ns=5000 request_throughput_reqs_per_sec=800000.000000 output_token_throughput_tokens_per_sec=3200000.000000
+[2026-05-11 17:58:32.367] [system] [warning] Exiting

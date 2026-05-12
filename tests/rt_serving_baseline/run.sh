@@ -67,9 +67,12 @@ summary = json.load(open(summary_path))
 metadata = json.load(open(metadata_path))
 
 assert summary["num_requests"] == 2
+assert summary["architecture"] == "serial_baseline"
 assert summary["queue_delay_ns"]["mean"] > 0
 assert summary["ttft_ns"]["p99"] >= summary["ttft_ns"]["p50"]
+assert summary["goodput"]["good_requests"] == 2
 assert metadata["seed"] is None
+assert metadata["architecture"] == "serial_baseline"
 assert metadata["simulator_version"] == "serving-week2-v1"
 PY
 
@@ -92,6 +95,7 @@ import sys
 metadata = json.load(open(sys.argv[1]))
 assert metadata["seed"] is None
 assert metadata["git_commit"]
+assert metadata["architecture"] == "serial_baseline"
 PY
 
 echo "[$0] Running generated low-load trace twice for determinism..."
@@ -107,6 +111,7 @@ import sys
 summary = json.load(open(sys.argv[1]))
 metadata = json.load(open(sys.argv[2]))
 assert summary["num_requests"] == 64
+assert summary["architecture"] == "serial_baseline"
 assert metadata["seed"] == 7
 assert metadata["config_path"].endswith("generated_low_load.json")
 PY

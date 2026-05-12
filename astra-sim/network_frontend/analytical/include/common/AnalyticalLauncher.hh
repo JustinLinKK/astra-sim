@@ -75,7 +75,8 @@ int run_analytical_backend(int argc,
 
     if (analytical_config.has_value() &&
         analytical_config->mode !=
-            AstraSim::AnalyticalMode::serving_disagg_colocated) {
+            AstraSim::AnalyticalMode::serving_disagg_colocated &&
+        analytical_config->mode != AstraSim::AnalyticalMode::serving_scale) {
         AstraSim::LoggerFactory::init(cli_config.logging_configuration,
                                       cli_config.logging_folder);
         auto model = AstraSim::AnalyticalModelFactory::create(
@@ -98,18 +99,34 @@ int run_analytical_backend(int argc,
     auto rendezvous_protocol = cli_config.rendezvous_protocol;
 
     if (analytical_config.has_value()) {
-        const auto& serving = *analytical_config->serving_disagg_colocated;
-        workload_configuration = serving.workload_configuration;
-        comm_group_configuration = serving.comm_group_configuration;
-        system_configuration = serving.system_configuration;
-        remote_memory_configuration = serving.remote_memory_configuration;
-        network_configuration = serving.network_configuration;
-        logging_configuration = serving.logging_configuration;
-        logging_folder = serving.logging_folder;
-        num_queues_per_dim = serving.num_queues_per_dim;
-        injection_scale = serving.injection_scale;
-        comm_scale = serving.comm_scale;
-        rendezvous_protocol = serving.rendezvous_protocol;
+        if (analytical_config->mode ==
+            AstraSim::AnalyticalMode::serving_disagg_colocated) {
+            const auto& serving = *analytical_config->serving_disagg_colocated;
+            workload_configuration = serving.workload_configuration;
+            comm_group_configuration = serving.comm_group_configuration;
+            system_configuration = serving.system_configuration;
+            remote_memory_configuration = serving.remote_memory_configuration;
+            network_configuration = serving.network_configuration;
+            logging_configuration = serving.logging_configuration;
+            logging_folder = serving.logging_folder;
+            num_queues_per_dim = serving.num_queues_per_dim;
+            injection_scale = serving.injection_scale;
+            comm_scale = serving.comm_scale;
+            rendezvous_protocol = serving.rendezvous_protocol;
+        } else {
+            const auto& serving = *analytical_config->serving_scale;
+            workload_configuration = serving.workload_configuration;
+            comm_group_configuration = serving.comm_group_configuration;
+            system_configuration = serving.system_configuration;
+            remote_memory_configuration = serving.remote_memory_configuration;
+            network_configuration = serving.network_configuration;
+            logging_configuration = serving.logging_configuration;
+            logging_folder = serving.logging_folder;
+            num_queues_per_dim = serving.num_queues_per_dim;
+            injection_scale = serving.injection_scale;
+            comm_scale = serving.comm_scale;
+            rendezvous_protocol = serving.rendezvous_protocol;
+        }
     }
 
     AstraSim::LoggerFactory::init(logging_configuration, logging_folder);

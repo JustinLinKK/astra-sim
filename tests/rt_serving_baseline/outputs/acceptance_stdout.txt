@@ -1,12 +1,12 @@
-[2026-05-03 17:27:50.888] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
-[2026-05-03 17:27:50.888] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
-[2026-05-03 17:27:50.888] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
-[2026-05-03 17:27:50.888] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
-[2026-05-03 17:27:50.888] [serving] [info] REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=100 output_tokens=10 service_start_ns=0 prefill_end_time_ns=100000000 first_token_time_ns=110000000 finish_time_ns=200000000 queue_delay_ns=0 prefill_duration_ns=100000000 decode_duration_ns=100000000 ttft_ns=110000000 tpot_ns=10000000.00 e2e_ns=200000000
-[2026-05-03 17:27:50.888] [serving] [info] REQUEST request_id=1 arrival_time_ns=100000000 prompt_tokens=100 output_tokens=10 service_start_ns=200000000 prefill_end_time_ns=300000000 first_token_time_ns=310000000 finish_time_ns=400000000 queue_delay_ns=100000000 prefill_duration_ns=100000000 decode_duration_ns=100000000 ttft_ns=210000000 tpot_ns=10000000.00 e2e_ns=300000000
-[2026-05-03 17:27:50.888] [serving] [info] SUMMARY metric=QUEUE_DELAY count=2 avg_ns=50000000.00 p50_ns=0.00 p90_ns=100000000.00 p99_ns=100000000.00 max_ns=100000000.00
-[2026-05-03 17:27:50.888] [serving] [info] SUMMARY metric=TTFT count=2 avg_ns=160000000.00 p50_ns=110000000.00 p90_ns=210000000.00 p99_ns=210000000.00 max_ns=210000000.00
-[2026-05-03 17:27:50.888] [serving] [info] SUMMARY metric=TPOT count=2 avg_ns=10000000.00 p50_ns=10000000.00 p90_ns=10000000.00 p99_ns=10000000.00 max_ns=10000000.00
-[2026-05-03 17:27:50.888] [serving] [info] SUMMARY metric=E2E count=2 avg_ns=250000000.00 p50_ns=200000000.00 p90_ns=300000000.00 p99_ns=300000000.00 max_ns=300000000.00
-[2026-05-03 17:27:50.888] [serving] [info] THROUGHPUT total_requests=2 total_output_tokens=20 makespan_ns=400000000 request_throughput_reqs_per_sec=5.000000 output_token_throughput_tokens_per_sec=50.000000
-[2026-05-03 17:27:50.888] [system] [warning] Exiting
+[2026-05-11 17:58:24.234] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:24.234] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:24.234] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:24.234] [system::topology::RingTopology] [info] ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+[2026-05-11 17:58:24.235] [serving] [info] REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=100 output_tokens=10 service_start_ns=0 prefill_end_time_ns=100000000 first_token_time_ns=110000000 finish_time_ns=200000000 queue_delay_ns=0 prefill_duration_ns=100000000 decode_duration_ns=100000000 ttft_ns=110000000 tpot_ns=10000000.00 e2e_ns=200000000
+[2026-05-11 17:58:24.235] [serving] [info] REQUEST request_id=1 arrival_time_ns=100000000 prompt_tokens=100 output_tokens=10 service_start_ns=200000000 prefill_end_time_ns=300000000 first_token_time_ns=310000000 finish_time_ns=400000000 queue_delay_ns=100000000 prefill_duration_ns=100000000 decode_duration_ns=100000000 ttft_ns=210000000 tpot_ns=10000000.00 e2e_ns=300000000
+[2026-05-11 17:58:24.235] [serving] [info] SUMMARY metric=QUEUE_DELAY count=2 avg_ns=50000000.00 p50_ns=0.00 p90_ns=100000000.00 p99_ns=100000000.00 max_ns=100000000.00
+[2026-05-11 17:58:24.235] [serving] [info] SUMMARY metric=TTFT count=2 avg_ns=160000000.00 p50_ns=110000000.00 p90_ns=210000000.00 p99_ns=210000000.00 max_ns=210000000.00
+[2026-05-11 17:58:24.235] [serving] [info] SUMMARY metric=TPOT count=2 avg_ns=10000000.00 p50_ns=10000000.00 p90_ns=10000000.00 p99_ns=10000000.00 max_ns=10000000.00
+[2026-05-11 17:58:24.235] [serving] [info] SUMMARY metric=E2E count=2 avg_ns=250000000.00 p50_ns=200000000.00 p90_ns=300000000.00 p99_ns=300000000.00 max_ns=300000000.00
+[2026-05-11 17:58:24.235] [serving] [info] THROUGHPUT total_requests=2 total_output_tokens=20 makespan_ns=400000000 request_throughput_reqs_per_sec=5.000000 output_token_throughput_tokens_per_sec=50.000000
+[2026-05-11 17:58:24.235] [system] [warning] Exiting

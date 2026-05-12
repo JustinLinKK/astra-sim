@@ -1,0 +1,7 @@
+time_ns,event,batch_id,worker_id,stage,request_ids,total_tokens,duration_ns,include_base_latency
+0,batch_completed,1,0,colocated_prefill,0,4,180,true
+0,batch_completed,2,0,colocated_prefill,1,8,260,true
+0,batch_completed,3,0,colocated_prefill,2,16,420,true
+0,batch_completed,4,0,colocated_decode,0,1,205,true
+0,batch_completed,5,0,colocated_decode,1,4,220,true
+0,batch_completed,6,0,colocated_decode,2,8,240,true

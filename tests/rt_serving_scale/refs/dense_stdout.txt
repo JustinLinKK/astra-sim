@@ -1,0 +1,12 @@
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+ring of node 0, id: 0 dimension: local total nodes in ring: 4 index in ring: 0 offset: 1 total nodes in ring: 4
+REQUEST request_id=0 arrival_time_ns=0 prompt_tokens=64 output_tokens=8 service_start_ns=0 prefill_end_time_ns=3514573 first_token_time_ns=4164069 finish_time_ns=8710567 queue_delay_ns=0 prefill_duration_ns=3514573 decode_duration_ns=5195994 ttft_ns=4164069 tpot_ns=649499.25 e2e_ns=8710567
+REQUEST request_id=1 arrival_time_ns=0 prompt_tokens=64 output_tokens=8 service_start_ns=0 prefill_end_time_ns=3514573 first_token_time_ns=4164069 finish_time_ns=8710567 queue_delay_ns=0 prefill_duration_ns=3514573 decode_duration_ns=5195994 ttft_ns=4164069 tpot_ns=649499.25 e2e_ns=8710567
+SUMMARY metric=QUEUE_DELAY count=2 avg_ns=0.00 p50_ns=0.00 p90_ns=0.00 p99_ns=0.00 max_ns=0.00
+SUMMARY metric=TTFT count=2 avg_ns=4164069.00 p50_ns=4164069.00 p90_ns=4164069.00 p99_ns=4164069.00 max_ns=4164069.00
+SUMMARY metric=TPOT count=2 avg_ns=649499.25 p50_ns=649499.25 p90_ns=649499.25 p99_ns=649499.25 max_ns=649499.25
+SUMMARY metric=E2E count=2 avg_ns=8710567.00 p50_ns=8710567.00 p90_ns=8710567.00 p99_ns=8710567.00 max_ns=8710567.00
+THROUGHPUT total_requests=2 total_output_tokens=16 makespan_ns=8710567 request_throughput_reqs_per_sec=229.606178 output_token_throughput_tokens_per_sec=1836.849427
+Exiting

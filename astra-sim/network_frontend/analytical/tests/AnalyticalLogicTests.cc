@@ -300,6 +300,92 @@ rendezvous_protocol: false
         serving_config.serving_disagg_colocated->request_configuration ==
             std::filesystem::absolute("requests.json").string(),
         "serving request configuration should resolve relative paths");
+
+    const auto serving_scale_config = AnalyticalConfig::load_from_yaml_text(
+        R"yaml(
+mode: serving_scale
+dense_model:
+  preset: 70b_dense
+cluster:
+  workspace_reserve_bytes: 2147483648
+  devices:
+    - name: gpu
+      type: GPU
+      count: 8
+      memory_capacity_bytes: 85899345920
+      peak_flops: 9.0e14
+      memory_bandwidth_bytes_per_s: 3.0e12
+      active_power_w: 700
+      idle_power_w: 120
+interconnects:
+  - name: gpu-fabric
+    src_type: GPU
+    dst_type: GPU
+    bandwidth_bytes_per_s: 9.0e11
+    latency_ns: 800
+    full_duplex: true
+    efficiency: 0.85
+topology:
+  deployment: pd_disaggregated
+  colocated_layout:
+    name: colocated
+    tp_degree: 1
+    pp_degree: 1
+    ep_degree: 1
+    dp_attention_degree: 1
+    dp_replica_count: 2
+  prefill_layout:
+    name: prefill
+    tp_degree: 2
+    pp_degree: 1
+    ep_degree: 1
+    dp_attention_degree: 1
+    dp_replica_count: 2
+  decode_layout:
+    name: decode
+    tp_degree: 4
+    pp_degree: 2
+    ep_degree: 8
+    dp_attention_degree: 4
+    dp_replica_count: 2
+request_configuration: requests.json
+request_metrics_output: metrics.csv
+request_summary_output: summary.json
+request_run_metadata_output: metadata.json
+workload_configuration: empty
+comm_group_configuration: empty
+system_configuration: system.json
+remote_memory_configuration: memory.json
+network_configuration: network.yml
+logging_configuration: empty
+logging_folder: log
+num_queues_per_dim: 1
+compute_scale: 1.0
+comm_scale: 1.0
+injection_scale: 1.0
+rendezvous_protocol: false
+)yaml",
+        "<serving-scale>");
+    expect_true(serving_scale_config.mode == AnalyticalMode::serving_scale,
+                "serving_scale mode should parse");
+    expect_true(serving_scale_config.serving_scale.has_value(),
+                "serving_scale payload should be present");
+    expect_true(
+        serving_scale_config.serving_scale->dense_model.has_value() &&
+            !serving_scale_config.serving_scale->moe_model.has_value(),
+        "serving_scale should preserve dense-vs-moe selection");
+    expect_true(serving_scale_config.serving_scale->topology.decode_layout
+                    .has_value() &&
+                    serving_scale_config.serving_scale->topology.decode_layout
+                            ->tp_degree == 4,
+                "serving_scale decode layout should parse");
+    expect_true(serving_scale_config.serving_scale->topology.decode_layout
+                    ->dp_attention_degree == 4,
+                "serving_scale DP-attention degree should parse");
+    expect_true(
+        serving_scale_config.serving_scale->request_configuration ==
+            std::filesystem::absolute("requests.json").string(),
+        "serving_scale request configuration should resolve relative paths");
 }
 
 void test_tp_all_reduce_behavior() {

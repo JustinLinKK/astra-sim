@@ -1,0 +1,119 @@
+{
+  "architecture": "colocated",
+  "decode_breakdown": {
+    "attention_compute_ns": 191686,
+    "base_latency_ns": 0,
+    "dp_attention_sync_ns": 0,
+    "ep_dispatch_ns": 0,
+    "ffn_or_expert_compute_ns": 501072,
+    "pd_kv_transfer_ns": 0,
+    "pp_activation_ns": 3472990,
+    "total_ns": 10391988,
+    "tp_collective_ns": 6226240
+  },
+  "decode_queue_delay_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "e2e_ns": {
+    "count": 2,
+    "max": 8710567.0,
+    "mean": 8710567.0,
+    "p50": 8710567.0,
+    "p90": 8710567.0,
+    "p99": 8710567.0
+  },
+  "goodput": {
+    "bad_requests": 0,
+    "failure_reasons": {
+      "e2e": 0,
+      "tpot": 0,
+      "ttft": 0
+    },
+    "good_requests": 2,
+    "goodput_reqs_per_sec": 229.6061783348891,
+    "slo_attainment_fraction": 1.0
+  },
+  "makespan_ns": 8710567,
+  "num_requests": 2,
+  "output_token_throughput_tokens_per_sec": 1836.8494266791129,
+  "prefill_breakdown": {
+    "attention_compute_ns": 1533064,
+    "base_latency_ns": 0,
+    "dp_attention_sync_ns": 0,
+    "ep_dispatch_ns": 0,
+    "ffn_or_expert_compute_ns": 4008636,
+    "pd_kv_transfer_ns": 0,
+    "pp_activation_ns": 61516,
+    "total_ns": 7029146,
+    "tp_collective_ns": 1425930
+  },
+  "prefill_queue_delay_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "queue_delay_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "request_throughput_reqs_per_sec": 229.6061783348891,
+  "simulation_end_time_ns": 8710567,
+  "simulation_start_time_ns": 0,
+  "slo": {
+    "configured": false,
+    "e2e_ns": null,
+    "tpot_ns": 0.0,
+    "ttft_ns": 0
+  },
+  "total_kv_resident_bytes": 41943040,
+  "total_kv_transfer_bytes": 0,
+  "total_output_tokens": 16,
+  "total_prompt_tokens": 128,
+  "tpot_ns": {
+    "count": 2,
+    "max": 649499.25,
+    "mean": 649499.25,
+    "p50": 649499.25,
+    "p90": 649499.25,
+    "p99": 649499.25
+  },
+  "transfer_breakdown": {
+    "attention_compute_ns": 0,
+    "base_latency_ns": 0,
+    "dp_attention_sync_ns": 0,
+    "ep_dispatch_ns": 0,
+    "ffn_or_expert_compute_ns": 0,
+    "pd_kv_transfer_ns": 0,
+    "pp_activation_ns": 0,
+    "total_ns": 0,
+    "tp_collective_ns": 0
+  },
+  "transfer_duration_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "ttft_ns": {
+    "count": 2,
+    "max": 4164069.0,
+    "mean": 4164069.0,
+    "p50": 4164069.0,
+    "p90": 4164069.0,
+    "p99": 4164069.0
+  }
+}

@@ -1,0 +1,47 @@
+mode: serving_scale
+dense_model:
+  preset: 70b_dense
+cluster:
+  workspace_reserve_bytes: 2147483648
+  devices:
+    - name: gpu
+      type: GPU
+      count: 8
+      memory_capacity_bytes: 85899345920
+      peak_flops: 9.0e14
+      memory_bandwidth_bytes_per_s: 3.0e12
+      active_power_w: 700
+      idle_power_w: 120
+interconnects:
+  - name: gpu-fabric
+    src_type: GPU
+    dst_type: GPU
+    bandwidth_bytes_per_s: 9.0e11
+    latency_ns: 800
+    full_duplex: true
+    efficiency: 0.85
+topology:
+  deployment: colocated
+  colocated_layout:
+    name: dense-colocated
+    tp_degree: 4
+    pp_degree: 2
+    ep_degree: 1
+    dp_attention_degree: 1
+    dp_replica_count: 2
+request_configuration: ./dense_colocated_requests.json
+request_metrics_output: ../outputs/dense_metrics.csv
+request_summary_output: ../outputs/dense_summary.json
+request_run_metadata_output: ../outputs/dense_metadata.json
+workload_configuration: empty
+comm_group_configuration: empty
+system_configuration: ../../rt_serving_baseline/inputs/system_cfg.json
+remote_memory_configuration: ../../rt_serving_baseline/inputs/remote_memory_cfg.json
+network_configuration: ../../rt_serving_baseline/inputs/network_cfg.yml
+logging_configuration: empty
+logging_folder: ../outputs/log
+num_queues_per_dim: 1
+compute_scale: 1.0
+comm_scale: 1.0
+injection_scale: 1.0
+rendezvous_protocol: false

@@ -1,8 +1,11 @@
 {
+  "architecture": "serial_baseline",
   "binary": "/home/justin/astra-sim/tests/rt_serving_baseline/../../build/astra_analytical/build/bin/AstraSim_Analytical_Congestion_Aware",
   "config_path": "/home/justin/astra-sim/tests/rt_serving_baseline/inputs/generated_low_load.json",
-  "git_commit": "319f682",
+  "git_commit": "bacc3e4",
+  "runtime_seed": null,
   "seed": 7,
   "simulator_version": "serving-week2-v1",
-  "timestamp_utc": "2026-05-04T00:27:50Z"
+  "timestamp_utc": "2026-05-12T00:58:24Z",
+  "trace_seed": 7
 }
