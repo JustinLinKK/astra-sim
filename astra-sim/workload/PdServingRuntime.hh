@@ -30,11 +30,15 @@ class PdServingRuntime : public ServingRuntimeBase {
     void complete_prefill_batch(const ServingBatch& batch);
     void complete_decode_batch(const ServingBatch& batch);
     void complete_transfer(uint64_t batch_id);
+    size_t running_request_count(size_t replica_id) const;
+    size_t inflight_transfer_count() const;
+    void annotate_batch_snapshot(ServingBatch* batch) const;
 
     std::vector<std::deque<size_t>> prefill_queues;
     std::deque<size_t> transfer_queue;
     std::vector<std::deque<size_t>> decode_queues;
     std::unordered_map<uint64_t, ServingBatch> active_batches;
+    bool chunking_enabled;
 };
 
 }  // namespace AstraSim

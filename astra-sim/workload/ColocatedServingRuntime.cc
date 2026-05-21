@@ -38,6 +38,52 @@ size_t ColocatedServingRuntime::max_running_requests_per_replica() const {
             static_cast<long double>(std::max<size_t>(1, topology.replica_count()))))));
 }
 
+size_t ColocatedServingRuntime::running_request_count(size_t replica_id) const {
+    size_t count = 0;
+    for (const auto request_index : running_requests_by_replica.at(replica_id)) {
+        if (!requests[request_index].finished_recorded) {
+            count++;
+        }
+    }
+    return count;
+}
+
+size_t ColocatedServingRuntime::prefill_queue_depth(size_t replica_id) const {
+    size_t count = 0;
+    for (const auto request_index : running_requests_by_replica.at(replica_id)) {
+        const auto& request = requests[request_index];
+        if (!request.finished_recorded && !request.in_active_batch &&
+            request.remaining_prefill_tokens > 0) {
+            count++;
+        }
+    }
+    return count;
+}
+
+size_t ColocatedServingRuntime::decode_queue_depth(size_t replica_id) const {
+    size_t count = 0;
+    for (const auto request_index : running_requests_by_replica.at(replica_id)) {
+        const auto& request = requests[request_index];
+        if (!request.finished_recorded && !request.in_active_batch &&
+            request.remaining_prefill_tokens == 0 &&
+            request.completed_output_tokens < request.spec.output_tokens) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void ColocatedServingRuntime::annotate_batch_snapshot(ServingBatch* batch) const {
+    batch->running_request_count_at_schedule =
+        running_request_count(batch->replica_id);
+    batch->admission_queue_depth_at_schedule =
+        waiting_requests_by_replica.at(batch->replica_id).size();
+    batch->prefill_queue_depth_at_schedule =
+        prefill_queue_depth(batch->replica_id);
+    batch->decode_queue_depth_at_schedule =
+        decode_queue_depth(batch->replica_id);
+}
+
 void ColocatedServingRuntime::fire() {
     for (const auto request_index : arrival_order) {
         if (requests[request_index].spec.arrival_time_ns == 0) {
@@ -209,6 +255,7 @@ std::optional<ServingBatch> ColocatedServingRuntime::build_next_batch(
 }
 
 void ColocatedServingRuntime::schedule_batch(ServingBatch batch) {
+    annotate_batch_snapshot(&batch);
     topology.mark_group_busy(batch.worker_group_id, batch.batch_id);
     for (const auto& item : batch.items) {
         auto& request = requests[item.request_index];
@@ -246,6 +293,9 @@ void ColocatedServingRuntime::complete_prefill_batch(const ServingBatch& batch) 
         request.in_active_batch = false;
         add_prefill_runtime(item.request_index, batch.duration_ns);
         add_prefill_breakdown(item.request_index, batch.breakdown);
+        request.prefill_chunk_count++;
+        request.max_prefill_chunk_tokens =
+            std::max<uint64_t>(request.max_prefill_chunk_tokens, item.tokens);
         request.completed_prefill_tokens += item.tokens;
         request.remaining_prefill_tokens -= item.tokens;
         if (request.remaining_prefill_tokens == 0) {
@@ -257,6 +307,7 @@ void ColocatedServingRuntime::complete_prefill_batch(const ServingBatch& batch) 
             mark_decode_queue_enter(item.request_index, now);
         } else {
             request.phase = RequestPhase::PrefillQueued;
+            mark_prefill_queue_enter(item.request_index, now);
         }
     }
 }
@@ -278,6 +329,7 @@ void ColocatedServingRuntime::complete_decode_batch(const ServingBatch& batch) {
             finished_requests.push_back(item.request_index);
         } else {
             request.phase = RequestPhase::DecodeQueued;
+            mark_decode_queue_enter(item.request_index, now);
         }
     }
 
@@ -307,6 +359,7 @@ void ColocatedServingRuntime::complete_batch(uint64_t batch_id) {
     active_batches.erase(batch_iter);
     topology.mark_group_idle(batch.worker_group_id);
     record_stage_schedule(batch, "batch_completed");
+    record_stage_metrics(batch);
 
     switch (batch.stage) {
     case ServingStageType::ColocatedPrefill:

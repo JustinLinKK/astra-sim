@@ -193,8 +193,14 @@ void write_serving_metrics_csv(const std::string& path,
                   "decode_start_ns,first_token_time_ns,finish_time_ns,"
                   "queue_delay_ns,prefill_queue_delay_ns,decode_queue_delay_ns,"
                   "transfer_queue_delay_ns,prefill_duration_ns,"
-                  "transfer_duration_ns,decode_duration_ns,ttft_ns,tpot_ns,"
-                  "e2e_ns,goodput_slo_configured,ttft_slo_pass,tpot_slo_pass,"
+                  "transfer_duration_ns,decode_duration_ns,prefill_service_ns,"
+                  "transfer_service_ns,decode_service_ns,prefill_stage_wait_ns,"
+                  "transfer_stage_wait_ns,decode_stage_wait_ns,"
+                  "total_prefill_queue_wait_ns,total_transfer_queue_wait_ns,"
+                  "total_decode_queue_wait_ns,prefill_chunk_count,"
+                  "transfer_handoff_count,max_prefill_chunk_tokens,"
+                  "max_transfer_chunk_tokens,ttft_ns,tpot_ns,e2e_ns,"
+                  "goodput_slo_configured,ttft_slo_pass,tpot_slo_pass,"
                   "e2e_slo_pass,request_good,goodput_fail_reason\n";
     } else {
         output << "request_id,arrival_time_ns,prompt_tokens,output_tokens,"
@@ -205,7 +211,13 @@ void write_serving_metrics_csv(const std::string& path,
                   "decode_start_ns,first_token_time_ns,finish_time_ns,"
                   "queue_delay_ns,prefill_queue_delay_ns,decode_queue_delay_ns,"
                   "transfer_queue_delay_ns,prefill_duration_ns,"
-                  "transfer_duration_ns,decode_duration_ns,ttft_ns,tpot_ns,kv_transfer_bytes,"
+                  "transfer_duration_ns,decode_duration_ns,prefill_service_ns,"
+                  "transfer_service_ns,decode_service_ns,prefill_stage_wait_ns,"
+                  "transfer_stage_wait_ns,decode_stage_wait_ns,"
+                  "total_prefill_queue_wait_ns,total_transfer_queue_wait_ns,"
+                  "total_decode_queue_wait_ns,prefill_chunk_count,"
+                  "transfer_handoff_count,max_prefill_chunk_tokens,"
+                  "max_transfer_chunk_tokens,ttft_ns,tpot_ns,kv_transfer_bytes,"
                   "kv_resident_bytes,"
                   "prefill_base_latency_ns,prefill_attention_compute_ns,prefill_ffn_or_expert_compute_ns,"
                   "prefill_tp_collective_ns,prefill_pp_activation_ns,prefill_ep_dispatch_ns,"
@@ -242,7 +254,21 @@ void write_serving_metrics_csv(const std::string& path,
                    << metric.transfer_queue_delay_ns << ","
                    << metric.prefill_duration_ns << ","
                    << metric.transfer_duration_ns << ","
-                   << metric.decode_duration_ns << "," << metric.ttft_ns
+                   << metric.decode_duration_ns << ","
+                   << metric.prefill_service_ns << ","
+                   << metric.transfer_service_ns << ","
+                   << metric.decode_service_ns << ","
+                   << metric.prefill_stage_wait_ns << ","
+                   << metric.transfer_stage_wait_ns << ","
+                   << metric.decode_stage_wait_ns << ","
+                   << metric.total_prefill_queue_wait_ns << ","
+                   << metric.total_transfer_queue_wait_ns << ","
+                   << metric.total_decode_queue_wait_ns << ","
+                   << metric.prefill_chunk_count << ","
+                   << metric.transfer_handoff_count << ","
+                   << metric.max_prefill_chunk_tokens << ","
+                   << metric.max_transfer_chunk_tokens << ","
+                   << metric.ttft_ns
                    << "," << metric.tpot_ns << "," << metric.e2e_ns << ","
                    << (metric.goodput.slo_configured ? "true" : "false")
                    << "," << (metric.goodput.ttft_pass ? "true" : "false")
@@ -273,7 +299,21 @@ void write_serving_metrics_csv(const std::string& path,
                    << metric.transfer_queue_delay_ns << ","
                    << metric.prefill_duration_ns << ","
                    << metric.transfer_duration_ns << ","
-                   << metric.decode_duration_ns << "," << metric.ttft_ns
+                   << metric.decode_duration_ns << ","
+                   << metric.prefill_service_ns << ","
+                   << metric.transfer_service_ns << ","
+                   << metric.decode_service_ns << ","
+                   << metric.prefill_stage_wait_ns << ","
+                   << metric.transfer_stage_wait_ns << ","
+                   << metric.decode_stage_wait_ns << ","
+                   << metric.total_prefill_queue_wait_ns << ","
+                   << metric.total_transfer_queue_wait_ns << ","
+                   << metric.total_decode_queue_wait_ns << ","
+                   << metric.prefill_chunk_count << ","
+                   << metric.transfer_handoff_count << ","
+                   << metric.max_prefill_chunk_tokens << ","
+                   << metric.max_transfer_chunk_tokens << ","
+                   << metric.ttft_ns
                    << "," << metric.tpot_ns << ","
                    << metric.kv_transfer_bytes << ","
                    << metric.kv_resident_bytes << ","
@@ -332,6 +372,17 @@ void write_serving_summary_json(const std::string& path,
     std::vector<double> ttft_values;
     std::vector<double> tpot_values;
     std::vector<double> e2e_values;
+    std::vector<double> prefill_service_values;
+    std::vector<double> transfer_service_values;
+    std::vector<double> decode_service_values;
+    std::vector<double> prefill_stage_wait_values;
+    std::vector<double> transfer_stage_wait_values;
+    std::vector<double> decode_stage_wait_values;
+    std::vector<double> total_prefill_queue_wait_values;
+    std::vector<double> total_transfer_queue_wait_values;
+    std::vector<double> total_decode_queue_wait_values;
+    std::vector<double> prefill_chunk_count_values;
+    std::vector<double> transfer_handoff_count_values;
     collect_metric_values(metrics, &queue_delay_values,
                           &prefill_queue_delay_values,
                           &decode_queue_delay_values, &transfer_duration_values,
@@ -343,6 +394,8 @@ void write_serving_summary_json(const std::string& path,
     uint64_t total_output_tokens = 0;
     uint64_t total_kv_transfer_bytes = 0;
     uint64_t total_kv_resident_bytes = 0;
+    uint64_t total_prefill_chunks = 0;
+    uint64_t total_transfer_handoffs = 0;
     uint64_t good_requests = 0;
     uint64_t bad_requests = 0;
     uint64_t ttft_failures = 0;
@@ -364,6 +417,30 @@ void write_serving_summary_json(const std::string& path,
         total_output_tokens += metric.output_tokens;
         total_kv_transfer_bytes += metric.kv_transfer_bytes;
         total_kv_resident_bytes += metric.kv_resident_bytes;
+        total_prefill_chunks += metric.prefill_chunk_count;
+        total_transfer_handoffs += metric.transfer_handoff_count;
+        prefill_service_values.push_back(
+            static_cast<double>(metric.prefill_service_ns));
+        transfer_service_values.push_back(
+            static_cast<double>(metric.transfer_service_ns));
+        decode_service_values.push_back(
+            static_cast<double>(metric.decode_service_ns));
+        prefill_stage_wait_values.push_back(
+            static_cast<double>(metric.prefill_stage_wait_ns));
+        transfer_stage_wait_values.push_back(
+            static_cast<double>(metric.transfer_stage_wait_ns));
+        decode_stage_wait_values.push_back(
+            static_cast<double>(metric.decode_stage_wait_ns));
+        total_prefill_queue_wait_values.push_back(
+            static_cast<double>(metric.total_prefill_queue_wait_ns));
+        total_transfer_queue_wait_values.push_back(
+            static_cast<double>(metric.total_transfer_queue_wait_ns));
+        total_decode_queue_wait_values.push_back(
+            static_cast<double>(metric.total_decode_queue_wait_ns));
+        prefill_chunk_count_values.push_back(
+            static_cast<double>(metric.prefill_chunk_count));
+        transfer_handoff_count_values.push_back(
+            static_cast<double>(metric.transfer_handoff_count));
         total_prefill_breakdown.base_latency_ns +=
             metric.prefill_breakdown.base_latency_ns;
         total_prefill_breakdown.attention_compute_ns +=
@@ -452,9 +529,38 @@ void write_serving_summary_json(const std::string& path,
              stats_to_json(summarize_serving_metric(decode_queue_delay_values))},
             {"transfer_duration_ns",
              stats_to_json(summarize_serving_metric(transfer_duration_values))},
+            {"prefill_service_ns",
+             stats_to_json(summarize_serving_metric(prefill_service_values))},
+            {"transfer_service_ns",
+             stats_to_json(summarize_serving_metric(transfer_service_values))},
+            {"decode_service_ns",
+             stats_to_json(summarize_serving_metric(decode_service_values))},
+            {"prefill_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(prefill_stage_wait_values))},
+            {"transfer_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 transfer_stage_wait_values))},
+            {"decode_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(decode_stage_wait_values))},
+            {"total_prefill_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_prefill_queue_wait_values))},
+            {"total_transfer_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_transfer_queue_wait_values))},
+            {"total_decode_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_decode_queue_wait_values))},
+            {"prefill_chunk_count",
+             stats_to_json(summarize_serving_metric(prefill_chunk_count_values))},
+            {"transfer_handoff_count",
+             stats_to_json(
+                 summarize_serving_metric(transfer_handoff_count_values))},
             {"ttft_ns", stats_to_json(summarize_serving_metric(ttft_values))},
             {"tpot_ns", stats_to_json(summarize_serving_metric(tpot_values))},
             {"e2e_ns", stats_to_json(summarize_serving_metric(e2e_values))},
+            {"total_prefill_chunks", total_prefill_chunks},
+            {"total_transfer_handoffs", total_transfer_handoffs},
             {"slo",
              json{{"configured", config.slo.enabled},
                   {"ttft_ns", config.slo.ttft_ns},
@@ -500,9 +606,38 @@ void write_serving_summary_json(const std::string& path,
              stats_to_json(summarize_serving_metric(decode_queue_delay_values))},
             {"transfer_duration_ns",
              stats_to_json(summarize_serving_metric(transfer_duration_values))},
+            {"prefill_service_ns",
+             stats_to_json(summarize_serving_metric(prefill_service_values))},
+            {"transfer_service_ns",
+             stats_to_json(summarize_serving_metric(transfer_service_values))},
+            {"decode_service_ns",
+             stats_to_json(summarize_serving_metric(decode_service_values))},
+            {"prefill_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(prefill_stage_wait_values))},
+            {"transfer_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 transfer_stage_wait_values))},
+            {"decode_stage_wait_ns",
+             stats_to_json(summarize_serving_metric(decode_stage_wait_values))},
+            {"total_prefill_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_prefill_queue_wait_values))},
+            {"total_transfer_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_transfer_queue_wait_values))},
+            {"total_decode_queue_wait_ns",
+             stats_to_json(summarize_serving_metric(
+                 total_decode_queue_wait_values))},
+            {"prefill_chunk_count",
+             stats_to_json(summarize_serving_metric(prefill_chunk_count_values))},
+            {"transfer_handoff_count",
+             stats_to_json(
+                 summarize_serving_metric(transfer_handoff_count_values))},
             {"ttft_ns", stats_to_json(summarize_serving_metric(ttft_values))},
             {"tpot_ns", stats_to_json(summarize_serving_metric(tpot_values))},
             {"e2e_ns", stats_to_json(summarize_serving_metric(e2e_values))},
+            {"total_prefill_chunks", total_prefill_chunks},
+            {"total_transfer_handoffs", total_transfer_handoffs},
             {"prefill_breakdown", breakdown_to_json(total_prefill_breakdown)},
             {"decode_breakdown", breakdown_to_json(total_decode_breakdown)},
             {"transfer_breakdown", breakdown_to_json(total_transfer_breakdown)},
@@ -592,17 +727,32 @@ void write_serving_event_trace_csv(
     const bool use_enhanced = use_enhanced_reporting(config);
     if (!use_enhanced) {
         output << "time_ns,event,batch_id,worker_id,stage,request_ids,total_tokens,"
-                  "duration_ns\n";
+                  "request_count,duration_ns,include_base_latency,"
+                  "running_request_count,admission_queue_depth,"
+                  "prefill_queue_depth,transfer_queue_depth,decode_queue_depth,"
+                  "inflight_transfer_count\n";
     } else {
         output << "time_ns,event,batch_id,worker_id,worker_group_id,replica_id,stage,"
-                  "layout_name,request_ids,total_tokens,duration_ns\n";
+                  "layout_name,request_ids,total_tokens,request_count,"
+                  "duration_ns,include_base_latency,running_request_count,"
+                  "admission_queue_depth,prefill_queue_depth,"
+                  "transfer_queue_depth,decode_queue_depth,"
+                  "inflight_transfer_count\n";
     }
     for (const auto& record : records) {
         if (!use_enhanced) {
             output << record.time_ns << "," << record.event << ","
                    << record.batch_id << "," << record.worker_id << ","
                    << record.stage << "," << record.request_ids << ","
-                   << record.total_tokens << "," << record.duration_ns
+                   << record.total_tokens << "," << record.request_count << ","
+                   << record.duration_ns << ","
+                   << (record.include_base_latency ? "true" : "false") << ","
+                   << record.running_request_count << ","
+                   << record.admission_queue_depth << ","
+                   << record.prefill_queue_depth << ","
+                   << record.transfer_queue_depth << ","
+                   << record.decode_queue_depth << ","
+                   << record.inflight_transfer_count
                    << "\n";
         } else {
             output << record.time_ns << "," << record.event << ","
@@ -610,7 +760,78 @@ void write_serving_event_trace_csv(
                    << record.worker_group_id << "," << record.replica_id
                    << "," << record.stage << "," << record.layout_name << ","
                    << record.request_ids << "," << record.total_tokens << ","
-                   << record.duration_ns << "\n";
+                   << record.request_count << "," << record.duration_ns << ","
+                   << (record.include_base_latency ? "true" : "false") << ","
+                   << record.running_request_count << ","
+                   << record.admission_queue_depth << ","
+                   << record.prefill_queue_depth << ","
+                   << record.transfer_queue_depth << ","
+                   << record.decode_queue_depth << ","
+                   << record.inflight_transfer_count << "\n";
+        }
+    }
+}
+
+void write_serving_stage_metrics_csv(
+    const std::string& path,
+    const ServingConfig& config,
+    const std::vector<ServingStageMetricsRecord>& records) {
+    if (!has_output_path(path)) {
+        return;
+    }
+
+    std::ofstream output(path);
+    if (!output.is_open()) {
+        serving_metrics_error("Unable to open serving stage metrics output: " +
+                              path);
+    }
+
+    const bool use_enhanced = use_enhanced_reporting(config);
+    if (!use_enhanced) {
+        output << "batch_id,worker_id,stage,request_ids,request_count,"
+                  "total_tokens,include_base_latency,scheduled_at_ns,"
+                  "completed_at_ns,duration_ns,running_request_count,"
+                  "admission_queue_depth,prefill_queue_depth,"
+                  "transfer_queue_depth,decode_queue_depth,"
+                  "inflight_transfer_count\n";
+    } else {
+        output << "batch_id,worker_id,worker_group_id,replica_id,stage,"
+                  "layout_name,request_ids,request_count,total_tokens,"
+                  "include_base_latency,scheduled_at_ns,completed_at_ns,"
+                  "duration_ns,running_request_count,admission_queue_depth,"
+                  "prefill_queue_depth,transfer_queue_depth,"
+                  "decode_queue_depth,inflight_transfer_count\n";
+    }
+
+    for (const auto& record : records) {
+        if (!use_enhanced) {
+            output << record.batch_id << "," << record.worker_id << ","
+                   << record.stage << "," << record.request_ids << ","
+                   << record.request_count << "," << record.total_tokens << ","
+                   << (record.include_base_latency ? "true" : "false") << ","
+                   << record.scheduled_at_ns << "," << record.completed_at_ns
+                   << "," << record.duration_ns << ","
+                   << record.running_request_count << ","
+                   << record.admission_queue_depth << ","
+                   << record.prefill_queue_depth << ","
+                   << record.transfer_queue_depth << ","
+                   << record.decode_queue_depth << ","
+                   << record.inflight_transfer_count << "\n";
+        } else {
+            output << record.batch_id << "," << record.worker_id << ","
+                   << record.worker_group_id << "," << record.replica_id << ","
+                   << record.stage << "," << record.layout_name << ","
+                   << record.request_ids << "," << record.request_count << ","
+                   << record.total_tokens << ","
+                   << (record.include_base_latency ? "true" : "false") << ","
+                   << record.scheduled_at_ns << "," << record.completed_at_ns
+                   << "," << record.duration_ns << ","
+                   << record.running_request_count << ","
+                   << record.admission_queue_depth << ","
+                   << record.prefill_queue_depth << ","
+                   << record.transfer_queue_depth << ","
+                   << record.decode_queue_depth << ","
+                   << record.inflight_transfer_count << "\n";
         }
     }
 }

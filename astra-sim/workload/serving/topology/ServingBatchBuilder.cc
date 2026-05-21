@@ -132,7 +132,9 @@ std::optional<ServingBatch> ServingBatchBuilder::build_prefill_from_queue(
     const ParallelismLayoutSpec& layout,
     std::deque<size_t>& queue,
     const std::vector<ServingRequestState>& requests,
-    const ServingPdConfig& pd) {
+    const ServingPdConfig& pd,
+    const ServingSchedulerConfig& scheduler,
+    bool chunking_enabled) {
     if (queue.empty()) {
         return std::nullopt;
     }
@@ -151,7 +153,11 @@ std::optional<ServingBatch> ServingBatchBuilder::build_prefill_from_queue(
             retained.push_back(request_index);
             continue;
         }
-        const auto request_tokens = request.remaining_prefill_tokens;
+        const auto request_tokens =
+            chunking_enabled
+                ? std::min<uint64_t>(request.remaining_prefill_tokens,
+                                     scheduler.chunked_prefill_size)
+                : request.remaining_prefill_tokens;
         const bool fits =
             batch.items.empty() || total_tokens + request_tokens <= token_limit;
         if (!fits) {

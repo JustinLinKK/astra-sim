@@ -58,6 +58,19 @@ struct ServingRequestMetrics {
     Tick prefill_duration_ns = 0;
     Tick transfer_duration_ns = 0;
     Tick decode_duration_ns = 0;
+    Tick prefill_service_ns = 0;
+    Tick transfer_service_ns = 0;
+    Tick decode_service_ns = 0;
+    Tick prefill_stage_wait_ns = 0;
+    Tick transfer_stage_wait_ns = 0;
+    Tick decode_stage_wait_ns = 0;
+    Tick total_prefill_queue_wait_ns = 0;
+    Tick total_transfer_queue_wait_ns = 0;
+    Tick total_decode_queue_wait_ns = 0;
+    uint64_t prefill_chunk_count = 0;
+    uint64_t transfer_handoff_count = 0;
+    uint64_t max_prefill_chunk_tokens = 0;
+    uint64_t max_transfer_chunk_tokens = 0;
     Tick ttft_ns = 0;
     double tpot_ns = 0.0;
     Tick e2e_ns = 0;
@@ -67,6 +80,28 @@ struct ServingRequestMetrics {
     ServingStageBreakdown decode_breakdown;
     ServingStageBreakdown transfer_breakdown;
     ServingGoodputResult goodput;
+};
+
+struct ServingStageMetricsRecord {
+    uint64_t batch_id = 0;
+    size_t worker_id = 0;
+    size_t worker_group_id = 0;
+    size_t replica_id = 0;
+    std::string stage;
+    std::string layout_name;
+    std::string request_ids;
+    size_t request_count = 0;
+    uint64_t total_tokens = 0;
+    bool include_base_latency = false;
+    Tick scheduled_at_ns = 0;
+    Tick completed_at_ns = 0;
+    Tick duration_ns = 0;
+    size_t running_request_count = 0;
+    size_t admission_queue_depth = 0;
+    size_t prefill_queue_depth = 0;
+    size_t transfer_queue_depth = 0;
+    size_t decode_queue_depth = 0;
+    size_t inflight_transfer_count = 0;
 };
 
 struct ServingEventTraceRecord {
@@ -79,8 +114,16 @@ struct ServingEventTraceRecord {
     std::string stage;
     std::string layout_name;
     std::string request_ids;
+    size_t request_count = 0;
     uint64_t total_tokens = 0;
     Tick duration_ns = 0;
+    bool include_base_latency = false;
+    size_t running_request_count = 0;
+    size_t admission_queue_depth = 0;
+    size_t prefill_queue_depth = 0;
+    size_t transfer_queue_depth = 0;
+    size_t decode_queue_depth = 0;
+    size_t inflight_transfer_count = 0;
 };
 
 struct ServingOutputPaths {
@@ -89,6 +132,7 @@ struct ServingOutputPaths {
     std::string request_summary_output;
     std::string request_run_metadata_output;
     std::string event_trace_output;
+    std::string stage_metrics_output;
 };
 
 void emit_serving_request_log(const ServingRequestMetrics& metrics);
@@ -111,6 +155,10 @@ void write_serving_event_trace_csv(
     const std::string& path,
     const ServingConfig& config,
     const std::vector<ServingEventTraceRecord>& records);
+void write_serving_stage_metrics_csv(
+    const std::string& path,
+    const ServingConfig& config,
+    const std::vector<ServingStageMetricsRecord>& records);
 
 ServingMetricStats summarize_serving_metric(const std::vector<double>& values);
 

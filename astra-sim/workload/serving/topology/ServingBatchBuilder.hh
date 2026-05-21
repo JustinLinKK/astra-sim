@@ -44,7 +44,9 @@ class ServingBatchBuilder {
         const ParallelismLayoutSpec& layout,
         std::deque<size_t>& queue,
         const std::vector<ServingRequestState>& requests,
-        const ServingPdConfig& pd);
+        const ServingPdConfig& pd,
+        const ServingSchedulerConfig& scheduler,
+        bool chunking_enabled);
 
     static std::optional<ServingBatch> build_decode_from_queue(
         uint64_t batch_id,

@@ -123,11 +123,18 @@ void ServingRuntimeBase::mark_prefill_queue_enter(size_t request_index,
         request.prefill_queue_enter_ns = when;
         request.prefill_queue_recorded = true;
     }
+    request.latest_prefill_queue_enter_ns = when;
+    request.prefill_queue_pending = true;
 }
 
 void ServingRuntimeBase::mark_prefill_start(size_t request_index, Tick when) {
     auto& request = requests.at(request_index);
     mark_service_start(request_index);
+    if (request.prefill_queue_pending) {
+        request.accumulated_prefill_queue_wait_ns +=
+            when - request.latest_prefill_queue_enter_ns;
+        request.prefill_queue_pending = false;
+    }
     if (!request.prefill_started_recorded) {
         request.prefill_start_ns = when;
         request.prefill_started_recorded = true;
@@ -149,10 +156,17 @@ void ServingRuntimeBase::mark_transfer_queue_enter(size_t request_index,
         request.transfer_queue_enter_ns = when;
         request.transfer_queue_recorded = true;
     }
+    request.latest_transfer_queue_enter_ns = when;
+    request.transfer_queue_pending = true;
 }
 
 void ServingRuntimeBase::mark_transfer_start(size_t request_index, Tick when) {
     auto& request = requests.at(request_index);
+    if (request.transfer_queue_pending) {
+        request.accumulated_transfer_queue_wait_ns +=
+            when - request.latest_transfer_queue_enter_ns;
+        request.transfer_queue_pending = false;
+    }
     if (!request.transfer_started_recorded) {
         request.transfer_start_ns = when;
         request.transfer_started_recorded = true;
@@ -170,10 +184,17 @@ void ServingRuntimeBase::mark_decode_queue_enter(size_t request_index,
         request.decode_queue_enter_ns = when;
         request.decode_queue_recorded = true;
     }
+    request.latest_decode_queue_enter_ns = when;
+    request.decode_queue_pending = true;
 }
 
 void ServingRuntimeBase::mark_decode_start(size_t request_index, Tick when) {
     auto& request = requests.at(request_index);
+    if (request.decode_queue_pending) {
+        request.accumulated_decode_queue_wait_ns +=
+            when - request.latest_decode_queue_enter_ns;
+        request.decode_queue_pending = false;
+    }
     if (!request.decode_started_recorded) {
         request.decode_start_ns = when;
         request.decode_started_recorded = true;
@@ -296,8 +317,43 @@ void ServingRuntimeBase::record_stage_schedule(const ServingBatch& batch,
                                 to_string(batch.stage),
                                 batch.layout_name,
                                 join_request_ids(batch.items, requests),
+                                batch.items.size(),
                                 total_tokens(batch),
-                                batch.duration_ns});
+                                batch.duration_ns,
+                                batch.include_base_latency,
+                                batch.running_request_count_at_schedule,
+                                batch.admission_queue_depth_at_schedule,
+                                batch.prefill_queue_depth_at_schedule,
+                                batch.transfer_queue_depth_at_schedule,
+                                batch.decode_queue_depth_at_schedule,
+                                batch.inflight_transfer_count_at_schedule});
+}
+
+void ServingRuntimeBase::record_stage_metrics(const ServingBatch& batch) {
+    if (!has_output_path(context.outputs.stage_metrics_output)) {
+        return;
+    }
+    stage_metrics_records.push_back(ServingStageMetricsRecord{
+        batch.batch_id,
+        batch.worker_id,
+        batch.worker_group_id,
+        batch.replica_id,
+        to_string(batch.stage),
+        batch.layout_name,
+        join_request_ids(batch.items, requests),
+        batch.items.size(),
+        total_tokens(batch),
+        batch.include_base_latency,
+        batch.scheduled_at_ns,
+        batch.scheduled_at_ns + batch.duration_ns,
+        batch.duration_ns,
+        batch.running_request_count_at_schedule,
+        batch.admission_queue_depth_at_schedule,
+        batch.prefill_queue_depth_at_schedule,
+        batch.transfer_queue_depth_at_schedule,
+        batch.decode_queue_depth_at_schedule,
+        batch.inflight_transfer_count_at_schedule,
+    });
 }
 
 void ServingRuntimeBase::record_request_event(size_t request_index,
@@ -316,6 +372,14 @@ void ServingRuntimeBase::record_request_event(size_t request_index,
                                 to_string(request.phase),
                                 "",
                                 std::to_string(request.spec.request_id),
+                                1,
+                                0,
+                                0,
+                                false,
+                                0,
+                                0,
+                                0,
+                                0,
                                 0,
                                 0});
 }
@@ -377,6 +441,31 @@ ServingRequestMetrics ServingRuntimeBase::build_request_metrics(
         request.decode_started_recorded
             ? request.finish_time_ns - request.decode_start_ns
             : 0;
+    metrics.prefill_service_ns = request.accumulated_prefill_compute_ns;
+    metrics.transfer_service_ns = request.accumulated_transfer_ns;
+    metrics.decode_service_ns = request.accumulated_decode_compute_ns;
+    metrics.prefill_stage_wait_ns =
+        metrics.prefill_duration_ns > metrics.prefill_service_ns
+            ? metrics.prefill_duration_ns - metrics.prefill_service_ns
+            : 0;
+    metrics.transfer_stage_wait_ns =
+        metrics.transfer_duration_ns > metrics.transfer_service_ns
+            ? metrics.transfer_duration_ns - metrics.transfer_service_ns
+            : 0;
+    metrics.decode_stage_wait_ns =
+        metrics.decode_duration_ns > metrics.decode_service_ns
+            ? metrics.decode_duration_ns - metrics.decode_service_ns
+            : 0;
+    metrics.total_prefill_queue_wait_ns =
+        request.accumulated_prefill_queue_wait_ns;
+    metrics.total_transfer_queue_wait_ns =
+        request.accumulated_transfer_queue_wait_ns;
+    metrics.total_decode_queue_wait_ns =
+        request.accumulated_decode_queue_wait_ns;
+    metrics.prefill_chunk_count = request.prefill_chunk_count;
+    metrics.transfer_handoff_count = request.transfer_handoff_count;
+    metrics.max_prefill_chunk_tokens = request.max_prefill_chunk_tokens;
+    metrics.max_transfer_chunk_tokens = request.max_transfer_chunk_tokens;
     metrics.ttft_ns = request.first_token_recorded
                           ? request.first_token_time_ns - request.arrival_time_ns
                           : 0;
@@ -470,6 +559,8 @@ void ServingRuntimeBase::finalize() {
         context.binary_name);
     write_serving_event_trace_csv(context.outputs.event_trace_output, config,
                                   event_trace_records);
+    write_serving_stage_metrics_csv(context.outputs.stage_metrics_output, config,
+                                    stage_metrics_records);
 }
 
 DataSet* ServingRuntimeBase::issue_collective(

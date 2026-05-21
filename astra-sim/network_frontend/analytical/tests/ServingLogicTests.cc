@@ -91,6 +91,10 @@ void test_runtime_scheduler_and_slo_config() {
             "prefill_max_requests": 8,
             "enable_mixed_chunk": true
           },
+          "outputs": {
+            "event_trace_output": "events.csv",
+            "stage_metrics_output": "stage_metrics.csv"
+          },
           "slo": {
             "ttft_ns": 2000,
             "tpot_ns": 100.0,
@@ -137,6 +141,12 @@ void test_runtime_scheduler_and_slo_config() {
                  "tpot SLO should parse");
     expect_true(config.slo.e2e_ns.has_value() && *config.slo.e2e_ns == 3000,
                 "e2e SLO should parse");
+    expect_true(config.outputs.event_trace_output.find("events.csv") !=
+                    std::string::npos,
+                "event trace output should parse");
+    expect_true(config.outputs.stage_metrics_output.find("stage_metrics.csv") !=
+                    std::string::npos,
+                "stage metrics output should parse");
 }
 
 void test_generated_trace_determinism() {

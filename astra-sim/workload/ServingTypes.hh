@@ -97,6 +97,12 @@ struct ServingBatch {
     Tick duration_ns = 0;
     uint64_t sequence_length_hint = 0;
     bool include_base_latency = false;
+    size_t running_request_count_at_schedule = 0;
+    size_t admission_queue_depth_at_schedule = 0;
+    size_t prefill_queue_depth_at_schedule = 0;
+    size_t transfer_queue_depth_at_schedule = 0;
+    size_t decode_queue_depth_at_schedule = 0;
+    size_t inflight_transfer_count_at_schedule = 0;
     std::string layout_name;
     ParallelismLayoutSpec layout;
     ServingStageBreakdown breakdown;

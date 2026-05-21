@@ -9,6 +9,7 @@ Primary documents:
 - [latex/main.tex](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/latex/main.tex)
 - [architecture_and_calibration.md](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/architecture_and_calibration.md)
 - [investigation_pd_vs_colocated.md](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/investigation_pd_vs_colocated.md)
+- [real_server_metrics_for_calibration.md](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/real_server_metrics_for_calibration.md)
 - [published_benchmark_anchors.json](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/published_benchmark_anchors.json)
 
 LaTeX package contents:

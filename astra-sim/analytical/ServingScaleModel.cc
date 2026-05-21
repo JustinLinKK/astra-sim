@@ -75,6 +75,7 @@ void ServingScaleModel::run() {
         config.request_summary_output,
         config.request_run_metadata_output,
         serving_config.outputs.event_trace_output,
+        serving_config.outputs.stage_metrics_output,
     };
 
     coordinator = std::make_unique<ServingCoordinator>(

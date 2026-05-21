@@ -31,7 +31,8 @@ ServingCoordinator::ServingCoordinator(
               request_metrics_output,
               request_summary_output,
               request_run_metadata_output,
-              config.outputs.event_trace_output} {
+              config.outputs.event_trace_output,
+              config.outputs.stage_metrics_output} {
     if (this->control_sys == nullptr) {
         serving_runtime_error(
             "Serving coordinator requires at least one system instance");

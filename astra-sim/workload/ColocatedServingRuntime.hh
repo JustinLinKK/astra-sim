@@ -32,6 +32,10 @@ class ColocatedServingRuntime : public ServingRuntimeBase {
     void complete_prefill_batch(const ServingBatch& batch);
     void complete_decode_batch(const ServingBatch& batch);
     size_t max_running_requests_per_replica() const;
+    size_t running_request_count(size_t replica_id) const;
+    size_t prefill_queue_depth(size_t replica_id) const;
+    size_t decode_queue_depth(size_t replica_id) const;
+    void annotate_batch_snapshot(ServingBatch* batch) const;
 
     std::vector<std::deque<size_t>> waiting_requests_by_replica;
     std::vector<std::vector<size_t>> running_requests_by_replica;

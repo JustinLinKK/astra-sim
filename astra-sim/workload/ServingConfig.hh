@@ -98,6 +98,7 @@ struct ServingPdConfig {
 
 struct ServingOutputsConfig {
     std::string event_trace_output;
+    std::string stage_metrics_output;
 };
 
 struct ServingCostModelConfig {

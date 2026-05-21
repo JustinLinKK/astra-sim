@@ -568,6 +568,12 @@ ServingOutputsConfig parse_outputs(const json& root,
         outputs.event_trace_output = resolve_optional_path(
             outputs_json["event_trace_output"].get<std::string>(), source_name);
     }
+    if (outputs_json.contains("stage_metrics_output")) {
+        require_string(outputs_json, "stage_metrics_output", source_name);
+        outputs.stage_metrics_output = resolve_optional_path(
+            outputs_json["stage_metrics_output"].get<std::string>(),
+            source_name);
+    }
     return outputs;
 }
 

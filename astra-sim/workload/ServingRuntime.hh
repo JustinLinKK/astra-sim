@@ -40,6 +40,12 @@ struct ServingRequestState {
     Tick accumulated_decode_compute_ns = 0;
     Tick accumulated_transfer_ns = 0;
     Tick accumulated_collective_ns = 0;
+    Tick latest_prefill_queue_enter_ns = 0;
+    Tick latest_transfer_queue_enter_ns = 0;
+    Tick latest_decode_queue_enter_ns = 0;
+    Tick accumulated_prefill_queue_wait_ns = 0;
+    Tick accumulated_transfer_queue_wait_ns = 0;
+    Tick accumulated_decode_queue_wait_ns = 0;
     size_t replica_id = 0;
     std::optional<size_t> prefill_group_id;
     std::optional<size_t> decode_group_id;
@@ -48,6 +54,10 @@ struct ServingRequestState {
     ServingStageBreakdown accumulated_prefill_breakdown;
     ServingStageBreakdown accumulated_decode_breakdown;
     ServingStageBreakdown accumulated_transfer_breakdown;
+    uint64_t prefill_chunk_count = 0;
+    uint64_t transfer_handoff_count = 0;
+    uint64_t max_prefill_chunk_tokens = 0;
+    uint64_t max_transfer_chunk_tokens = 0;
     bool prefill_queue_recorded = false;
     bool service_started_recorded = false;
     bool prefill_started_recorded = false;
@@ -59,6 +69,9 @@ struct ServingRequestState {
     bool first_token_recorded = false;
     bool finished_recorded = false;
     bool in_active_batch = false;
+    bool prefill_queue_pending = false;
+    bool transfer_queue_pending = false;
+    bool decode_queue_pending = false;
 };
 
 struct ServingRuntimeContext {
@@ -110,6 +123,7 @@ class ServingRuntimeBase : public ServingRuntime {
                                 const ServingStageBreakdown& breakdown);
     void record_stage_schedule(const ServingBatch& batch,
                                const std::string& event_name);
+    void record_stage_metrics(const ServingBatch& batch);
     void record_request_event(size_t request_index, const std::string& event_name);
     ServingRequestMetrics build_request_metrics(const ServingRequestState& request) const;
     void complete_request(size_t request_index);
@@ -129,6 +143,7 @@ class ServingRuntimeBase : public ServingRuntime {
     std::vector<ServingRequestState> requests;
     std::vector<size_t> arrival_order;
     std::vector<ServingRequestMetrics> completed_metrics;
+    std::vector<ServingStageMetricsRecord> stage_metrics_records;
     std::vector<ServingEventTraceRecord> event_trace_records;
     bool finalized;
     uint64_t next_batch_id;

@@ -19,6 +19,22 @@
     "p90": 0.0,
     "p99": 0.0
   },
+  "decode_service_ns": {
+    "count": 2,
+    "max": 5195994.0,
+    "mean": 5195994.0,
+    "p50": 5195994.0,
+    "p90": 5195994.0,
+    "p99": 5195994.0
+  },
+  "decode_stage_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
   "e2e_ns": {
     "count": 2,
     "max": 8710567.0,
@@ -52,7 +68,31 @@
     "total_ns": 7029146,
     "tp_collective_ns": 1425930
   },
+  "prefill_chunk_count": {
+    "count": 2,
+    "max": 1.0,
+    "mean": 1.0,
+    "p50": 1.0,
+    "p90": 1.0,
+    "p99": 1.0
+  },
   "prefill_queue_delay_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "prefill_service_ns": {
+    "count": 2,
+    "max": 3514573.0,
+    "mean": 3514573.0,
+    "p50": 3514573.0,
+    "p90": 3514573.0,
+    "p99": 3514573.0
+  },
+  "prefill_stage_wait_ns": {
     "count": 2,
     "max": 0.0,
     "mean": 0.0,
@@ -77,10 +117,36 @@
     "tpot_ns": 0.0,
     "ttft_ns": 0
   },
+  "total_decode_queue_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
   "total_kv_resident_bytes": 41943040,
   "total_kv_transfer_bytes": 0,
   "total_output_tokens": 16,
+  "total_prefill_chunks": 2,
+  "total_prefill_queue_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
   "total_prompt_tokens": 128,
+  "total_transfer_handoffs": 0,
+  "total_transfer_queue_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
   "tpot_ns": {
     "count": 2,
     "max": 649499.25,
@@ -101,6 +167,30 @@
     "tp_collective_ns": 0
   },
   "transfer_duration_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_handoff_count": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_service_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_stage_wait_ns": {
     "count": 2,
     "max": 0.0,
     "mean": 0.0,
