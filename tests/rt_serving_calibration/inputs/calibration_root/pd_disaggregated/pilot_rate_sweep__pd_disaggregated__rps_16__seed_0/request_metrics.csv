@@ -1,0 +1,3 @@
+success_or_failure,server_prompt_tokens,prompt_tokens,output_tokens,prefill_duration_ns,decode_duration_ns,ttft_ns,transfer_duration_ns
+success,5,4,2,2100,1200,2125,5
+success,10,9,4,2200,2400,2225,5

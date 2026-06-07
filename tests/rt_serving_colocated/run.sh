@@ -50,6 +50,12 @@ run_case two_request_batch_prefill.json ${SCRIPT_DIR}/outputs/prefill_summary.js
 echo "[$0] Running decode batching case..."
 run_case decode_batching.json ${SCRIPT_DIR}/outputs/decode_summary.json ${SCRIPT_DIR}/outputs/decode_metrics.csv
 
+echo "[$0] Running calibration fidelity cases..."
+run_case decode_step_batching.json ${SCRIPT_DIR}/outputs/decode_step_summary.json ${SCRIPT_DIR}/outputs/decode_step_metrics.csv
+run_case first_token_decode_start.json ${SCRIPT_DIR}/outputs/first_token_summary.json ${SCRIPT_DIR}/outputs/first_token_metrics.csv
+run_case fcfs_scheduler.json ${SCRIPT_DIR}/outputs/fcfs_summary.json ${SCRIPT_DIR}/outputs/fcfs_metrics.csv
+run_case benchmark_window.json ${SCRIPT_DIR}/outputs/benchmark_window_summary.json ${SCRIPT_DIR}/outputs/benchmark_window_metrics.csv
+
 echo "[$0] Running fixed-seed colocated case twice for determinism..."
 run_case seeded_trace_colocated.json ${SCRIPT_DIR}/outputs/seeded_summary_1.json ${SCRIPT_DIR}/outputs/seeded_metrics_1.csv ${SCRIPT_DIR}/outputs/seeded_metadata_1.json
 run_case seeded_trace_colocated.json ${SCRIPT_DIR}/outputs/seeded_summary_2.json ${SCRIPT_DIR}/outputs/seeded_metrics_2.csv ${SCRIPT_DIR}/outputs/seeded_metadata_2.json
@@ -60,6 +66,10 @@ python3 - \
     "${SCRIPT_DIR}/outputs/prefill_summary.json" \
     "${SCRIPT_DIR}/outputs/prefill_metrics.csv" \
     "${SCRIPT_DIR}/outputs/decode_metrics.csv" \
+    "${SCRIPT_DIR}/outputs/decode_step_metrics.csv" \
+    "${SCRIPT_DIR}/outputs/first_token_metrics.csv" \
+    "${SCRIPT_DIR}/outputs/fcfs_metrics.csv" \
+    "${SCRIPT_DIR}/outputs/benchmark_window_summary.json" \
     "${SCRIPT_DIR}/outputs/seeded_summary_1.json" \
     "${SCRIPT_DIR}/outputs/seeded_summary_2.json" \
     "${SCRIPT_DIR}/outputs/seeded_metrics_1.csv" \
@@ -77,19 +87,27 @@ import sys
     prefill_summary_path,
     prefill_metrics_path,
     decode_metrics_path,
+    decode_step_metrics_path,
+    first_token_metrics_path,
+    fcfs_metrics_path,
+    benchmark_window_summary_path,
     seeded_summary_1_path,
     seeded_summary_2_path,
     seeded_metrics_1_path,
     seeded_metrics_2_path,
     seeded_metadata_1_path,
     seeded_metadata_2_path,
-) = sys.argv[1:12]
+) = sys.argv[1:16]
 
 single_summary = json.load(open(single_summary_path))
 single_rows = list(csv.DictReader(open(single_metrics_path)))
 prefill_summary = json.load(open(prefill_summary_path))
 prefill_rows = list(csv.DictReader(open(prefill_metrics_path)))
 decode_rows = list(csv.DictReader(open(decode_metrics_path)))
+decode_step_rows = list(csv.DictReader(open(decode_step_metrics_path)))
+first_token_rows = list(csv.DictReader(open(first_token_metrics_path)))
+fcfs_rows = list(csv.DictReader(open(fcfs_metrics_path)))
+benchmark_window_summary = json.load(open(benchmark_window_summary_path))
 seeded_summary_1 = json.load(open(seeded_summary_1_path))
 seeded_summary_2 = json.load(open(seeded_summary_2_path))
 seeded_metrics_1 = open(seeded_metrics_1_path).read()
@@ -111,6 +129,25 @@ assert [row["ttft_ns"] for row in prefill_rows] == ["3000", "3000"]
 assert [row["first_token_time_ns"] for row in decode_rows] == ["3000", "3000"]
 assert [row["finish_time_ns"] for row in decode_rows] == ["4000", "4000"]
 assert all(abs(float(row["tpot_ns"]) - 1000.0) < 1e-9 for row in decode_rows)
+
+assert [row["finish_time_ns"] for row in decode_step_rows] == ["2040", "2040"]
+assert all(abs(float(row["tpot_ns"]) - 1020.0) < 1e-9 for row in decode_step_rows)
+
+assert first_token_rows[0]["first_token_time_ns"] == "150"
+assert first_token_rows[0]["ttft_ns"] == "150"
+assert first_token_rows[0]["finish_time_ns"] == "2100"
+
+assert [row["finish_time_ns"] for row in fcfs_rows] == ["5000", "4000"]
+assert [row["prefill_start_ns"] for row in fcfs_rows] == ["0", "1000"]
+assert [row["decode_start_ns"] for row in fcfs_rows] == ["2000", "3000"]
+
+assert benchmark_window_summary["num_requests"] == 2
+assert benchmark_window_summary["benchmark_window"]["configured"] is True
+assert benchmark_window_summary["benchmark_window"]["completed_requests"] == 1
+assert benchmark_window_summary["goodput"]["good_requests"] == 1
+assert benchmark_window_summary["goodput"]["bad_requests"] == 0
+assert abs(benchmark_window_summary["goodput"]["goodput_reqs_per_sec"] - 400000.0) < 1e-9
+assert abs(benchmark_window_summary["request_throughput_reqs_per_sec"] - 400000.0) < 1e-9
 
 assert seeded_summary_1 == seeded_summary_2
 assert seeded_metrics_1 == seeded_metrics_2

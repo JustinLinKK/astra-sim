@@ -1,0 +1,6 @@
+{
+  "target_request_rate": 2.0,
+  "slo": {
+    "ttft_ns": 2170
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "architecture": "colocated",
+  "benchmark_window": {
+    "completed_requests": 1,
+    "configured": true,
+    "duration_ns": 2500,
+    "end_ns": 2500,
+    "output_tokens": 1,
+    "start_ns": 0
+  },
+  "decode_queue_delay_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "decode_service_ns": {
+    "count": 2,
+    "max": 2000.0,
+    "mean": 2000.0,
+    "p50": 2000.0,
+    "p90": 2000.0,
+    "p99": 2000.0
+  },
+  "decode_stage_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "e2e_ns": {
+    "count": 2,
+    "max": 4000.0,
+    "mean": 3000.0,
+    "p50": 2000.0,
+    "p90": 4000.0,
+    "p99": 4000.0
+  },
+  "goodput": {
+    "bad_requests": 0,
+    "failure_reasons": {
+      "e2e": 0,
+      "tpot": 0,
+      "ttft": 0
+    },
+    "good_requests": 1,
+    "goodput_reqs_per_sec": 400000.0,
+    "slo_attainment_fraction": 1.0
+  },
+  "makespan_ns": 4000,
+  "num_requests": 2,
+  "output_token_throughput_tokens_per_sec": 400000.0,
+  "prefill_chunk_count": {
+    "count": 2,
+    "max": 1.0,
+    "mean": 1.0,
+    "p50": 1.0,
+    "p90": 1.0,
+    "p99": 1.0
+  },
+  "prefill_queue_delay_ns": {
+    "count": 2,
+    "max": 2000.0,
+    "mean": 1000.0,
+    "p50": 0.0,
+    "p90": 2000.0,
+    "p99": 2000.0
+  },
+  "prefill_service_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "prefill_stage_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "queue_delay_ns": {
+    "count": 2,
+    "max": 2000.0,
+    "mean": 1000.0,
+    "p50": 0.0,
+    "p90": 2000.0,
+    "p99": 2000.0
+  },
+  "request_throughput_reqs_per_sec": 400000.0,
+  "simulation_end_time_ns": 4000,
+  "simulation_start_time_ns": 0,
+  "slo": {
+    "configured": true,
+    "e2e_ns": 100000,
+    "tpot_ns": 100000.0,
+    "ttft_ns": 100000
+  },
+  "total_decode_queue_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "total_output_tokens": 2,
+  "total_prefill_chunks": 2,
+  "total_prefill_queue_wait_ns": {
+    "count": 2,
+    "max": 2000.0,
+    "mean": 1000.0,
+    "p50": 0.0,
+    "p90": 2000.0,
+    "p99": 2000.0
+  },
+  "total_prompt_tokens": 2,
+  "total_transfer_handoffs": 0,
+  "total_transfer_queue_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "tpot_ns": {
+    "count": 2,
+    "max": 2000.0,
+    "mean": 2000.0,
+    "p50": 2000.0,
+    "p90": 2000.0,
+    "p99": 2000.0
+  },
+  "transfer_duration_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_handoff_count": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_service_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "transfer_stage_wait_ns": {
+    "count": 2,
+    "max": 0.0,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p90": 0.0,
+    "p99": 0.0
+  },
+  "ttft_ns": {
+    "count": 2,
+    "max": 4000.0,
+    "mean": 3000.0,
+    "p50": 2000.0,
+    "p90": 4000.0,
+    "p99": 4000.0
+  }
+}

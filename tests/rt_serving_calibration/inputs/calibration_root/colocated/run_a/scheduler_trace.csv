@@ -1,0 +1,6 @@
+event,stage,batch_total_tokens,duration_ns
+batch_scheduled,prefill,5,
+batch_completed,prefill,5,20
+batch_completed,prefill,10,30
+batch_completed,decode,1,23
+batch_completed,decode,3,29

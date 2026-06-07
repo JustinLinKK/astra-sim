@@ -1,0 +1,11 @@
+time_ns,event,batch_id,worker_id,stage,request_ids,total_tokens,request_count,duration_ns,include_base_latency,running_request_count,admission_queue_depth,prefill_queue_depth,transfer_queue_depth,decode_queue_depth,inflight_transfer_count
+0,request_arrived,0,0,prefill_queued,0,0,1,0,false,0,0,0,0,0,0
+0,batch_scheduled,1,0,pd_prefill,0,2,1,2000,false,1,0,1,0,0,0
+2000,batch_completed,1,0,pd_prefill,0,2,1,2000,false,1,0,1,0,0,0
+2000,batch_scheduled,2,0,pd_prefill,0,2,1,2000,false,1,0,1,0,0,0
+4000,batch_completed,2,0,pd_prefill,0,2,1,2000,false,1,0,1,0,0,0
+4000,batch_scheduled,4,0,pd_prefill,0,1,1,1000,false,1,0,1,0,0,0
+5000,batch_completed,4,0,pd_prefill,0,1,1,1000,false,1,0,1,0,0,0
+5000,batch_scheduled,7,1,pd_decode,0,1,1,500,true,1,0,0,0,1,0
+5500,batch_completed,7,1,pd_decode,0,1,1,500,true,1,0,0,0,1,0
+5500,request_finished,0,0,finished,0,0,1,0,false,0,0,0,0,0,0

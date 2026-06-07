@@ -116,14 +116,181 @@ def resolve_template_paths(
     return resolved
 
 
+def load_case_file(path: Path) -> list[dict[str, Any]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if isinstance(payload, dict):
+        raw_cases = payload.get("cases")
+    else:
+        raw_cases = payload
+    if not isinstance(raw_cases, list):
+        raise ValueError(f"{path} must be a JSON array or contain a 'cases' array.")
+
+    cases: list[dict[str, Any]] = []
+    for index, raw_case in enumerate(raw_cases, 1):
+        if not isinstance(raw_case, dict):
+            raise ValueError(f"{path}: case {index} must be an object.")
+        cases.append(raw_case)
+    return cases
+
+
+def optional_int(case: dict[str, Any], field_name: str) -> int | None:
+    if field_name not in case or case[field_name] is None:
+        return None
+    value = case[field_name]
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise ValueError(f"Case field '{field_name}' must be an integer.")
+    if value < 1:
+        raise ValueError(f"Case field '{field_name}' must be >= 1.")
+    return value
+
+
+def make_layout_overrides(
+    prefix: str,
+    layout_name: str,
+    tp_degree: int,
+) -> dict[str, Any]:
+    return {
+        f"{prefix}.name": layout_name,
+        f"{prefix}.tp_degree": tp_degree,
+        f"{prefix}.pp_degree": 1,
+        f"{prefix}.ep_degree": 1,
+        f"{prefix}.dp_attention_degree": 1,
+        f"{prefix}.dp_replica_count": 1,
+    }
+
+
+def build_case_file_entry(
+    case: dict[str, Any],
+    case_index: int,
+    case_prefix: str,
+) -> tuple[str, dict[str, Any], dict[str, Any]]:
+    case_name = str(
+        case.get("case_name")
+        or case.get("name")
+        or f"{case_prefix}_{case_index:03d}"
+    )
+    overrides = dict(case.get("overrides", {}))
+    if not isinstance(overrides, dict):
+        raise ValueError(f"Case '{case_name}' field 'overrides' must be an object.")
+
+    prefill_workers = optional_int(case, "prefill_workers")
+    decode_workers = optional_int(case, "decode_workers")
+    prefill_tp_degree = optional_int(case, "prefill_tp_degree")
+    decode_tp_degree = optional_int(case, "decode_tp_degree")
+
+    if prefill_workers is not None:
+        overrides["pd.prefill_workers"] = prefill_workers
+    if decode_workers is not None:
+        overrides["pd.decode_workers"] = decode_workers
+    if prefill_tp_degree is not None:
+        overrides["pd.prefill_tp_degree"] = prefill_tp_degree
+        overrides.update(
+            make_layout_overrides(
+                "topology.prefill_layout",
+                "prefill",
+                prefill_tp_degree,
+            )
+        )
+    if decode_tp_degree is not None:
+        overrides["pd.decode_tp_degree"] = decode_tp_degree
+        overrides.update(
+            make_layout_overrides(
+                "topology.decode_layout",
+                "decode",
+                decode_tp_degree,
+            )
+        )
+    if any(
+        value is not None
+        for value in (
+            prefill_workers,
+            decode_workers,
+            prefill_tp_degree,
+            decode_tp_degree,
+        )
+    ):
+        overrides["topology.deployment"] = "pd_disaggregated"
+
+    sweep = dict(case.get("sweep", {}))
+    if not isinstance(sweep, dict):
+        raise ValueError(f"Case '{case_name}' field 'sweep' must be an object.")
+    sweep["case_name"] = case_name
+    if "scale_family" in case:
+        sweep["scale_family"] = case["scale_family"]
+    else:
+        sweep.setdefault("scale_family", "unspecified")
+    if "calibration_scope" in case:
+        sweep["calibration_scope"] = case["calibration_scope"]
+    else:
+        sweep.setdefault("calibration_scope", "extrapolated")
+
+    if (
+        prefill_workers is not None
+        and decode_workers is not None
+        and prefill_tp_degree is not None
+        and decode_tp_degree is not None
+    ):
+        prefill_logical_gpus = prefill_workers * prefill_tp_degree
+        decode_logical_gpus = decode_workers * decode_tp_degree
+        sweep["prefill_logical_gpus"] = prefill_logical_gpus
+        sweep["decode_logical_gpus"] = decode_logical_gpus
+        sweep["total_logical_gpus"] = prefill_logical_gpus + decode_logical_gpus
+
+    overrides["sweep"] = sweep
+    return case_name, overrides, sweep
+
+
+def build_factorial_entries(
+    set_specs: list[str],
+    case_prefix: str,
+) -> list[tuple[str, dict[str, Any], dict[str, Any]]]:
+    axes = [parse_axis(spec) for spec in set_specs]
+    if not axes:
+        axes = [("__identity__", ["baseline"])]
+
+    axis_names = [name for name, _ in axes]
+    axis_values = [values for _, values in axes]
+    entries: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
+
+    for case_index, combination in enumerate(itertools.product(*axis_values), 1):
+        case_tokens = [case_prefix, f"{case_index:03d}"]
+        applied_overrides: dict[str, Any] = {}
+        for axis_name, value in zip(axis_names, combination):
+            if axis_name == "__identity__":
+                continue
+            applied_overrides[axis_name] = value
+            case_tokens.append(
+                f"{axis_name.split('.')[-1]}_{sanitize_token(value)}"
+            )
+        entries.append(("__".join(case_tokens), applied_overrides, {}))
+
+    return entries
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run a serving sweep by patching a base request JSON.",
     )
-    parser.add_argument("--analytical-template", required=True, help="Flat serving analytical YAML template.")
-    parser.add_argument("--request-config", required=True, help="Base serving request JSON.")
-    parser.add_argument("--output-dir", required=True, help="Directory for generated configs and outputs.")
-    parser.add_argument("--binary", default=str(DEFAULT_BINARY), help="Analytical binary to execute.")
+    parser.add_argument(
+        "--analytical-template",
+        required=True,
+        help="Flat serving analytical YAML template.",
+    )
+    parser.add_argument(
+        "--request-config",
+        required=True,
+        help="Base serving request JSON.",
+    )
+    parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for generated configs and outputs.",
+    )
+    parser.add_argument(
+        "--binary",
+        default=str(DEFAULT_BINARY),
+        help="Analytical binary to execute.",
+    )
     parser.add_argument(
         "--set",
         action="append",
@@ -132,9 +299,21 @@ def parse_args() -> argparse.Namespace:
         help="Apply a JSON override sweep on a dotted path, for example runtime.architecture=serial_baseline,colocated.",
     )
     parser.add_argument(
+        "--case-file",
+        help=(
+            "JSON case file for sparse named cases. Each case may provide an "
+            "'overrides' object and PD/topology shorthand fields."
+        ),
+    )
+    parser.add_argument(
         "--emit-event-trace",
         action="store_true",
         help="Override outputs.event_trace_output in each generated request config.",
+    )
+    parser.add_argument(
+        "--emit-stage-metrics",
+        action="store_true",
+        help="Override outputs.stage_metrics_output in each generated request config.",
     )
     parser.add_argument("--case-prefix", default="case")
     parser.add_argument("--dry-run", action="store_true")
@@ -148,32 +327,30 @@ def main() -> None:
         load_flat_yaml(analytical_template_path),
         analytical_template_path,
     )
-    base_request_config = json.loads(Path(args.request_config).read_text(encoding="utf-8"))
+    base_request_config = json.loads(
+        Path(args.request_config).read_text(encoding="utf-8")
+    )
     output_root = Path(args.output_dir).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
 
-    axes = [parse_axis(spec) for spec in args.set]
-    if not axes:
-        axes = [("__identity__", ["baseline"])]
-
-    axis_names = [name for name, _ in axes]
-    axis_values = [values for _, values in axes]
+    if args.case_file and args.set:
+        raise ValueError("--case-file and --set are mutually exclusive.")
+    if args.case_file:
+        entries = [
+            build_case_file_entry(case, index, args.case_prefix)
+            for index, case in enumerate(load_case_file(Path(args.case_file)), 1)
+        ]
+    else:
+        entries = build_factorial_entries(args.set, args.case_prefix)
 
     manifest: list[dict[str, Any]] = []
     binary_path = Path(args.binary).resolve()
 
-    for case_index, combination in enumerate(itertools.product(*axis_values), 1):
+    for case_name, applied_overrides, case_metadata in entries:
         request_config = deepcopy(base_request_config)
-        case_tokens = [args.case_prefix, f"{case_index:03d}"]
-        applied_overrides: dict[str, Any] = {}
-        for axis_name, value in zip(axis_names, combination):
-            if axis_name == "__identity__":
-                continue
-            set_nested_value(request_config, axis_name, value)
-            applied_overrides[axis_name] = value
-            case_tokens.append(f"{axis_name.split('.')[-1]}_{sanitize_token(value)}")
+        for override_path, value in applied_overrides.items():
+            set_nested_value(request_config, override_path, value)
 
-        case_name = "__".join(case_tokens)
         case_dir = (output_root / case_name).resolve()
         case_dir.mkdir(parents=True, exist_ok=True)
 
@@ -189,6 +366,12 @@ def main() -> None:
                 request_config,
                 "outputs.event_trace_output",
                 str((case_dir / "event_trace.csv").resolve()),
+            )
+        if args.emit_stage_metrics:
+            set_nested_value(
+                request_config,
+                "outputs.stage_metrics_output",
+                str((case_dir / "stage_metrics.csv").resolve()),
             )
 
         request_json_path.write_text(
@@ -215,7 +398,16 @@ def main() -> None:
             "metadata": str(metadata_json_path),
             "stdout": str(stdout_path),
             "applied_overrides": applied_overrides,
+            "case_metadata": case_metadata,
         }
+        if args.emit_stage_metrics:
+            manifest_entry["stage_metrics"] = str(
+                (case_dir / "stage_metrics.csv").resolve()
+            )
+        if args.emit_event_trace:
+            manifest_entry["event_trace"] = str(
+                (case_dir / "event_trace.csv").resolve()
+            )
         manifest.append(manifest_entry)
 
         if args.dry_run:

@@ -20,6 +20,23 @@ fit and validate simulator outputs for:
 - prefill/decode/transfer stage costs
 - batching and contention behavior
 
+## Current Hardware Scope
+
+For the current calibrated result, collect and interpret data only for the
+available two-`L40S` single-node setup:
+
+- colocated baseline: one `L40S` GPU serving both prefill and decode
+- PD run: two `L40S` GPUs on the same motherboard
+- PD worker split: one prefill GPU and one decode GPU
+- inter-node network: none
+- transfer path: same-node GPU-to-GPU KV handoff over PCIe/NCCL
+- transfer timing: proxy-derived unless raw NCCL/router timing is explicitly
+  collected
+
+All calibration summaries should state this hardware limit. Multi-node,
+TP/PP/EP, and DP-attention measurements are future extensions unless new
+hardware is funded and measured separately.
+
 ## What We Need From Every Run
 
 Every benchmark run should save three artifacts:

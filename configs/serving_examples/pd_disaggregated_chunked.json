@@ -1,0 +1,194 @@
+{
+  "runtime": {
+    "architecture": "pd_disaggregated",
+    "seed": 23
+  },
+  "target_request_rate_per_second": 0.5,
+  "scheduler": {
+    "max_running_requests": 128,
+    "scheduler_policy": "fcfs",
+    "max_prefill_batch_tokens": 512,
+    "max_decode_batch_requests": 128,
+    "chunked_prefill_size": 512,
+    "prefill_max_requests": 1,
+    "enable_mixed_chunk": true
+  },
+  "slo": {
+    "ttft_ns": 2000000000,
+    "tpot_ns": 500000000.0,
+    "e2e_ns": 60000000000
+  },
+  "model": {
+    "name": "Meta-Llama-3-8B-Instruct-calibrated",
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "attention_heads": 32,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "bytes_per_kv_element": 2
+  },
+  "pd": {
+    "prefill_workers": 1,
+    "decode_workers": 1,
+    "prefill_max_batch_tokens": 512,
+    "prefill_max_requests": 1,
+    "decode_max_batch_requests": 128,
+    "prefill_tp_degree": 1,
+    "decode_tp_degree": 1,
+    "transfer": {
+      "enabled": true,
+      "latency_ns": 868,
+      "bandwidth_bytes_per_s": 857892877063549.4,
+      "efficiency": 1.0,
+      "overlap_enabled": false,
+      "bytes_per_prompt_token": 0,
+      "override_bytes_per_prompt_token": false
+    }
+  },
+  "trace": {
+    "seed": 13,
+    "num_requests": 64,
+    "arrival_process": "poisson",
+    "request_rate_per_second": 0.5,
+    "prompt_tokens": {
+      "distribution": "uniform",
+      "min": 64,
+      "max": 384
+    },
+    "output_tokens": {
+      "distribution": "uniform",
+      "min": 8,
+      "max": 48
+    }
+  },
+  "cost_model": {
+    "prefill_base_latency_ns": 28363497,
+    "prefill_ns_per_token": 29172,
+    "decode_base_latency_ns": 0,
+    "decode_ns_per_token": 0,
+    "decode_step_latency_ns": 24479123,
+    "decode_step_latency_curve": {
+      "enabled": true,
+      "signal": "target_request_rate_per_second",
+      "interpolation": "linear",
+      "extrapolation": "clamp",
+      "points": [
+        {
+          "request_rate_per_second": 0.25,
+          "decode_step_latency_ns": 22534106
+        },
+        {
+          "request_rate_per_second": 0.375,
+          "decode_step_latency_ns": 22736853
+        },
+        {
+          "request_rate_per_second": 0.5,
+          "decode_step_latency_ns": 22916480
+        },
+        {
+          "request_rate_per_second": 0.625,
+          "decode_step_latency_ns": 23031874
+        },
+        {
+          "request_rate_per_second": 0.75,
+          "decode_step_latency_ns": 23152845
+        },
+        {
+          "request_rate_per_second": 1.0,
+          "decode_step_latency_ns": 23266404
+        },
+        {
+          "request_rate_per_second": 2.0,
+          "decode_step_latency_ns": 24593467
+        },
+        {
+          "request_rate_per_second": 4.0,
+          "decode_step_latency_ns": 27835111
+        },
+        {
+          "request_rate_per_second": 8.0,
+          "decode_step_latency_ns": 33524887
+        },
+        {
+          "request_rate_per_second": 16.0,
+          "decode_step_latency_ns": 36250000
+        }
+      ]
+    },
+    "first_token_timing": "decode_start",
+    "first_token_latency_ns": 81219544,
+    "first_token_backpressure_curve": {
+      "enabled": true,
+      "signal": "target_request_rate_per_second",
+      "model": "arrival_rank_linear",
+      "interpolation": "linear",
+      "extrapolation": "clamp",
+      "points": [
+        {
+          "request_rate_per_second": 0.25,
+          "base_latency_ns": 72399937,
+          "knee_request_index": 727.0,
+          "latency_ns_per_request_after_knee": 5641.058301834512
+        },
+        {
+          "request_rate_per_second": 0.375,
+          "base_latency_ns": 74254599,
+          "knee_request_index": 985.0,
+          "latency_ns_per_request_after_knee": 186192.8348215842
+        },
+        {
+          "request_rate_per_second": 0.5,
+          "base_latency_ns": 75057006,
+          "knee_request_index": 624.0,
+          "latency_ns_per_request_after_knee": 4958.654672943821
+        },
+        {
+          "request_rate_per_second": 0.625,
+          "base_latency_ns": 76435930,
+          "knee_request_index": 0.0,
+          "latency_ns_per_request_after_knee": 0.0
+        },
+        {
+          "request_rate_per_second": 0.75,
+          "base_latency_ns": 77342397,
+          "knee_request_index": 766.0,
+          "latency_ns_per_request_after_knee": 4091.8589260098524
+        },
+        {
+          "request_rate_per_second": 1.0,
+          "base_latency_ns": 75593788,
+          "knee_request_index": 19.0,
+          "latency_ns_per_request_after_knee": 3019.2179722137603
+        },
+        {
+          "request_rate_per_second": 2.0,
+          "base_latency_ns": 82126922,
+          "knee_request_index": 997.0,
+          "latency_ns_per_request_after_knee": 895836.9641354438
+        },
+        {
+          "request_rate_per_second": 4.0,
+          "base_latency_ns": 93783791,
+          "knee_request_index": 807.0,
+          "latency_ns_per_request_after_knee": 10718.901026766824
+        },
+        {
+          "request_rate_per_second": 8.0,
+          "base_latency_ns": 112625542,
+          "knee_request_index": 9.0,
+          "latency_ns_per_request_after_knee": 8380.094538938929
+        },
+        {
+          "request_rate_per_second": 16.0,
+          "base_latency_ns": 102961925,
+          "knee_request_index": 42.0,
+          "latency_ns_per_request_after_knee": 17569480.86227951
+        }
+      ]
+    },
+    "prefill_batch_efficiency": 1.0,
+    "decode_batch_efficiency": 1.0,
+    "decode_interference_factor": 1.0,
+    "mixed_prefill_weight": 1.0
+  }
+}

@@ -110,6 +110,7 @@ class ServingRuntimeBase : public ServingRuntime {
     void mark_decode_queue_enter(size_t request_index, Tick when);
     void mark_decode_start(size_t request_index, Tick when);
     void mark_first_token(size_t request_index, Tick when);
+    void maybe_mark_first_token_at_decode_start(const ServingBatch& batch);
     void mark_request_finished(size_t request_index, Tick when);
     void add_prefill_runtime(size_t request_index, Tick duration);
     void add_decode_runtime(size_t request_index, Tick duration);

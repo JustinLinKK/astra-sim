@@ -25,6 +25,12 @@ enum class ServingSchedulerPolicy {
     DecodeFirst,
     PrefillFirst,
     Balanced,
+    Fcfs,
+};
+
+enum class ServingFirstTokenTiming {
+    DecodeEnd = 0,
+    DecodeStart,
 };
 
 enum class RequestPhase {
@@ -65,6 +71,7 @@ enum class ServingWorkerGroupRole {
 
 struct ServingStageBreakdown {
     Tick base_latency_ns = 0;
+    Tick step_latency_ns = 0;
     Tick attention_compute_ns = 0;
     Tick ffn_or_expert_compute_ns = 0;
     Tick tp_collective_ns = 0;
@@ -74,7 +81,7 @@ struct ServingStageBreakdown {
     Tick pd_kv_transfer_ns = 0;
 
     Tick total_ns() const {
-        return base_latency_ns + attention_compute_ns +
+        return base_latency_ns + step_latency_ns + attention_compute_ns +
                ffn_or_expert_compute_ns + tp_collective_ns +
                pp_activation_ns + ep_dispatch_ns + dp_attention_sync_ns +
                pd_kv_transfer_ns;
@@ -150,6 +157,7 @@ class ServingRuntimeEventData : public CallData {
 
 std::string to_string(ServingArchitecture architecture);
 std::string to_string(ServingSchedulerPolicy policy);
+std::string to_string(ServingFirstTokenTiming timing);
 std::string to_string(RequestPhase phase);
 std::string to_string(ServingStageType stage);
 std::string to_string(ServingWorkerRole role);

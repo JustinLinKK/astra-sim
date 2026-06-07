@@ -1,46 +1,59 @@
 {
   "runtime": {
     "architecture": "colocated_chunked",
-    "seed": 17
+    "seed": 23
   },
+  "target_request_rate_per_second": 0.5,
   "scheduler": {
-    "max_running_requests": 8,
-    "scheduler_policy": "balanced",
+    "max_running_requests": 128,
+    "scheduler_policy": "prefill_first",
     "max_prefill_batch_tokens": 512,
-    "max_decode_batch_requests": 4,
-    "chunked_prefill_size": 128,
-    "prefill_max_requests": 4,
-    "enable_mixed_chunk": false
+    "max_decode_batch_requests": 128,
+    "chunked_prefill_size": 512,
+    "prefill_max_requests": 1,
+    "enable_mixed_chunk": true
   },
   "slo": {
-    "ttft_ns": 250000,
-    "tpot_ns": 1500.0,
-    "e2e_ns": 800000
+    "ttft_ns": 2000000000,
+    "tpot_ns": 500000000.0,
+    "e2e_ns": 60000000000
+  },
+  "model": {
+    "name": "Meta-Llama-3-8B-Instruct-calibrated",
+    "num_layers": 32,
+    "hidden_size": 4096,
+    "attention_heads": 32,
+    "kv_heads": 8,
+    "head_dim": 128,
+    "bytes_per_kv_element": 2
   },
   "trace": {
-    "seed": 11,
+    "seed": 13,
     "num_requests": 64,
     "arrival_process": "poisson",
-    "request_rate_per_second": 75.0,
+    "request_rate_per_second": 0.5,
     "prompt_tokens": {
       "distribution": "uniform",
-      "min": 128,
-      "max": 512
+      "min": 64,
+      "max": 384
     },
     "output_tokens": {
       "distribution": "uniform",
-      "min": 16,
-      "max": 64
+      "min": 8,
+      "max": 48
     }
   },
   "cost_model": {
-    "prefill_base_latency_ns": 0,
-    "prefill_ns_per_token": 1000,
+    "prefill_base_latency_ns": 36118223,
+    "prefill_ns_per_token": 2635,
     "decode_base_latency_ns": 0,
-    "decode_ns_per_token": 500,
-    "prefill_batch_efficiency": 0.7,
-    "decode_batch_efficiency": 0.85,
-    "decode_interference_factor": 1.1,
+    "decode_ns_per_token": 0,
+    "decode_step_latency_ns": 20709165,
+    "first_token_timing": "decode_start",
+    "first_token_latency_ns": 11169107,
+    "prefill_batch_efficiency": 1.0,
+    "decode_batch_efficiency": 1.0,
+    "decode_interference_factor": 1.0,
     "mixed_prefill_weight": 1.0
   }
 }

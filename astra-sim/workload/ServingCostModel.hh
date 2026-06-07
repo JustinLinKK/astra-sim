@@ -36,12 +36,17 @@ class ServingCostModel {
     uint64_t estimate_kv_transfer_bytes(const ServingRequestState& request) const;
     uint64_t scale_collective_size(uint64_t bytes) const;
     Tick estimate_collective_ns(const ServingCollectiveSpec& collective) const;
+    Tick estimate_first_token_latency_ns(
+        const ServingRequestState& request) const;
 
   private:
     ServingStageBreakdown estimate_stage_breakdown(
         const ServingBatch& batch,
         const ServingCostModelConfig::StageComponentConfig& stage_config,
         bool is_decode_stage) const;
+    Tick estimate_decode_step_latency_ns() const;
+    ServingFirstTokenBackpressurePoint
+    estimate_first_token_backpressure_point() const;
 
     const ServingConfig& config;
     double compute_scale;

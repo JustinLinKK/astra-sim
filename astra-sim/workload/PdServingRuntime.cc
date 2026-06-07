@@ -169,6 +169,9 @@ void PdServingRuntime::schedule_batch(ServingBatch batch) {
             request.phase = RequestPhase::DecodeRunning;
         }
     }
+    if (batch.stage == ServingStageType::PdDecode) {
+        maybe_mark_first_token_at_decode_start(batch);
+    }
     record_stage_schedule(batch, "batch_scheduled");
     active_batches.emplace(batch.batch_id, batch);
 

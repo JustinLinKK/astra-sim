@@ -2,7 +2,8 @@
 
 ## Goal
 
-Extend the current analytical layer so one study can reason about a model with:
+Extend the current analytical layer so one study can eventually reason about a
+model with:
 
 - tensor parallelism
 - pipeline parallelism
@@ -11,6 +12,32 @@ Extend the current analytical layer so one study can reason about a model with:
 - colocated or prefill/decode-disaggregated serving
 
 across a cluster of abstracted accelerators.
+
+## Current Calibration Scope
+
+The main calibrated result is narrower than the full long-term topology target
+above. For the present report, prioritize the unchunked modes:
+
+- `colocated`
+- `pd_disaggregated`
+
+Use `colocated_chunked` and `pd_disaggregated_chunked` as diagnostic chunked
+evidence only. The current chunked artifact passes the available non-overload
+replay, but still lacks overload and broader rate-sweep coverage at the same
+standard as the unchunked PD result. Chunked calibration status is tracked in
+[pd_calibration_plan.md](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/pd_calibration_plan.md).
+
+The real calibration experiment is constrained by available funding and
+hardware: it uses two `L40S` GPUs on the same motherboard. The colocated
+baseline uses one GPU for both prefill and decode. The PD run uses one prefill
+GPU and one decode GPU. There is no inter-node network in the calibrated setup;
+the prefill-to-decode KV handoff is same-node PCIe/NCCL and is currently
+proxy-derived rather than raw NCCL timing.
+
+Therefore, all current simulator calibration and validation claims should be
+scoped to this two-`L40S`, single-node setup. Larger multi-node, TP, PP, EP, and
+DP-attention results should be framed as future extrapolation unless separate
+real measurements are collected.
 
 ## What Exists Today
 
@@ -178,7 +205,63 @@ That is why the remaining work is real SGLang cluster calibration.
 
 ## Recommended Calibration Sequence
 
-### Phase A. Public-Anchor Prior Fit
+### Phase A. Two-`L40S` Unchunked Fit
+
+Use the two real unchunked modes as the primary calibration target:
+
+- one-GPU `colocated`
+- two-GPU `pd_disaggregated` with one prefill worker and one decode worker
+
+Fit the current result with only the focused knobs:
+
+- `cost_model.prefill_base_latency_ns`
+- `cost_model.prefill_ns_per_token`
+- `cost_model.decode_step_latency_ns`
+- `cost_model.first_token_latency_ns`
+- `pd.transfer.latency_ns`
+- `pd.transfer.bandwidth_bytes_per_s`
+- `pd.transfer.efficiency`
+
+Keep PD composition explicit:
+
+- prefill service
+- same-node prefill-to-decode KV handoff
+- decode service
+
+### Phase B. Simulator Closure Test
+
+Re-run the same unchunked request timelines in ASTRA-sim and accept the fit only
+if:
+
+- TTFT, TPOT, and E2E stay within the agreed latency error band
+- throughput and goodput close against the unchunked data
+- colocated and PD use matching request traces
+- overload runs are reported as diagnostics unless matching high-load real data
+  is available
+
+Current unchunked closure passes the configured `15%` non-overload latency MAPE
+threshold for both colocated and PD-disaggregated validation.
+
+Tracked proof artifacts for this closure live in
+[../../../results/serving_pd_disaggregated_unchunked](../../../results/serving_pd_disaggregated_unchunked).
+Those files are the portable commit artifacts; the raw `calibrations/` tree is
+intentionally ignored.
+
+### Phase C. Chunked-Prefill Diagnostic Fit
+
+Chunked prefill now has a diagnostic fit that passes the available non-overload
+replay for `colocated_chunked` and `pd_disaggregated_chunked`. It combines the
+fuller unchunked scaling fit with chunk-specific prefill timing. The remaining
+TODO is:
+
+- reuse identical request timelines across all four modes
+- collect chunk-size sweeps, request-rate sweeps, and overload points
+- require `event_trace.csv`, `stage_metrics.csv`, chunk counts, chunk wait
+  times, and PD transfer timing
+- promote chunked-prefill results only after validation reaches the same
+  standard as unchunked PD
+
+### Phase D. Public-Anchor Prior Fit For Future Scaling
 
 Use [published_benchmark_anchors.json](/home/justin/astra-sim/docs/reports/2026-05-serving-scale/published_benchmark_anchors.json)
 to set initial priors for:
@@ -191,9 +274,10 @@ to set initial priors for:
 
 This phase should only aim for directionally correct throughput ranking.
 
-### Phase B. Single-Node Reproduction
+### Phase E. Larger Hardware Reproduction
 
-Reproduce single-node public setups with SGLang and vLLM:
+If future funding and hardware are available, reproduce public setups with
+SGLang and vLLM:
 
 - 1xH100 or 1xA100 dense serving
 - 4xH100 or 8xH100 dense TP serving
@@ -205,9 +289,10 @@ From these runs, fit:
 - decode base and per-token terms
 - batch efficiency curves by batch size
 
-### Phase C. Multi-GPU And Multi-Node SGLang Fit
+### Phase F. Multi-GPU And Multi-Node SGLang Fit
 
-Run SGLang on a real cluster with:
+Only after separate real hardware is available, run SGLang on a larger cluster
+with:
 
 - TP only
 - TP + PP
@@ -227,9 +312,9 @@ Collect:
 
 Fit the new composite serving cost model from those measurements.
 
-### Phase D. Simulator Closure Test
+### Phase G. Future Cluster Closure Test
 
-Re-run the same traces in ASTRA-sim and accept the fit only if:
+Re-run the same larger-cluster traces in ASTRA-sim and accept the fit only if:
 
 - throughput ranking matches runtime results
 - TTFT and E2E stay within an agreed error band
@@ -238,16 +323,18 @@ Re-run the same traces in ASTRA-sim and accept the fit only if:
 
 ## What Is Left
 
-The highest-value unfinished item is:
+The highest-value unfinished item for the current result is:
 
-- calibrate the simulator against real SGLang multi-GPU and multi-node runs
+- complete and report the two-`L40S` unchunked colocated-versus-PD calibration
+  cleanly
 
-Concretely, what is still missing:
+Concretely, what is still missing for future work:
 
+- chunked-prefill calibration on the same hardware
 - real TP+PP scaling anchors on the exact cluster we care about
 - real EP dispatch and combine overheads
 - real DP-attention memory savings versus synchronization cost
-- real PD transfer and router behavior under realistic traces
+- raw NCCL/router transfer timing under realistic traces
 
 The public blogs and docs are enough to structure the model. They are not
 enough to close the loop without cluster measurements.

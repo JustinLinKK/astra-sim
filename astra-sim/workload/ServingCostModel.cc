@@ -37,6 +37,21 @@ Tick scale_tick(Tick value, double scale) {
                                           static_cast<long double>(scale)));
 }
 
+Tick interpolate_tick(Tick low_value,
+                      Tick high_value,
+                      double fraction) {
+    const auto low = static_cast<long double>(low_value);
+    const auto high = static_cast<long double>(high_value);
+    return static_cast<Tick>(
+        std::llround(low + (high - low) * static_cast<long double>(fraction)));
+}
+
+double interpolate_double(double low_value,
+                          double high_value,
+                          double fraction) {
+    return low_value + (high_value - low_value) * fraction;
+}
+
 uint64_t bytes_per_activation(const ServingModelConfig& model) {
     if (model.bytes_per_activation > 0) {
         return model.bytes_per_activation;
@@ -97,6 +112,103 @@ ServingCostModel::ServingCostModel(const ServingConfig& config,
       compute_scale(compute_scale),
       comm_scale(comm_scale) {}
 
+Tick ServingCostModel::estimate_decode_step_latency_ns() const {
+    const auto& curve = config.cost_model.decode_step_latency_curve;
+    if (!curve.enabled || !config.target_request_rate_per_second.has_value() ||
+        curve.points.empty()) {
+        return scale_tick(config.cost_model.decode_step_latency_ns,
+                          compute_scale);
+    }
+
+    const auto target_rate = *config.target_request_rate_per_second;
+    const auto& points = curve.points;
+    if (target_rate <= points.front().request_rate_per_second) {
+        return scale_tick(points.front().decode_step_latency_ns, compute_scale);
+    }
+    if (target_rate >= points.back().request_rate_per_second) {
+        return scale_tick(points.back().decode_step_latency_ns, compute_scale);
+    }
+
+    for (size_t index = 1; index < points.size(); ++index) {
+        const auto& lower = points[index - 1];
+        const auto& upper = points[index];
+        if (target_rate <= upper.request_rate_per_second) {
+            const auto fraction =
+                (target_rate - lower.request_rate_per_second) /
+                (upper.request_rate_per_second -
+                 lower.request_rate_per_second);
+            return scale_tick(
+                interpolate_tick(lower.decode_step_latency_ns,
+                                 upper.decode_step_latency_ns, fraction),
+                compute_scale);
+        }
+    }
+
+    return scale_tick(config.cost_model.decode_step_latency_ns, compute_scale);
+}
+
+ServingFirstTokenBackpressurePoint
+ServingCostModel::estimate_first_token_backpressure_point() const {
+    const auto& curve = config.cost_model.first_token_backpressure_curve;
+    if (!curve.enabled || !config.target_request_rate_per_second.has_value() ||
+        curve.points.empty()) {
+        return ServingFirstTokenBackpressurePoint{
+            0.0,
+            config.cost_model.first_token_latency_ns,
+            0.0,
+            0.0,
+        };
+    }
+
+    const auto target_rate = *config.target_request_rate_per_second;
+    const auto& points = curve.points;
+    if (target_rate <= points.front().request_rate_per_second) {
+        return points.front();
+    }
+    if (target_rate >= points.back().request_rate_per_second) {
+        return points.back();
+    }
+
+    for (size_t index = 1; index < points.size(); ++index) {
+        const auto& lower = points[index - 1];
+        const auto& upper = points[index];
+        if (target_rate <= upper.request_rate_per_second) {
+            const auto fraction =
+                (target_rate - lower.request_rate_per_second) /
+                (upper.request_rate_per_second -
+                 lower.request_rate_per_second);
+            return ServingFirstTokenBackpressurePoint{
+                target_rate,
+                interpolate_tick(lower.base_latency_ns, upper.base_latency_ns,
+                                 fraction),
+                interpolate_double(lower.knee_request_index,
+                                   upper.knee_request_index, fraction),
+                interpolate_double(
+                    lower.latency_ns_per_request_after_knee,
+                    upper.latency_ns_per_request_after_knee, fraction),
+            };
+        }
+    }
+
+    return ServingFirstTokenBackpressurePoint{
+        0.0,
+        config.cost_model.first_token_latency_ns,
+        0.0,
+        0.0,
+    };
+}
+
+Tick ServingCostModel::estimate_first_token_latency_ns(
+    const ServingRequestState& request) const {
+    const auto point = estimate_first_token_backpressure_point();
+    const auto request_rank =
+        static_cast<double>(request.spec.original_index);
+    const auto extra = std::max(0.0, request_rank - point.knee_request_index) *
+                       point.latency_ns_per_request_after_knee;
+    return point.base_latency_ns +
+           static_cast<Tick>(std::llround(static_cast<long double>(extra)));
+}
+
 ServingStageBreakdown ServingCostModel::estimate_serial_prefill_breakdown_ns(
     uint64_t prompt_tokens) const {
     ServingStageBreakdown breakdown;
@@ -142,6 +254,7 @@ ServingStageBreakdown ServingCostModel::estimate_serial_decode_breakdown_ns(
     breakdown.base_latency_ns = scale_tick(
         include_base_latency ? config.cost_model.decode.base_latency_ns : 0,
         compute_scale);
+    breakdown.step_latency_ns = estimate_decode_step_latency_ns();
     breakdown.attention_compute_ns = scale_tick(
         token_count * config.cost_model.decode.attention_compute_ns_per_token,
         compute_scale);
@@ -404,6 +517,7 @@ ServingStageBreakdown ServingCostModel::estimate_decode_breakdown(
     if (!batch.include_base_latency) {
         breakdown.base_latency_ns = 0;
     }
+    breakdown.step_latency_ns = estimate_decode_step_latency_ns();
     return breakdown;
 }
 

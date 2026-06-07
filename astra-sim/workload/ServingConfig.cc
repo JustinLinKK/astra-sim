@@ -82,6 +82,15 @@ void require_boolean(const json& parent,
     }
 }
 
+void require_array(const json& parent,
+                   const std::string& field_name,
+                   const std::string& source_name) {
+    if (!parent.contains(field_name) || !parent[field_name].is_array()) {
+        serving_config_error("Serving config field '" + field_name +
+                             "' must be an array in " + source_name);
+    }
+}
+
 ComType parse_collective_type(const std::string& type_name,
                               const std::string& field_name,
                               const std::string& source_name) {
@@ -221,7 +230,23 @@ ServingSchedulerPolicy parse_scheduler_policy(const std::string& value,
     if (value == "balanced") {
         return ServingSchedulerPolicy::Balanced;
     }
+    if (value == "fcfs") {
+        return ServingSchedulerPolicy::Fcfs;
+    }
     serving_config_error("Unsupported serving scheduler policy '" + value +
+                         "' in " + source_name);
+}
+
+ServingFirstTokenTiming parse_first_token_timing(
+    const std::string& value,
+    const std::string& source_name) {
+    if (value == "decode_end") {
+        return ServingFirstTokenTiming::DecodeEnd;
+    }
+    if (value == "decode_start") {
+        return ServingFirstTokenTiming::DecodeStart;
+    }
+    serving_config_error("Unsupported serving first_token_timing '" + value +
                          "' in " + source_name);
 }
 
@@ -508,6 +533,108 @@ ServingTransferConfig parse_transfer(const json& parent,
     return transfer;
 }
 
+ServingDecodeStepLatencyCurveConfig parse_decode_step_latency_curve(
+    const json& parent,
+    const std::string& source_name) {
+    ServingDecodeStepLatencyCurveConfig curve;
+    if (!parent.contains("decode_step_latency_curve")) {
+        return curve;
+    }
+    require_object(parent, "decode_step_latency_curve", source_name);
+    const auto& curve_json = parent["decode_step_latency_curve"];
+
+    if (curve_json.contains("enabled")) {
+        require_boolean(curve_json, "enabled", source_name);
+        curve.enabled = curve_json["enabled"].get<bool>();
+    }
+    if (curve_json.contains("signal")) {
+        require_string(curve_json, "signal", source_name);
+        curve.signal = curve_json["signal"].get<std::string>();
+    }
+    if (curve_json.contains("interpolation")) {
+        require_string(curve_json, "interpolation", source_name);
+        curve.interpolation = curve_json["interpolation"].get<std::string>();
+    }
+    if (curve_json.contains("extrapolation")) {
+        require_string(curve_json, "extrapolation", source_name);
+        curve.extrapolation = curve_json["extrapolation"].get<std::string>();
+    }
+    if (curve_json.contains("points")) {
+        require_array(curve_json, "points", source_name);
+        for (const auto& point_json : curve_json["points"]) {
+            if (!point_json.is_object()) {
+                serving_config_error(
+                    "Each decode_step_latency_curve point must be an object in " +
+                    source_name);
+            }
+            require_number(point_json, "request_rate_per_second", source_name);
+            require_unsigned_integer(point_json, "decode_step_latency_ns",
+                                     source_name);
+            curve.points.push_back(ServingDecodeStepLatencyPoint{
+                point_json["request_rate_per_second"].get<double>(),
+                point_json["decode_step_latency_ns"].get<uint64_t>(),
+            });
+        }
+    }
+    return curve;
+}
+
+ServingFirstTokenBackpressureCurveConfig parse_first_token_backpressure_curve(
+    const json& parent,
+    const std::string& source_name) {
+    ServingFirstTokenBackpressureCurveConfig curve;
+    if (!parent.contains("first_token_backpressure_curve")) {
+        return curve;
+    }
+    require_object(parent, "first_token_backpressure_curve", source_name);
+    const auto& curve_json = parent["first_token_backpressure_curve"];
+
+    if (curve_json.contains("enabled")) {
+        require_boolean(curve_json, "enabled", source_name);
+        curve.enabled = curve_json["enabled"].get<bool>();
+    }
+    if (curve_json.contains("signal")) {
+        require_string(curve_json, "signal", source_name);
+        curve.signal = curve_json["signal"].get<std::string>();
+    }
+    if (curve_json.contains("model")) {
+        require_string(curve_json, "model", source_name);
+        curve.model = curve_json["model"].get<std::string>();
+    }
+    if (curve_json.contains("interpolation")) {
+        require_string(curve_json, "interpolation", source_name);
+        curve.interpolation = curve_json["interpolation"].get<std::string>();
+    }
+    if (curve_json.contains("extrapolation")) {
+        require_string(curve_json, "extrapolation", source_name);
+        curve.extrapolation = curve_json["extrapolation"].get<std::string>();
+    }
+    if (curve_json.contains("points")) {
+        require_array(curve_json, "points", source_name);
+        for (const auto& point_json : curve_json["points"]) {
+            if (!point_json.is_object()) {
+                serving_config_error(
+                    "Each first_token_backpressure_curve point must be an object in " +
+                    source_name);
+            }
+            require_number(point_json, "request_rate_per_second", source_name);
+            require_unsigned_integer(point_json, "base_latency_ns",
+                                     source_name);
+            require_number(point_json, "knee_request_index", source_name);
+            require_number(point_json,
+                           "latency_ns_per_request_after_knee",
+                           source_name);
+            curve.points.push_back(ServingFirstTokenBackpressurePoint{
+                point_json["request_rate_per_second"].get<double>(),
+                point_json["base_latency_ns"].get<uint64_t>(),
+                point_json["knee_request_index"].get<double>(),
+                point_json["latency_ns_per_request_after_knee"].get<double>(),
+            });
+        }
+    }
+    return curve;
+}
+
 std::optional<ServingPdConfig> parse_pd(const json& root,
                                         const std::string& source_name) {
     if (!root.contains("pd")) {
@@ -717,6 +844,28 @@ ServingCostModelConfig parse_cost_model(const json& root,
             cost_model.decode_compute_ns_per_token =
                 model_json["decode_ns_per_token"].get<uint64_t>();
         }
+        if (model_json.contains("decode_step_latency_ns")) {
+            require_unsigned_integer(model_json, "decode_step_latency_ns",
+                                     source_name);
+            cost_model.decode_step_latency_ns =
+                model_json["decode_step_latency_ns"].get<uint64_t>();
+        }
+        if (model_json.contains("first_token_latency_ns")) {
+            require_unsigned_integer(model_json, "first_token_latency_ns",
+                                     source_name);
+            cost_model.first_token_latency_ns =
+                model_json["first_token_latency_ns"].get<uint64_t>();
+        }
+        if (model_json.contains("first_token_timing")) {
+            require_string(model_json, "first_token_timing", source_name);
+            cost_model.first_token_timing = parse_first_token_timing(
+                model_json["first_token_timing"].get<std::string>(),
+                source_name);
+        }
+        cost_model.decode_step_latency_curve =
+            parse_decode_step_latency_curve(model_json, source_name);
+        cost_model.first_token_backpressure_curve =
+            parse_first_token_backpressure_curve(model_json, source_name);
         if (model_json.contains("prefill_batch_efficiency")) {
             require_number(model_json, "prefill_batch_efficiency", source_name);
             cost_model.prefill_batch_efficiency =
@@ -929,6 +1078,104 @@ void validate_config(const ServingConfig& config,
             "Serving scheduler prefill_max_requests must be >= 1 in " +
             source_name);
     }
+    if (config.target_request_rate_per_second.has_value() &&
+        *config.target_request_rate_per_second <= 0.0) {
+        serving_config_error(
+            "target_request_rate_per_second must be positive when set in " +
+            source_name);
+    }
+    const auto& decode_curve = config.cost_model.decode_step_latency_curve;
+    if (decode_curve.enabled) {
+        if (decode_curve.signal != "target_request_rate_per_second") {
+            serving_config_error(
+                "decode_step_latency_curve.signal must be 'target_request_rate_per_second' in " +
+                source_name);
+        }
+        if (decode_curve.interpolation != "linear") {
+            serving_config_error(
+                "decode_step_latency_curve.interpolation must be 'linear' in " +
+                source_name);
+        }
+        if (decode_curve.extrapolation != "clamp") {
+            serving_config_error(
+                "decode_step_latency_curve.extrapolation must be 'clamp' in " +
+                source_name);
+        }
+        if (decode_curve.points.empty()) {
+            serving_config_error(
+                "decode_step_latency_curve.points must not be empty when enabled in " +
+                source_name);
+        }
+        double previous_rate = 0.0;
+        bool first_point = true;
+        for (const auto& point : decode_curve.points) {
+            if (point.request_rate_per_second <= 0.0) {
+                serving_config_error(
+                    "decode_step_latency_curve point request_rate_per_second must be positive in " +
+                    source_name);
+            }
+            if (!first_point &&
+                point.request_rate_per_second <= previous_rate) {
+                serving_config_error(
+                    "decode_step_latency_curve points must be strictly increasing by request_rate_per_second in " +
+                    source_name);
+            }
+            previous_rate = point.request_rate_per_second;
+            first_point = false;
+        }
+    }
+    const auto& first_token_curve =
+        config.cost_model.first_token_backpressure_curve;
+    if (first_token_curve.enabled) {
+        if (first_token_curve.signal != "target_request_rate_per_second") {
+            serving_config_error(
+                "first_token_backpressure_curve.signal must be 'target_request_rate_per_second' in " +
+                source_name);
+        }
+        if (first_token_curve.model != "arrival_rank_linear") {
+            serving_config_error(
+                "first_token_backpressure_curve.model must be 'arrival_rank_linear' in " +
+                source_name);
+        }
+        if (first_token_curve.interpolation != "linear") {
+            serving_config_error(
+                "first_token_backpressure_curve.interpolation must be 'linear' in " +
+                source_name);
+        }
+        if (first_token_curve.extrapolation != "clamp") {
+            serving_config_error(
+                "first_token_backpressure_curve.extrapolation must be 'clamp' in " +
+                source_name);
+        }
+        if (first_token_curve.points.empty()) {
+            serving_config_error(
+                "first_token_backpressure_curve.points must not be empty when enabled in " +
+                source_name);
+        }
+        double previous_rate = 0.0;
+        bool first_point = true;
+        for (const auto& point : first_token_curve.points) {
+            if (point.request_rate_per_second <= 0.0) {
+                serving_config_error(
+                    "first_token_backpressure_curve point request_rate_per_second must be positive in " +
+                    source_name);
+            }
+            if (point.knee_request_index < 0.0 ||
+                point.latency_ns_per_request_after_knee < 0.0) {
+                serving_config_error(
+                    "first_token_backpressure_curve point knee and slope must be non-negative in " +
+                    source_name);
+            }
+            if (!first_point &&
+                point.request_rate_per_second <= previous_rate) {
+                serving_config_error(
+                    "first_token_backpressure_curve points must be strictly increasing by request_rate_per_second in " +
+                    source_name);
+            }
+            previous_rate = point.request_rate_per_second;
+            first_point = false;
+        }
+    }
     if (config.runtime.architecture ==
             ServingArchitecture::ColocatedChunked &&
         config.scheduler.chunked_prefill_size == 0) {
@@ -1053,6 +1300,21 @@ ServingConfig parse_serving_config(const json& root,
                                          &config.prefill_collective,
                                          &config.decode_collective);
     config.topology = parse_topology(root, source_name);
+    if (root.contains("benchmark_start_ns")) {
+        require_unsigned_integer(root, "benchmark_start_ns", source_name);
+        config.benchmark_start_ns =
+            root["benchmark_start_ns"].get<uint64_t>();
+    }
+    if (root.contains("target_request_rate_per_second")) {
+        require_number(root, "target_request_rate_per_second", source_name);
+        config.target_request_rate_per_second =
+            root["target_request_rate_per_second"].get<double>();
+    }
+    if (root.contains("benchmark_duration_ns")) {
+        require_unsigned_integer(root, "benchmark_duration_ns", source_name);
+        config.benchmark_duration_ns =
+            root["benchmark_duration_ns"].get<uint64_t>();
+    }
 
     if (config.pd.has_value()) {
         if (config.pd->prefill_max_batch_tokens == 0) {

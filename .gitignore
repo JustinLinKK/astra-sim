@@ -51,3 +51,9 @@ build/cloud_compare/
 build/report_goodput_16gpu_default_*.csv
 build/report_goodput_16gpu_default_*.json
 build/report_goodput_16gpu_dryrun/
+
+# Massive Calibration datasets
+calibrations/
+
+# Massive build artifacts
+build/

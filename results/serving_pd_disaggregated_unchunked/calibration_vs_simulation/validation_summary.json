@@ -1,0 +1,184 @@
+{
+  "acceptance_scope": "non_overloaded",
+  "overload_run_marker": "__rps_16__",
+  "latency_mape_threshold_pct": 15.0,
+  "throughput_mape_threshold_pct": 1.0,
+  "overload_latency_mape_target_pct": 50.0,
+  "overload_throughput_mape_target_pct": 100.0,
+  "overall_pass": true,
+  "modes": {
+    "colocated": {
+      "acceptance": {
+        "scope": "non_overloaded",
+        "paired_runs": 16,
+        "pass": true,
+        "metrics": {
+          "ttft_mean_ns": {
+            "mape_pct": 11.153304070446072,
+            "paired_runs": 16,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "tpot_mean_ns": {
+            "mape_pct": 4.6476417961214755,
+            "paired_runs": 16,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "e2e_mean_ns": {
+            "mape_pct": 4.859958208015334,
+            "paired_runs": 16,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "goodput_reqs_per_sec": {
+            "mape_pct": 1.0883592945636483e-11,
+            "paired_runs": 16,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 1.0,
+            "pass": true
+          },
+          "request_throughput_reqs_per_sec": {
+            "mape_pct": 1.0883592945636483e-11,
+            "paired_runs": 16,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 1.0,
+            "pass": true
+          }
+        }
+      },
+      "overload_diagnostic": {
+        "scope": "overload_only",
+        "paired_runs": 1,
+        "target_pass": true,
+        "metrics": {
+          "ttft_mean_ns": {
+            "mape_pct": 10.273451396854139,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "tpot_mean_ns": {
+            "mape_pct": 6.08986242000103,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "e2e_mean_ns": {
+            "mape_pct": 8.126956518771895,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "goodput_reqs_per_sec": {
+            "mape_pct": 5.185185185160175,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 100.0,
+            "pass": true
+          },
+          "request_throughput_reqs_per_sec": {
+            "mape_pct": 2.637752749550322e-11,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 100.0,
+            "pass": true
+          }
+        }
+      }
+    },
+    "pd_disaggregated": {
+      "acceptance": {
+        "scope": "non_overloaded",
+        "paired_runs": 15,
+        "pass": true,
+        "metrics": {
+          "ttft_mean_ns": {
+            "mape_pct": 10.667615430395001,
+            "paired_runs": 15,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "tpot_mean_ns": {
+            "mape_pct": 1.4305616832765928,
+            "paired_runs": 15,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "e2e_mean_ns": {
+            "mape_pct": 1.6672326001744213,
+            "paired_runs": 15,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 15.0,
+            "pass": true
+          },
+          "goodput_reqs_per_sec": {
+            "mape_pct": 0.11333333334165581,
+            "paired_runs": 15,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 1.0,
+            "pass": true
+          },
+          "request_throughput_reqs_per_sec": {
+            "mape_pct": 0.11333333334165581,
+            "paired_runs": 15,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 1.0,
+            "pass": true
+          }
+        }
+      },
+      "overload_diagnostic": {
+        "scope": "overload_only",
+        "paired_runs": 1,
+        "target_pass": true,
+        "metrics": {
+          "ttft_mean_ns": {
+            "mape_pct": 0.32775609209624584,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "tpot_mean_ns": {
+            "mape_pct": 1.504290541677215,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "e2e_mean_ns": {
+            "mape_pct": 1.37444494942851,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 50.0,
+            "pass": true
+          },
+          "goodput_reqs_per_sec": {
+            "mape_pct": 2.1804893721460502e-11,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 100.0,
+            "pass": true
+          },
+          "request_throughput_reqs_per_sec": {
+            "mape_pct": 2.1809968314908403e-11,
+            "paired_runs": 1,
+            "skipped_zero_baseline": 0,
+            "threshold_pct": 100.0,
+            "pass": true
+          }
+        }
+      }
+    }
+  },
+  "failing_metrics": []
+}

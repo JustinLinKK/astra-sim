@@ -28,6 +28,8 @@ class ColocatedServingRuntime : public ServingRuntimeBase {
     void complete_batch(uint64_t batch_id);
     bool has_prefill_work(size_t replica_id) const;
     bool has_decode_work(size_t replica_id) const;
+    std::optional<ServingStageType> oldest_runnable_stage(
+        size_t replica_id) const;
     void reset_balanced_budget(size_t group_id);
     void complete_prefill_batch(const ServingBatch& batch);
     void complete_decode_batch(const ServingBatch& batch);

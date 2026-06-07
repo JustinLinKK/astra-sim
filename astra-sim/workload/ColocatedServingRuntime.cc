@@ -170,6 +170,47 @@ bool ColocatedServingRuntime::has_decode_work(size_t replica_id) const {
     return false;
 }
 
+std::optional<ServingStageType> ColocatedServingRuntime::oldest_runnable_stage(
+    size_t replica_id) const {
+    bool found = false;
+    Tick oldest_queue_enter_ns = 0;
+    size_t oldest_original_index = 0;
+    ServingStageType oldest_stage = ServingStageType::ColocatedPrefill;
+
+    auto consider = [&](const ServingRequestState& request,
+                        Tick queue_enter_ns,
+                        ServingStageType stage) {
+        if (!found || queue_enter_ns < oldest_queue_enter_ns ||
+            (queue_enter_ns == oldest_queue_enter_ns &&
+             request.spec.original_index < oldest_original_index)) {
+            found = true;
+            oldest_queue_enter_ns = queue_enter_ns;
+            oldest_original_index = request.spec.original_index;
+            oldest_stage = stage;
+        }
+    };
+
+    for (const auto request_index : running_requests_by_replica.at(replica_id)) {
+        const auto& request = requests[request_index];
+        if (request.finished_recorded || request.in_active_batch) {
+            continue;
+        }
+        if (request.remaining_prefill_tokens > 0) {
+            consider(request, request.latest_prefill_queue_enter_ns,
+                     ServingStageType::ColocatedPrefill);
+            continue;
+        }
+        if (request.completed_output_tokens < request.spec.output_tokens) {
+            consider(request, request.latest_decode_queue_enter_ns,
+                     ServingStageType::ColocatedDecode);
+        }
+    }
+    if (!found) {
+        return std::nullopt;
+    }
+    return oldest_stage;
+}
+
 void ColocatedServingRuntime::reset_balanced_budget(size_t group_id) {
     balanced_decode_budget_remaining[group_id] = 4;
 }
@@ -177,10 +218,39 @@ void ColocatedServingRuntime::reset_balanced_budget(size_t group_id) {
 std::optional<ServingBatch> ColocatedServingRuntime::build_decode_batch(
     size_t group_id) {
     const auto& group = topology.group(group_id);
+    const auto& running_requests =
+        running_requests_by_replica.at(group.replica_id);
+    std::vector<size_t> fcfs_ordered_requests;
+    const auto* request_order = &running_requests;
+    if (config.scheduler.scheduler_policy == ServingSchedulerPolicy::Fcfs) {
+        for (const auto request_index : running_requests) {
+            const auto& request = requests[request_index];
+            if (request.replica_id != group.replica_id ||
+                request.finished_recorded || request.in_active_batch ||
+                request.remaining_prefill_tokens > 0 ||
+                request.completed_output_tokens >= request.spec.output_tokens) {
+                continue;
+            }
+            fcfs_ordered_requests.push_back(request_index);
+        }
+        std::sort(fcfs_ordered_requests.begin(), fcfs_ordered_requests.end(),
+                  [this](size_t lhs, size_t rhs) {
+                      const auto& lhs_request = requests[lhs];
+                      const auto& rhs_request = requests[rhs];
+                      if (lhs_request.latest_decode_queue_enter_ns !=
+                          rhs_request.latest_decode_queue_enter_ns) {
+                          return lhs_request.latest_decode_queue_enter_ns <
+                                 rhs_request.latest_decode_queue_enter_ns;
+                      }
+                      return lhs_request.spec.original_index <
+                             rhs_request.spec.original_index;
+                  });
+        request_order = &fcfs_ordered_requests;
+    }
     auto batch = ServingBatchBuilder::build_decode_from_running(
         next_batch_id++, ServingStageType::ColocatedDecode, group_id,
         group.replica_id, group.layout,
-        running_requests_by_replica.at(group.replica_id), requests,
+        *request_order, requests,
         config.scheduler.max_decode_batch_requests);
     if (!batch.has_value()) {
         return std::nullopt;
@@ -195,10 +265,38 @@ std::optional<ServingBatch> ColocatedServingRuntime::build_decode_batch(
 std::optional<ServingBatch> ColocatedServingRuntime::build_prefill_batch(
     size_t group_id) {
     const auto& group = topology.group(group_id);
+    const auto& running_requests =
+        running_requests_by_replica.at(group.replica_id);
+    std::vector<size_t> fcfs_ordered_requests;
+    const auto* request_order = &running_requests;
+    if (config.scheduler.scheduler_policy == ServingSchedulerPolicy::Fcfs) {
+        for (const auto request_index : running_requests) {
+            const auto& request = requests[request_index];
+            if (request.replica_id != group.replica_id ||
+                request.finished_recorded || request.in_active_batch ||
+                request.remaining_prefill_tokens == 0) {
+                continue;
+            }
+            fcfs_ordered_requests.push_back(request_index);
+        }
+        std::sort(fcfs_ordered_requests.begin(), fcfs_ordered_requests.end(),
+                  [this](size_t lhs, size_t rhs) {
+                      const auto& lhs_request = requests[lhs];
+                      const auto& rhs_request = requests[rhs];
+                      if (lhs_request.latest_prefill_queue_enter_ns !=
+                          rhs_request.latest_prefill_queue_enter_ns) {
+                          return lhs_request.latest_prefill_queue_enter_ns <
+                                 rhs_request.latest_prefill_queue_enter_ns;
+                      }
+                      return lhs_request.spec.original_index <
+                             rhs_request.spec.original_index;
+                  });
+        request_order = &fcfs_ordered_requests;
+    }
     auto batch = ServingBatchBuilder::build_prefill_from_running(
         next_batch_id++, ServingStageType::ColocatedPrefill, group_id,
         group.replica_id, group.layout,
-        running_requests_by_replica.at(group.replica_id), requests,
+        *request_order, requests,
         config.scheduler, chunking_enabled);
     if (!batch.has_value()) {
         return std::nullopt;
@@ -239,6 +337,12 @@ std::optional<ServingBatch> ColocatedServingRuntime::build_next_batch(
         return build_with_preference(false);
     case ServingSchedulerPolicy::DecodeFirst:
         return build_with_preference(true);
+    case ServingSchedulerPolicy::Fcfs:
+        if (oldest_runnable_stage(replica_id) ==
+            ServingStageType::ColocatedDecode) {
+            return build_with_preference(true);
+        }
+        return build_with_preference(false);
     case ServingSchedulerPolicy::Balanced:
         if (decode_available && prefill_available) {
             if (balanced_decode_budget_remaining[group_id] > 0) {
@@ -270,6 +374,9 @@ void ColocatedServingRuntime::schedule_batch(ServingBatch batch) {
             mark_decode_start(item.request_index, batch.scheduled_at_ns);
             request.phase = RequestPhase::DecodeRunning;
         }
+    }
+    if (batch.stage == ServingStageType::ColocatedDecode) {
+        maybe_mark_first_token_at_decode_start(batch);
     }
     record_stage_schedule(batch, "batch_scheduled");
     active_batches.emplace(batch.batch_id, batch);

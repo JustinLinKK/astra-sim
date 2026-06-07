@@ -149,6 +149,229 @@ void test_runtime_scheduler_and_slo_config() {
                 "stage metrics output should parse");
 }
 
+void test_calibration_fidelity_config() {
+    const auto config = ServingConfig::load_from_json_text(
+        R"json(
+        {
+          "runtime": {"architecture": "colocated"},
+          "scheduler": {
+            "scheduler_policy": "fcfs",
+            "max_decode_batch_requests": 2
+          },
+          "benchmark_start_ns": 10,
+          "benchmark_duration_ns": 5000,
+          "cost_model": {
+            "prefill_base_latency_ns": 0,
+            "prefill_ns_per_token": 0,
+            "decode_base_latency_ns": 0,
+            "decode_ns_per_token": 10,
+            "decode_step_latency_ns": 1000,
+            "first_token_timing": "decode_start",
+            "first_token_latency_ns": 50
+          },
+          "requests": [
+            {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1},
+            {"request_id": 1, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1}
+          ]
+        }
+        )json",
+        "<calibration-fidelity>");
+
+    expect_true(config.scheduler.scheduler_policy == ServingSchedulerPolicy::Fcfs,
+                "fcfs scheduler policy should parse");
+    expect_true(config.benchmark_start_ns.has_value() &&
+                    *config.benchmark_start_ns == 10,
+                "benchmark_start_ns should parse");
+    expect_true(config.benchmark_duration_ns.has_value() &&
+                    *config.benchmark_duration_ns == 5000,
+                "benchmark_duration_ns should parse");
+    expect_equal(config.cost_model.decode_step_latency_ns, 1000,
+                 "decode_step_latency_ns should parse");
+    expect_equal(config.cost_model.first_token_latency_ns, 50,
+                 "first_token_latency_ns should parse");
+    expect_true(config.cost_model.first_token_timing ==
+                    ServingFirstTokenTiming::DecodeStart,
+                "first_token_timing should parse");
+
+    ServingCostModel cost_model(config, 1.0, 1.0);
+    ServingBatch batch;
+    batch.items.push_back(ServingBatchItem{0, 1});
+    batch.items.push_back(ServingBatchItem{1, 1});
+    const auto breakdown = cost_model.estimate_decode_breakdown(batch);
+    expect_equal(breakdown.step_latency_ns, 1000,
+                 "decode step latency should be charged once per batch");
+    expect_equal(breakdown.total_ns(), 1020,
+                 "decode step latency should not scale by batch tokens");
+}
+
+void test_decode_step_latency_curve() {
+    auto config = ServingConfig::load_from_json_text(
+        R"json(
+        {
+          "runtime": {"architecture": "pd_disaggregated"},
+          "target_request_rate_per_second": 6.0,
+          "pd": {
+            "prefill_workers": 1,
+            "decode_workers": 1,
+            "prefill_max_batch_tokens": 16,
+            "prefill_max_requests": 4,
+            "decode_max_batch_requests": 4
+          },
+          "cost_model": {
+            "prefill_base_latency_ns": 0,
+            "prefill_ns_per_token": 0,
+            "decode_base_latency_ns": 0,
+            "decode_ns_per_token": 10,
+            "decode_step_latency_ns": 50,
+            "first_token_latency_ns": 25,
+            "decode_step_latency_curve": {
+              "enabled": true,
+              "signal": "target_request_rate_per_second",
+              "interpolation": "linear",
+              "extrapolation": "clamp",
+              "points": [
+                {"request_rate_per_second": 2.0, "decode_step_latency_ns": 100},
+                {"request_rate_per_second": 4.0, "decode_step_latency_ns": 200},
+                {"request_rate_per_second": 8.0, "decode_step_latency_ns": 600}
+              ]
+            },
+            "first_token_backpressure_curve": {
+              "enabled": true,
+              "signal": "target_request_rate_per_second",
+              "model": "arrival_rank_linear",
+              "interpolation": "linear",
+              "extrapolation": "clamp",
+              "points": [
+                {
+                  "request_rate_per_second": 2.0,
+                  "base_latency_ns": 10,
+                  "knee_request_index": 1.0,
+                  "latency_ns_per_request_after_knee": 2.0
+                },
+                {
+                  "request_rate_per_second": 4.0,
+                  "base_latency_ns": 20,
+                  "knee_request_index": 2.0,
+                  "latency_ns_per_request_after_knee": 4.0
+                },
+                {
+                  "request_rate_per_second": 8.0,
+                  "base_latency_ns": 60,
+                  "knee_request_index": 6.0,
+                  "latency_ns_per_request_after_knee": 8.0
+                }
+              ]
+            }
+          },
+          "requests": [
+            {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1}
+          ]
+        }
+        )json",
+        "<decode-curve>");
+
+    expect_true(config.target_request_rate_per_second.has_value(),
+                "target_request_rate_per_second should parse");
+    expect_close(*config.target_request_rate_per_second, 6.0, 1e-9,
+                 "target request rate should parse");
+    expect_true(config.cost_model.decode_step_latency_curve.enabled,
+                "decode step latency curve should parse");
+    expect_equal(config.cost_model.decode_step_latency_curve.points.size(), 3,
+                 "decode step latency curve points should parse");
+    expect_true(config.cost_model.first_token_backpressure_curve.enabled,
+                "first token backpressure curve should parse");
+    expect_equal(config.cost_model.first_token_backpressure_curve.points.size(),
+                 3, "first token backpressure curve points should parse");
+
+    ServingCostModel cost_model(config, 1.0, 1.0);
+    ServingBatch batch;
+    batch.items.push_back(ServingBatchItem{0, 1});
+    batch.items.push_back(ServingBatchItem{1, 1});
+    const auto breakdown = cost_model.estimate_decode_breakdown(batch);
+    expect_equal(breakdown.step_latency_ns, 400,
+                 "decode step latency curve should interpolate");
+    expect_equal(breakdown.total_ns(), 420,
+                 "decode step latency curve should affect decode duration");
+    ServingRequestState request_state;
+    request_state.spec = config.requests.front();
+    request_state.spec.original_index = 7;
+    expect_equal(
+        cost_model.estimate_first_token_latency_ns(request_state), 58,
+        "first token backpressure curve should interpolate by request rank");
+
+    config.target_request_rate_per_second = 10.0;
+    ServingCostModel clamped_cost_model(config, 1.0, 1.0);
+    const auto clamped_breakdown =
+        clamped_cost_model.estimate_decode_breakdown(batch);
+    expect_equal(clamped_breakdown.step_latency_ns, 600,
+                 "decode step latency curve should clamp above its range");
+    expect_equal(
+        clamped_cost_model.estimate_first_token_latency_ns(request_state), 68,
+        "first token backpressure curve should clamp above its range");
+
+    const auto scalar_fallback_config = ServingConfig::load_from_json_text(
+        R"json(
+        {
+          "runtime": {"architecture": "pd_disaggregated"},
+          "pd": {
+            "prefill_workers": 1,
+            "decode_workers": 1,
+            "prefill_max_batch_tokens": 16,
+            "prefill_max_requests": 4,
+            "decode_max_batch_requests": 4
+          },
+          "cost_model": {
+            "prefill_base_latency_ns": 0,
+            "prefill_ns_per_token": 0,
+            "decode_base_latency_ns": 0,
+            "decode_ns_per_token": 10,
+            "decode_step_latency_ns": 50,
+            "first_token_latency_ns": 25,
+            "decode_step_latency_curve": {
+              "enabled": true,
+              "points": [
+                {"request_rate_per_second": 2.0, "decode_step_latency_ns": 100},
+                {"request_rate_per_second": 4.0, "decode_step_latency_ns": 200}
+              ]
+            },
+            "first_token_backpressure_curve": {
+              "enabled": true,
+              "points": [
+                {
+                  "request_rate_per_second": 2.0,
+                  "base_latency_ns": 100,
+                  "knee_request_index": 1.0,
+                  "latency_ns_per_request_after_knee": 2.0
+                },
+                {
+                  "request_rate_per_second": 4.0,
+                  "base_latency_ns": 200,
+                  "knee_request_index": 2.0,
+                  "latency_ns_per_request_after_knee": 4.0
+                }
+              ]
+            }
+          },
+          "requests": [
+            {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1}
+          ]
+        }
+        )json",
+        "<decode-curve-fallback>");
+
+    ServingCostModel scalar_fallback_cost_model(scalar_fallback_config, 1.0,
+                                                1.0);
+    const auto scalar_fallback_breakdown =
+        scalar_fallback_cost_model.estimate_decode_breakdown(batch);
+    expect_equal(
+        scalar_fallback_breakdown.step_latency_ns, 50,
+        "enabled curve should fall back to scalar latency without a target rate");
+    expect_equal(
+        scalar_fallback_cost_model.estimate_first_token_latency_ns(request_state),
+        25,
+        "enabled first token curve should fall back to scalar latency without a target rate");
+}
+
 void test_generated_trace_determinism() {
     const std::string trace_json = R"json(
         {
@@ -636,6 +859,77 @@ void test_invalid_configs() {
     }
     expect_true(saw_invalid_slo,
                 "SLOs with no positive thresholds should be rejected");
+
+    bool saw_invalid_curve = false;
+    try {
+        (void)ServingConfig::load_from_json_text(
+            R"json(
+            {
+              "cost_model": {
+                "prefill_base_latency_ns": 0,
+                "prefill_ns_per_token": 1,
+                "decode_base_latency_ns": 0,
+                "decode_ns_per_token": 1,
+                "decode_step_latency_curve": {
+                  "enabled": true,
+                  "points": [
+                    {"request_rate_per_second": 4.0, "decode_step_latency_ns": 100},
+                    {"request_rate_per_second": 2.0, "decode_step_latency_ns": 200}
+                  ]
+                }
+              },
+              "requests": [
+                {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1}
+              ]
+            }
+            )json",
+            "<invalid-curve>");
+    } catch (const std::runtime_error&) {
+        saw_invalid_curve = true;
+    }
+    expect_true(saw_invalid_curve,
+                "decode step latency curve points should be strictly increasing");
+
+    bool saw_invalid_first_token_curve = false;
+    try {
+        (void)ServingConfig::load_from_json_text(
+            R"json(
+            {
+              "cost_model": {
+                "prefill_base_latency_ns": 0,
+                "prefill_ns_per_token": 1,
+                "decode_base_latency_ns": 0,
+                "decode_ns_per_token": 1,
+                "first_token_backpressure_curve": {
+                  "enabled": true,
+                  "points": [
+                    {
+                      "request_rate_per_second": 2.0,
+                      "base_latency_ns": 100,
+                      "knee_request_index": 1.0,
+                      "latency_ns_per_request_after_knee": 2.0
+                    },
+                    {
+                      "request_rate_per_second": 4.0,
+                      "base_latency_ns": 200,
+                      "knee_request_index": -1.0,
+                      "latency_ns_per_request_after_knee": 4.0
+                    }
+                  ]
+                }
+              },
+              "requests": [
+                {"request_id": 0, "arrival_time_ns": 0, "prompt_tokens": 1, "output_tokens": 1}
+              ]
+            }
+            )json",
+            "<invalid-first-token-curve>");
+    } catch (const std::runtime_error&) {
+        saw_invalid_first_token_curve = true;
+    }
+    expect_true(
+        saw_invalid_first_token_curve,
+        "first token backpressure curve should reject negative knee values");
 }
 
 void test_duration_math() {
@@ -684,6 +978,8 @@ int main() {
     try {
         test_explicit_legacy_config();
         test_runtime_scheduler_and_slo_config();
+        test_calibration_fidelity_config();
+        test_decode_step_latency_curve();
         test_generated_trace_determinism();
         test_goodput_math();
         test_transfer_model_math();

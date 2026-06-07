@@ -135,7 +135,14 @@ void SerialServingRuntime::start_prefill_compute(size_t request_index) {
 
 void SerialServingRuntime::start_decode_compute(size_t request_index,
                                                 uint64_t token_index) {
-    mark_decode_start(request_index, Sys::boostedTick());
+    const auto decode_start = Sys::boostedTick();
+    mark_decode_start(request_index, decode_start);
+    if (token_index == 1 &&
+        config.cost_model.first_token_timing ==
+            ServingFirstTokenTiming::DecodeStart) {
+        mark_first_token(request_index,
+                         decode_start + config.cost_model.first_token_latency_ns);
+    }
     requests[request_index].phase = RequestPhase::DecodeRunning;
     const auto delay =
         cost_model.estimate_serial_decode_ns(token_index == 1, 1);

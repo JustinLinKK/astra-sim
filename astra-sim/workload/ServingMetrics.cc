@@ -47,6 +47,7 @@ json stats_to_json(const ServingMetricStats& stats) {
 json breakdown_to_json(const ServingStageBreakdown& breakdown) {
     return json{
         {"base_latency_ns", breakdown.base_latency_ns},
+        {"step_latency_ns", breakdown.step_latency_ns},
         {"attention_compute_ns", breakdown.attention_compute_ns},
         {"ffn_or_expert_compute_ns", breakdown.ffn_or_expert_compute_ns},
         {"tp_collective_ns", breakdown.tp_collective_ns},
@@ -117,6 +118,75 @@ void collect_metric_values(const std::vector<ServingRequestMetrics>& metrics,
         tpot_values->push_back(metric.tpot_ns);
         e2e_values->push_back(static_cast<double>(metric.e2e_ns));
     }
+}
+
+struct BenchmarkWindowSummary {
+    bool configured = false;
+    Tick start_ns = 0;
+    Tick duration_ns = 0;
+    Tick end_ns = 0;
+    uint64_t completed_requests = 0;
+    uint64_t output_tokens = 0;
+    uint64_t good_requests = 0;
+    uint64_t bad_requests = 0;
+    uint64_t ttft_failures = 0;
+    uint64_t tpot_failures = 0;
+    uint64_t e2e_failures = 0;
+};
+
+BenchmarkWindowSummary summarize_benchmark_window(
+    const ServingConfig& config,
+    const std::vector<ServingRequestMetrics>& metrics,
+    Tick simulation_start_time_ns,
+    uint64_t all_output_tokens,
+    uint64_t all_good_requests,
+    uint64_t all_bad_requests,
+    uint64_t all_ttft_failures,
+    uint64_t all_tpot_failures,
+    uint64_t all_e2e_failures) {
+    BenchmarkWindowSummary summary;
+    if (!config.benchmark_duration_ns.has_value() ||
+        *config.benchmark_duration_ns == 0) {
+        summary.completed_requests = metrics.size();
+        summary.output_tokens = all_output_tokens;
+        summary.good_requests = all_good_requests;
+        summary.bad_requests = all_bad_requests;
+        summary.ttft_failures = all_ttft_failures;
+        summary.tpot_failures = all_tpot_failures;
+        summary.e2e_failures = all_e2e_failures;
+        return summary;
+    }
+
+    summary.configured = true;
+    summary.start_ns =
+        config.benchmark_start_ns.value_or(simulation_start_time_ns);
+    summary.duration_ns = *config.benchmark_duration_ns;
+    summary.end_ns = summary.start_ns + summary.duration_ns;
+
+    for (const auto& metric : metrics) {
+        if (metric.finish_time_ns < summary.start_ns ||
+            metric.finish_time_ns > summary.end_ns) {
+            continue;
+        }
+        summary.completed_requests++;
+        summary.output_tokens += metric.output_tokens;
+        if (metric.goodput.request_good) {
+            summary.good_requests++;
+        } else {
+            summary.bad_requests++;
+        }
+        if (!metric.goodput.ttft_pass) {
+            summary.ttft_failures++;
+        }
+        if (!metric.goodput.tpot_pass) {
+            summary.tpot_failures++;
+        }
+        if (!metric.goodput.e2e_pass) {
+            summary.e2e_failures++;
+        }
+    }
+
+    return summary;
 }
 
 }  // namespace
@@ -219,13 +289,13 @@ void write_serving_metrics_csv(const std::string& path,
                   "transfer_handoff_count,max_prefill_chunk_tokens,"
                   "max_transfer_chunk_tokens,ttft_ns,tpot_ns,kv_transfer_bytes,"
                   "kv_resident_bytes,"
-                  "prefill_base_latency_ns,prefill_attention_compute_ns,prefill_ffn_or_expert_compute_ns,"
+                  "prefill_base_latency_ns,prefill_step_latency_ns,prefill_attention_compute_ns,prefill_ffn_or_expert_compute_ns,"
                   "prefill_tp_collective_ns,prefill_pp_activation_ns,prefill_ep_dispatch_ns,"
                   "prefill_dp_attention_sync_ns,prefill_pd_kv_transfer_ns,"
-                  "decode_base_latency_ns,decode_attention_compute_ns,decode_ffn_or_expert_compute_ns,"
+                  "decode_base_latency_ns,decode_step_latency_ns,decode_attention_compute_ns,decode_ffn_or_expert_compute_ns,"
                   "decode_tp_collective_ns,decode_pp_activation_ns,decode_ep_dispatch_ns,"
                   "decode_dp_attention_sync_ns,decode_pd_kv_transfer_ns,"
-                  "transfer_base_latency_ns,transfer_attention_compute_ns,transfer_ffn_or_expert_compute_ns,"
+                  "transfer_base_latency_ns,transfer_step_latency_ns,transfer_attention_compute_ns,transfer_ffn_or_expert_compute_ns,"
                   "transfer_tp_collective_ns,transfer_pp_activation_ns,transfer_ep_dispatch_ns,"
                   "transfer_dp_attention_sync_ns,transfer_pd_kv_transfer_ns,"
                   "e2e_ns,goodput_slo_configured,ttft_slo_pass,tpot_slo_pass,"
@@ -318,6 +388,7 @@ void write_serving_metrics_csv(const std::string& path,
                    << metric.kv_transfer_bytes << ","
                    << metric.kv_resident_bytes << ","
                    << metric.prefill_breakdown.base_latency_ns << ","
+                   << metric.prefill_breakdown.step_latency_ns << ","
                    << metric.prefill_breakdown.attention_compute_ns << ","
                    << metric.prefill_breakdown.ffn_or_expert_compute_ns << ","
                    << metric.prefill_breakdown.tp_collective_ns << ","
@@ -326,6 +397,7 @@ void write_serving_metrics_csv(const std::string& path,
                    << metric.prefill_breakdown.dp_attention_sync_ns << ","
                    << metric.prefill_breakdown.pd_kv_transfer_ns << ","
                    << metric.decode_breakdown.base_latency_ns << ","
+                   << metric.decode_breakdown.step_latency_ns << ","
                    << metric.decode_breakdown.attention_compute_ns << ","
                    << metric.decode_breakdown.ffn_or_expert_compute_ns << ","
                    << metric.decode_breakdown.tp_collective_ns << ","
@@ -334,6 +406,7 @@ void write_serving_metrics_csv(const std::string& path,
                    << metric.decode_breakdown.dp_attention_sync_ns << ","
                    << metric.decode_breakdown.pd_kv_transfer_ns << ","
                    << metric.transfer_breakdown.base_latency_ns << ","
+                   << metric.transfer_breakdown.step_latency_ns << ","
                    << metric.transfer_breakdown.attention_compute_ns << ","
                    << metric.transfer_breakdown.ffn_or_expert_compute_ns << ","
                    << metric.transfer_breakdown.tp_collective_ns << ","
@@ -443,6 +516,8 @@ void write_serving_summary_json(const std::string& path,
             static_cast<double>(metric.transfer_handoff_count));
         total_prefill_breakdown.base_latency_ns +=
             metric.prefill_breakdown.base_latency_ns;
+        total_prefill_breakdown.step_latency_ns +=
+            metric.prefill_breakdown.step_latency_ns;
         total_prefill_breakdown.attention_compute_ns +=
             metric.prefill_breakdown.attention_compute_ns;
         total_prefill_breakdown.ffn_or_expert_compute_ns +=
@@ -459,6 +534,8 @@ void write_serving_summary_json(const std::string& path,
             metric.prefill_breakdown.pd_kv_transfer_ns;
         total_decode_breakdown.base_latency_ns +=
             metric.decode_breakdown.base_latency_ns;
+        total_decode_breakdown.step_latency_ns +=
+            metric.decode_breakdown.step_latency_ns;
         total_decode_breakdown.attention_compute_ns +=
             metric.decode_breakdown.attention_compute_ns;
         total_decode_breakdown.ffn_or_expert_compute_ns +=
@@ -475,6 +552,8 @@ void write_serving_summary_json(const std::string& path,
             metric.decode_breakdown.pd_kv_transfer_ns;
         total_transfer_breakdown.base_latency_ns +=
             metric.transfer_breakdown.base_latency_ns;
+        total_transfer_breakdown.step_latency_ns +=
+            metric.transfer_breakdown.step_latency_ns;
         total_transfer_breakdown.attention_compute_ns +=
             metric.transfer_breakdown.attention_compute_ns;
         total_transfer_breakdown.ffn_or_expert_compute_ns +=
@@ -507,6 +586,14 @@ void write_serving_summary_json(const std::string& path,
 
     const auto makespan_ns = simulation_end_time_ns - simulation_start_time_ns;
     const auto num_requests = metrics.size();
+    const auto benchmark_window = summarize_benchmark_window(
+        config, metrics, simulation_start_time_ns, total_output_tokens,
+        good_requests, bad_requests, ttft_failures, tpot_failures,
+        e2e_failures);
+    const auto throughput_makespan_ns =
+        benchmark_window.configured ? benchmark_window.duration_ns : makespan_ns;
+    const auto throughput_request_count = benchmark_window.completed_requests;
+    const auto throughput_output_tokens = benchmark_window.output_tokens;
     json summary;
     if (!use_enhanced_reporting(config)) {
         summary = json{
@@ -518,9 +605,11 @@ void write_serving_summary_json(const std::string& path,
             {"simulation_end_time_ns", simulation_end_time_ns},
             {"makespan_ns", makespan_ns},
             {"request_throughput_reqs_per_sec",
-             calculate_throughput_per_second(num_requests, makespan_ns)},
+             calculate_throughput_per_second(throughput_request_count,
+                                             throughput_makespan_ns)},
             {"output_token_throughput_tokens_per_sec",
-             calculate_throughput_per_second(total_output_tokens, makespan_ns)},
+             calculate_throughput_per_second(throughput_output_tokens,
+                                             throughput_makespan_ns)},
             {"queue_delay_ns",
              stats_to_json(summarize_serving_metric(queue_delay_values))},
             {"prefill_queue_delay_ns",
@@ -561,6 +650,13 @@ void write_serving_summary_json(const std::string& path,
             {"e2e_ns", stats_to_json(summarize_serving_metric(e2e_values))},
             {"total_prefill_chunks", total_prefill_chunks},
             {"total_transfer_handoffs", total_transfer_handoffs},
+            {"benchmark_window",
+             json{{"configured", benchmark_window.configured},
+                  {"start_ns", benchmark_window.start_ns},
+                  {"duration_ns", benchmark_window.duration_ns},
+                  {"end_ns", benchmark_window.end_ns},
+                  {"completed_requests", benchmark_window.completed_requests},
+                  {"output_tokens", benchmark_window.output_tokens}}},
             {"slo",
              json{{"configured", config.slo.enabled},
                   {"ttft_ns", config.slo.ttft_ns},
@@ -569,19 +665,21 @@ void write_serving_summary_json(const std::string& path,
                                  ? json(*config.slo.e2e_ns)
                                  : json(nullptr)}}},
             {"goodput",
-             json{{"good_requests", good_requests},
-                  {"bad_requests", bad_requests},
+             json{{"good_requests", benchmark_window.good_requests},
+                  {"bad_requests", benchmark_window.bad_requests},
                   {"slo_attainment_fraction",
-                   num_requests == 0
+                   benchmark_window.completed_requests == 0
                        ? 0.0
-                       : static_cast<double>(good_requests) /
-                             static_cast<double>(num_requests)},
+                       : static_cast<double>(benchmark_window.good_requests) /
+                             static_cast<double>(
+                                 benchmark_window.completed_requests)},
                   {"goodput_reqs_per_sec",
-                   calculate_throughput_per_second(good_requests, makespan_ns)},
+                   calculate_throughput_per_second(
+                       benchmark_window.good_requests, throughput_makespan_ns)},
                   {"failure_reasons",
-                   json{{"ttft", ttft_failures},
-                        {"tpot", tpot_failures},
-                        {"e2e", e2e_failures}}}}}
+                   json{{"ttft", benchmark_window.ttft_failures},
+                        {"tpot", benchmark_window.tpot_failures},
+                        {"e2e", benchmark_window.e2e_failures}}}}}
         };
     } else {
         summary = json{
@@ -595,9 +693,11 @@ void write_serving_summary_json(const std::string& path,
             {"simulation_end_time_ns", simulation_end_time_ns},
             {"makespan_ns", makespan_ns},
             {"request_throughput_reqs_per_sec",
-             calculate_throughput_per_second(num_requests, makespan_ns)},
+             calculate_throughput_per_second(throughput_request_count,
+                                             throughput_makespan_ns)},
             {"output_token_throughput_tokens_per_sec",
-             calculate_throughput_per_second(total_output_tokens, makespan_ns)},
+             calculate_throughput_per_second(throughput_output_tokens,
+                                             throughput_makespan_ns)},
             {"queue_delay_ns",
              stats_to_json(summarize_serving_metric(queue_delay_values))},
             {"prefill_queue_delay_ns",
@@ -641,6 +741,13 @@ void write_serving_summary_json(const std::string& path,
             {"prefill_breakdown", breakdown_to_json(total_prefill_breakdown)},
             {"decode_breakdown", breakdown_to_json(total_decode_breakdown)},
             {"transfer_breakdown", breakdown_to_json(total_transfer_breakdown)},
+            {"benchmark_window",
+             json{{"configured", benchmark_window.configured},
+                  {"start_ns", benchmark_window.start_ns},
+                  {"duration_ns", benchmark_window.duration_ns},
+                  {"end_ns", benchmark_window.end_ns},
+                  {"completed_requests", benchmark_window.completed_requests},
+                  {"output_tokens", benchmark_window.output_tokens}}},
             {"slo",
              json{{"configured", config.slo.enabled},
                   {"ttft_ns", config.slo.ttft_ns},
@@ -649,19 +756,21 @@ void write_serving_summary_json(const std::string& path,
                                  ? json(*config.slo.e2e_ns)
                                  : json(nullptr)}}},
             {"goodput",
-             json{{"good_requests", good_requests},
-                  {"bad_requests", bad_requests},
+             json{{"good_requests", benchmark_window.good_requests},
+                  {"bad_requests", benchmark_window.bad_requests},
                   {"slo_attainment_fraction",
-                   num_requests == 0
+                   benchmark_window.completed_requests == 0
                        ? 0.0
-                       : static_cast<double>(good_requests) /
-                             static_cast<double>(num_requests)},
+                       : static_cast<double>(benchmark_window.good_requests) /
+                             static_cast<double>(
+                                 benchmark_window.completed_requests)},
                   {"goodput_reqs_per_sec",
-                   calculate_throughput_per_second(good_requests, makespan_ns)},
+                   calculate_throughput_per_second(
+                       benchmark_window.good_requests, throughput_makespan_ns)},
                   {"failure_reasons",
-                   json{{"ttft", ttft_failures},
-                        {"tpot", tpot_failures},
-                        {"e2e", e2e_failures}}}}}
+                   json{{"ttft", benchmark_window.ttft_failures},
+                        {"tpot", benchmark_window.tpot_failures},
+                        {"e2e", benchmark_window.e2e_failures}}}}}
         };
     }
 

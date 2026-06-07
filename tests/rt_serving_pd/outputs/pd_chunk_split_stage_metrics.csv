@@ -1,0 +1,5 @@
+batch_id,worker_id,stage,request_ids,request_count,total_tokens,include_base_latency,scheduled_at_ns,completed_at_ns,duration_ns,running_request_count,admission_queue_depth,prefill_queue_depth,transfer_queue_depth,decode_queue_depth,inflight_transfer_count
+1,0,pd_prefill,0,1,2,false,0,2000,2000,1,0,1,0,0,0
+2,0,pd_prefill,0,1,2,false,2000,4000,2000,1,0,1,0,0,0
+4,0,pd_prefill,0,1,1,false,4000,5000,1000,1,0,1,0,0,0
+7,1,pd_decode,0,1,1,true,5000,5500,500,1,0,0,0,1,0

@@ -1,0 +1,600 @@
+{
+  "source_root": "/home/justin/astra-sim/calibrations/unchunked_scaling_20260530_075459",
+  "run_scope": "all",
+  "fit_target": "request_latency",
+  "simulator_fidelity_adjustments": true,
+  "base_fit_json": null,
+  "modes": {
+    "colocated": {
+      "cost_model": {
+        "prefill_base_latency_ns": 57274198,
+        "prefill_ns_per_token": 45722,
+        "decode_base_latency_ns": 0,
+        "decode_ns_per_token": 0,
+        "prefill_batch_efficiency": 1.0,
+        "decode_batch_efficiency": 1.0,
+        "decode_interference_factor": 1.0,
+        "mixed_prefill_weight": 1.0,
+        "decode_step_latency_ns": 20709165,
+        "first_token_timing": "decode_start",
+        "first_token_latency_ns": 0
+      },
+      "fit_stats": {
+        "prefill_samples": 12120,
+        "decode_samples": 12120,
+        "fit_method": {
+          "prefill": "ols",
+          "decode": "ols"
+        },
+        "prefill_rmse_ns": 18630504.69044965,
+        "decode_rmse_ns": 851622809.1384149,
+        "first_token_samples": 12120,
+        "first_token_latency_method": "mean_ttft_minus_prefill_minus_transfer"
+      },
+      "simulator_fidelity_adjustment": {
+        "enabled": true,
+        "method": "simulator_run_grid_search",
+        "reason": "request-level prefill/decode latency coefficients are charged through colocated batch scheduling",
+        "prefill_scale": 0.85,
+        "decode_step_scale": 0.85,
+        "unadjusted_costs": {
+          "prefill_base_latency_ns": 67381409,
+          "prefill_ns_per_token": 53791,
+          "decode_step_latency_ns": 24363723
+        }
+      },
+      "source_runs": {
+        "discovered": 17,
+        "used": 16
+      }
+    },
+    "pd_disaggregated": {
+      "cost_model": {
+        "prefill_base_latency_ns": 37956482,
+        "prefill_ns_per_token": 52784,
+        "decode_base_latency_ns": 0,
+        "decode_ns_per_token": 0,
+        "prefill_batch_efficiency": 1.0,
+        "decode_batch_efficiency": 1.0,
+        "decode_interference_factor": 1.0,
+        "mixed_prefill_weight": 1.0,
+        "decode_step_latency_ns": 24479123,
+        "first_token_timing": "decode_start",
+        "first_token_latency_ns": 84035825,
+        "decode_step_latency_curve": {
+          "enabled": true,
+          "signal": "target_request_rate_per_second",
+          "interpolation": "linear",
+          "extrapolation": "clamp",
+          "points": [
+            {
+              "request_rate_per_second": 0.25,
+              "decode_step_latency_ns": 22534106
+            },
+            {
+              "request_rate_per_second": 0.375,
+              "decode_step_latency_ns": 22736853
+            },
+            {
+              "request_rate_per_second": 0.5,
+              "decode_step_latency_ns": 22916480
+            },
+            {
+              "request_rate_per_second": 0.625,
+              "decode_step_latency_ns": 23031874
+            },
+            {
+              "request_rate_per_second": 0.75,
+              "decode_step_latency_ns": 23152845
+            },
+            {
+              "request_rate_per_second": 1.0,
+              "decode_step_latency_ns": 23266404
+            },
+            {
+              "request_rate_per_second": 2.0,
+              "decode_step_latency_ns": 24593467
+            },
+            {
+              "request_rate_per_second": 4.0,
+              "decode_step_latency_ns": 27835111
+            },
+            {
+              "request_rate_per_second": 8.0,
+              "decode_step_latency_ns": 33524887
+            },
+            {
+              "request_rate_per_second": 16.0,
+              "decode_step_latency_ns": 36250000
+            }
+          ]
+        },
+        "first_token_backpressure_curve": {
+          "enabled": true,
+          "signal": "target_request_rate_per_second",
+          "model": "arrival_rank_linear",
+          "interpolation": "linear",
+          "extrapolation": "clamp",
+          "points": [
+            {
+              "request_rate_per_second": 0.25,
+              "base_latency_ns": 75216218,
+              "knee_request_index": 727.0,
+              "latency_ns_per_request_after_knee": 5641.058301834512
+            },
+            {
+              "request_rate_per_second": 0.375,
+              "base_latency_ns": 77070880,
+              "knee_request_index": 985.0,
+              "latency_ns_per_request_after_knee": 186192.8348215842
+            },
+            {
+              "request_rate_per_second": 0.5,
+              "base_latency_ns": 77873287,
+              "knee_request_index": 624.0,
+              "latency_ns_per_request_after_knee": 4958.654672943821
+            },
+            {
+              "request_rate_per_second": 0.625,
+              "base_latency_ns": 79252211,
+              "knee_request_index": 0.0,
+              "latency_ns_per_request_after_knee": 0.0
+            },
+            {
+              "request_rate_per_second": 0.75,
+              "base_latency_ns": 80158678,
+              "knee_request_index": 766.0,
+              "latency_ns_per_request_after_knee": 4091.8589260098524
+            },
+            {
+              "request_rate_per_second": 1.0,
+              "base_latency_ns": 78410069,
+              "knee_request_index": 19.0,
+              "latency_ns_per_request_after_knee": 3019.2179722137603
+            },
+            {
+              "request_rate_per_second": 2.0,
+              "base_latency_ns": 84943203,
+              "knee_request_index": 997.0,
+              "latency_ns_per_request_after_knee": 895836.9641354438
+            },
+            {
+              "request_rate_per_second": 4.0,
+              "base_latency_ns": 96600072,
+              "knee_request_index": 807.0,
+              "latency_ns_per_request_after_knee": 10718.901026766824
+            },
+            {
+              "request_rate_per_second": 8.0,
+              "base_latency_ns": 115441823,
+              "knee_request_index": 9.0,
+              "latency_ns_per_request_after_knee": 8380.094538938929
+            },
+            {
+              "request_rate_per_second": 16.0,
+              "base_latency_ns": 105778206,
+              "knee_request_index": 42.0,
+              "latency_ns_per_request_after_knee": 17569480.86227951
+            }
+          ]
+        }
+      },
+      "fit_stats": {
+        "prefill_samples": 11120,
+        "decode_samples": 11120,
+        "fit_method": {
+          "prefill": "ols",
+          "decode": "ols"
+        },
+        "prefill_rmse_ns": 12280258.523420874,
+        "decode_rmse_ns": 836110636.0407449,
+        "first_token_samples": 11120,
+        "first_token_latency_method": "mean_ttft_minus_prefill_minus_transfer",
+        "decode_step_latency_curve_points": 10,
+        "first_token_backpressure_curve_points": 10
+      },
+      "decode_step_latency_curve_fit": {
+        "method": "successful_request_decode_duration_per_output_token_by_target_rate",
+        "signal": "target_request_rate_per_second",
+        "points": [
+          {
+            "request_rate_per_second": 0.25,
+            "decode_step_latency_ns": 22534106,
+            "raw_request_decode_step_latency_ns": 22534106,
+            "capacity_limited_step_latency_ns": 2320000000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 2000,
+            "output_tokens": 512000.0,
+            "decode_duration_ns": 11537462053210.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_25__seed_0",
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_1__rps_0_25__seed_1"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.375,
+            "decode_step_latency_ns": 22736853,
+            "raw_request_decode_step_latency_ns": 22736853,
+            "capacity_limited_step_latency_ns": 1546666667,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 5820634456981.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_375__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.5,
+            "decode_step_latency_ns": 22916480,
+            "raw_request_decode_step_latency_ns": 22916480,
+            "capacity_limited_step_latency_ns": 1160000000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 2000,
+            "output_tokens": 512000.0,
+            "decode_duration_ns": 11733237746826.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_0_5__seed_0",
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_5__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.625,
+            "decode_step_latency_ns": 23031874,
+            "raw_request_decode_step_latency_ns": 23031874,
+            "capacity_limited_step_latency_ns": 928000000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 5896159812346.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_625__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.75,
+            "decode_step_latency_ns": 23152845,
+            "raw_request_decode_step_latency_ns": 23152845,
+            "capacity_limited_step_latency_ns": 773333333,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 5927128365793.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_75__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 1.0,
+            "decode_step_latency_ns": 23266404,
+            "raw_request_decode_step_latency_ns": 23266404,
+            "capacity_limited_step_latency_ns": 610669800,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1120,
+            "output_tokens": 272320.0,
+            "decode_duration_ns": 6335907190747.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_long_long__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_long_short__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_short_long__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_short_short__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 2.0,
+            "decode_step_latency_ns": 24593467,
+            "raw_request_decode_step_latency_ns": 24593467,
+            "capacity_limited_step_latency_ns": 290000000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 6295927618849.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_2__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 4.0,
+            "decode_step_latency_ns": 27835111,
+            "raw_request_decode_step_latency_ns": 27835111,
+            "capacity_limited_step_latency_ns": 145000000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 7125788401635.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_4__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 8.0,
+            "decode_step_latency_ns": 33524887,
+            "raw_request_decode_step_latency_ns": 33524887,
+            "capacity_limited_step_latency_ns": 72500000,
+            "capacity_limited": false,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 8582371142280.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_8__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 16.0,
+            "decode_step_latency_ns": 36250000,
+            "raw_request_decode_step_latency_ns": 71269806,
+            "capacity_limited_step_latency_ns": 36250000,
+            "capacity_limited": true,
+            "capacity_factor": 1.16,
+            "samples": 1000,
+            "output_tokens": 256000.0,
+            "decode_duration_ns": 18245070243325.0,
+            "decode_capacity_request_slots": 128.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_16__seed_0"
+            ],
+            "overload_source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_16__seed_0"
+            ],
+            "overload_only": true
+          }
+        ]
+      },
+      "first_token_backpressure_curve_fit": {
+        "method": "ttft_residual_arrival_rank_linear",
+        "signal": "target_request_rate_per_second",
+        "model": "arrival_rank_linear",
+        "points": [
+          {
+            "request_rate_per_second": 0.25,
+            "base_latency_ns": 75216218,
+            "knee_request_index": 727.0,
+            "latency_ns_per_request_after_knee": 5641.058301834512,
+            "samples": 2000,
+            "rmse_ns": 12198228.770553494,
+            "golden_ttft_pass_count": 2000,
+            "predicted_ttft_pass_count": 2000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_25__seed_0",
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_1__rps_0_25__seed_1"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.375,
+            "base_latency_ns": 77070880,
+            "knee_request_index": 985.0,
+            "latency_ns_per_request_after_knee": 186192.8348215842,
+            "samples": 1000,
+            "rmse_ns": 11178190.190340804,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_375__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.5,
+            "base_latency_ns": 77873287,
+            "knee_request_index": 624.0,
+            "latency_ns_per_request_after_knee": 4958.654672943821,
+            "samples": 2000,
+            "rmse_ns": 11723431.957443282,
+            "golden_ttft_pass_count": 2000,
+            "predicted_ttft_pass_count": 2000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_0_5__seed_0",
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_5__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.625,
+            "base_latency_ns": 79252211,
+            "knee_request_index": 0.0,
+            "latency_ns_per_request_after_knee": 0.0,
+            "samples": 1000,
+            "rmse_ns": 10381602.035582252,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_625__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 0.75,
+            "base_latency_ns": 80158678,
+            "knee_request_index": 766.0,
+            "latency_ns_per_request_after_knee": 4091.8589260098524,
+            "samples": 1000,
+            "rmse_ns": 11115992.146268267,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_0__rps_0_75__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 1.0,
+            "base_latency_ns": 78410069,
+            "knee_request_index": 19.0,
+            "latency_ns_per_request_after_knee": 3019.2179722137603,
+            "samples": 1120,
+            "rmse_ns": 18688606.112811666,
+            "golden_ttft_pass_count": 1120,
+            "predicted_ttft_pass_count": 1120,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_long_long__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_long_short__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_short_long__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0",
+              "service_baseline_short_short__pd_disaggregated__sharegpt_seed_0__rps_1__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 2.0,
+            "base_latency_ns": 84943203,
+            "knee_request_index": 997.0,
+            "latency_ns_per_request_after_knee": 895836.9641354438,
+            "samples": 1000,
+            "rmse_ns": 12490012.83937324,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_2__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 4.0,
+            "base_latency_ns": 96600072,
+            "knee_request_index": 807.0,
+            "latency_ns_per_request_after_knee": 10718.901026766824,
+            "samples": 1000,
+            "rmse_ns": 16589824.38395582,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_4__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 8.0,
+            "base_latency_ns": 115441823,
+            "knee_request_index": 9.0,
+            "latency_ns_per_request_after_knee": 8380.094538938929,
+            "samples": 1000,
+            "rmse_ns": 22373575.40922045,
+            "golden_ttft_pass_count": 1000,
+            "predicted_ttft_pass_count": 1000,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_8__seed_0"
+            ],
+            "overload_source_run_ids": [],
+            "overload_only": false
+          },
+          {
+            "request_rate_per_second": 16.0,
+            "base_latency_ns": 105778206,
+            "knee_request_index": 42.0,
+            "latency_ns_per_request_after_knee": 17569480.86227951,
+            "samples": 1000,
+            "rmse_ns": 696990080.1932325,
+            "golden_ttft_pass_count": 146,
+            "predicted_ttft_pass_count": 148,
+            "ttft_slo_ns": 2000000000.0,
+            "source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_16__seed_0"
+            ],
+            "overload_source_run_ids": [
+              "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_16__seed_0"
+            ],
+            "overload_only": true
+          }
+        ]
+      },
+      "source_runs": {
+        "discovered": 17,
+        "used": 15
+      },
+      "transfer": {
+        "enabled": true,
+        "latency_ns": 868,
+        "bandwidth_bytes_per_s": 857892877063549.4,
+        "efficiency": 1.0,
+        "overlap_enabled": false,
+        "bytes_per_prompt_token": 0,
+        "override_bytes_per_prompt_token": false
+      },
+      "transfer_fit": {
+        "samples": 12120,
+        "fit_method": "ols",
+        "latency_ns": 867.8800396251486,
+        "ns_per_byte": 1.1656466987147206e-06,
+        "bandwidth_bytes_per_s": 857892877063549.4,
+        "rmse_ns": 578.7244556640466,
+        "timing_source": "proxy_derived",
+        "timing_method": "prefill_end_to_decode_start",
+        "timing_observation": "proxy_handoff_interval_not_raw_nccl"
+      }
+    }
+  },
+  "skipped_runs": [
+    {
+      "mode": "pd_disaggregated",
+      "run_id": "rate_sweep_near_knee__pd_disaggregated__sharegpt_seed_1__rps_0_375__seed_1",
+      "reason": "missing required file(s): request_metrics.csv, pd_stage_metrics.csv"
+    }
+  ],
+  "excluded_runs": [
+    {
+      "mode": "colocated",
+      "run_id": "pilot_rate_sweep__colocated__sharegpt_seed_0__rps_16__seed_0",
+      "reason": "overload_service_fit_exclusion"
+    },
+    {
+      "mode": "pd_disaggregated",
+      "run_id": "pilot_rate_sweep__pd_disaggregated__sharegpt_seed_0__rps_16__seed_0",
+      "reason": "overload_service_fit_exclusion"
+    }
+  ]
+}

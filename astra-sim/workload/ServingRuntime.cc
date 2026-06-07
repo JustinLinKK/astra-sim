@@ -209,6 +209,23 @@ void ServingRuntimeBase::mark_first_token(size_t request_index, Tick when) {
     }
 }
 
+void ServingRuntimeBase::maybe_mark_first_token_at_decode_start(
+    const ServingBatch& batch) {
+    if (config.cost_model.first_token_timing !=
+        ServingFirstTokenTiming::DecodeStart) {
+        return;
+    }
+    for (const auto& item : batch.items) {
+        const auto& request = requests.at(item.request_index);
+        if (request.completed_output_tokens == 0) {
+            const auto first_token_time =
+                batch.scheduled_at_ns +
+                cost_model.estimate_first_token_latency_ns(request);
+            mark_first_token(item.request_index, first_token_time);
+        }
+    }
+}
+
 void ServingRuntimeBase::mark_request_finished(size_t request_index, Tick when) {
     auto& request = requests.at(request_index);
     request.finish_time_ns = when;
@@ -242,6 +259,8 @@ void ServingRuntimeBase::add_prefill_breakdown(
     auto& request = requests.at(request_index);
     request.accumulated_prefill_breakdown.base_latency_ns +=
         breakdown.base_latency_ns;
+    request.accumulated_prefill_breakdown.step_latency_ns +=
+        breakdown.step_latency_ns;
     request.accumulated_prefill_breakdown.attention_compute_ns +=
         breakdown.attention_compute_ns;
     request.accumulated_prefill_breakdown.ffn_or_expert_compute_ns +=
@@ -264,6 +283,8 @@ void ServingRuntimeBase::add_decode_breakdown(
     auto& request = requests.at(request_index);
     request.accumulated_decode_breakdown.base_latency_ns +=
         breakdown.base_latency_ns;
+    request.accumulated_decode_breakdown.step_latency_ns +=
+        breakdown.step_latency_ns;
     request.accumulated_decode_breakdown.attention_compute_ns +=
         breakdown.attention_compute_ns;
     request.accumulated_decode_breakdown.ffn_or_expert_compute_ns +=
@@ -286,6 +307,8 @@ void ServingRuntimeBase::add_transfer_breakdown(
     auto& request = requests.at(request_index);
     request.accumulated_transfer_breakdown.base_latency_ns +=
         breakdown.base_latency_ns;
+    request.accumulated_transfer_breakdown.step_latency_ns +=
+        breakdown.step_latency_ns;
     request.accumulated_transfer_breakdown.attention_compute_ns +=
         breakdown.attention_compute_ns;
     request.accumulated_transfer_breakdown.ffn_or_expert_compute_ns +=

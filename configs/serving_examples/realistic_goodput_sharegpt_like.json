@@ -1,6 +1,6 @@
 {
   "runtime": {
-    "architecture": "colocated_chunked",
+    "architecture": "colocated",
     "seed": 20260511
   },
   "scheduler": {
@@ -8,7 +8,7 @@
     "scheduler_policy": "balanced",
     "max_prefill_batch_tokens": 8192,
     "max_decode_batch_requests": 32,
-    "chunked_prefill_size": 2048,
+    "chunked_prefill_size": 0,
     "prefill_max_requests": 16,
     "enable_mixed_chunk": false
   },

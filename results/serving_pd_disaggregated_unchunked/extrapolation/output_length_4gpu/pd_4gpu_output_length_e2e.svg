@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="996">
+<rect width="1180" height="996" fill="#ffffff" />
+<style>text{font-family:Arial,Helvetica,sans-serif;}.muted{fill:#626262}.grid{stroke:#e8e8e8}.axis{stroke:#333}</style>
+<text x="590.0" y="34" text-anchor="middle" font-size="24" font-weight="700">Mean E2E Latency by Output Length</text>
+<text x="590.0" y="58" text-anchor="middle" font-size="13" class="muted">Each panel fixes average output tokens; average input is 512 tokens. X-axis sweeps request rate.</text>
+<text x="590.0" y="77" text-anchor="middle" font-size="13" class="muted">Raw ms values; lower is better. All rows are extrapolated until matching measurements exist.</text>
+<text x="88" y="92" font-size="16" font-weight="700">avg output 16 tokens</text>
+<line x1="88" y1="276.0" x2="990" y2="276.0" class="grid" />
+<text x="78" y="280.0" text-anchor="end" font-size="11" class="muted">279.3</text>
+<line x1="88" y1="233.5" x2="990" y2="233.5" class="grid" />
+<text x="78" y="237.5" text-anchor="end" font-size="11" class="muted">1486.6</text>
+<line x1="88" y1="191.0" x2="990" y2="191.0" class="grid" />
+<text x="78" y="195.0" text-anchor="end" font-size="11" class="muted">2693.9</text>
+<line x1="88" y1="148.5" x2="990" y2="148.5" class="grid" />
+<text x="78" y="152.5" text-anchor="end" font-size="11" class="muted">3901.1</text>
+<line x1="88" y1="106.0" x2="990" y2="106.0" class="grid" />
+<text x="78" y="110.0" text-anchor="end" font-size="11" class="muted">5108.4</text>
+<line x1="88.0" y1="106" x2="88.0" y2="276" class="grid" />
+<line x1="990.0" y1="106" x2="990.0" y2="276" class="grid" />
+<line x1="88" y1="276" x2="990" y2="276" class="axis" />
+<path d="M 88.0 263.7 L 990.0 260.6" fill="none" stroke="#d62728" stroke-width="2.5" />
+<circle cx="88.0" cy="263.7" r="4.5" fill="#d62728" />
+<circle cx="990.0" cy="260.6" r="4.5" fill="#d62728" />
+<text x="998.0" y="264.6" font-size="11" fill="#d62728">715.5</text>
+<path d="M 88.0 264.3 L 990.0 262.4" fill="none" stroke="#1f77b4" stroke-width="2.5" />
+<circle cx="88.0" cy="264.3" r="4.5" fill="#1f77b4" />
+<circle cx="990.0" cy="262.4" r="4.5" fill="#1f77b4" />
+<text x="998.0" y="266.4" font-size="11" fill="#1f77b4">666</text>
+<path d="M 88.0 264.0 L 990.0 262.4" fill="none" stroke="#2ca02c" stroke-width="2.5" />
+<circle cx="88.0" cy="264.0" r="4.5" fill="#2ca02c" />
+<circle cx="990.0" cy="262.4" r="4.5" fill="#2ca02c" />
+<text x="998.0" y="266.4" font-size="11" fill="#2ca02c">665.3</text>
+<text x="88" y="306" font-size="16" font-weight="700">avg output 32 tokens</text>
+<line x1="88" y1="490.0" x2="990" y2="490.0" class="grid" />
+<text x="78" y="494.0" text-anchor="end" font-size="11" class="muted">279.3</text>
+<line x1="88" y1="447.5" x2="990" y2="447.5" class="grid" />
+<text x="78" y="451.5" text-anchor="end" font-size="11" class="muted">1486.6</text>
+<line x1="88" y1="405.0" x2="990" y2="405.0" class="grid" />
+<text x="78" y="409.0" text-anchor="end" font-size="11" class="muted">2693.9</text>
+<line x1="88" y1="362.5" x2="990" y2="362.5" class="grid" />
+<text x="78" y="366.5" text-anchor="end" font-size="11" class="muted">3901.1</text>
+<line x1="88" y1="320.0" x2="990" y2="320.0" class="grid" />
+<text x="78" y="324.0" text-anchor="end" font-size="11" class="muted">5108.4</text>
+<line x1="88.0" y1="320" x2="88.0" y2="490" class="grid" />
+<line x1="990.0" y1="320" x2="990.0" y2="490" class="grid" />
+<line x1="88" y1="490" x2="990" y2="490" class="axis" />
+<path d="M 88.0 458.8 L 990.0 454.3" fill="none" stroke="#d62728" stroke-width="2.5" />
+<circle cx="88.0" cy="458.8" r="4.5" fill="#d62728" />
+<circle cx="990.0" cy="454.3" r="4.5" fill="#d62728" />
+<text x="998.0" y="458.3" font-size="11" fill="#d62728">1293.4</text>
+<path d="M 88.0 459.3 L 990.0 455.9" fill="none" stroke="#1f77b4" stroke-width="2.5" />
+<circle cx="88.0" cy="459.3" r="4.5" fill="#1f77b4" />
+<circle cx="990.0" cy="455.9" r="4.5" fill="#1f77b4" />
+<text x="998.0" y="459.9" font-size="11" fill="#1f77b4">1247.3</text>
+<path d="M 88.0 459.2 L 990.0 456.0" fill="none" stroke="#2ca02c" stroke-width="2.5" />
+<circle cx="88.0" cy="459.2" r="4.5" fill="#2ca02c" />
+<circle cx="990.0" cy="456.0" r="4.5" fill="#2ca02c" />
+<text x="998.0" y="460.0" font-size="11" fill="#2ca02c">1245.3</text>
+<text x="88" y="520" font-size="16" font-weight="700">avg output 64 tokens</text>
+<line x1="88" y1="704.0" x2="990" y2="704.0" class="grid" />
+<text x="78" y="708.0" text-anchor="end" font-size="11" class="muted">279.3</text>
+<line x1="88" y1="661.5" x2="990" y2="661.5" class="grid" />
+<text x="78" y="665.5" text-anchor="end" font-size="11" class="muted">1486.6</text>
+<line x1="88" y1="619.0" x2="990" y2="619.0" class="grid" />
+<text x="78" y="623.0" text-anchor="end" font-size="11" class="muted">2693.9</text>
+<line x1="88" y1="576.5" x2="990" y2="576.5" class="grid" />
+<text x="78" y="580.5" text-anchor="end" font-size="11" class="muted">3901.1</text>
+<line x1="88" y1="534.0" x2="990" y2="534.0" class="grid" />
+<text x="78" y="538.0" text-anchor="end" font-size="11" class="muted">5108.4</text>
+<line x1="88.0" y1="534" x2="88.0" y2="704" class="grid" />
+<line x1="990.0" y1="534" x2="990.0" y2="704" class="grid" />
+<line x1="88" y1="704" x2="990" y2="704" class="axis" />
+<path d="M 88.0 635.0 L 990.0 627.4" fill="none" stroke="#d62728" stroke-width="2.5" />
+<circle cx="88.0" cy="635.0" r="4.5" fill="#d62728" />
+<circle cx="990.0" cy="627.4" r="4.5" fill="#d62728" />
+<text x="998.0" y="631.4" font-size="11" fill="#d62728">2454.6</text>
+<path d="M 88.0 635.6 L 990.0 629.1" fill="none" stroke="#1f77b4" stroke-width="2.5" />
+<circle cx="88.0" cy="635.6" r="4.5" fill="#1f77b4" />
+<circle cx="990.0" cy="629.1" r="4.5" fill="#1f77b4" />
+<text x="998.0" y="633.1" font-size="11" fill="#1f77b4">2408.1</text>
+<path d="M 88.0 635.4 L 990.0 629.2" fill="none" stroke="#2ca02c" stroke-width="2.5" />
+<circle cx="88.0" cy="635.4" r="4.5" fill="#2ca02c" />
+<circle cx="990.0" cy="629.2" r="4.5" fill="#2ca02c" />
+<text x="998.0" y="633.2" font-size="11" fill="#2ca02c">2405.3</text>
+<text x="88" y="734" font-size="16" font-weight="700">avg output 128 tokens</text>
+<line x1="88" y1="918.0" x2="990" y2="918.0" class="grid" />
+<text x="78" y="922.0" text-anchor="end" font-size="11" class="muted">279.3</text>
+<line x1="88" y1="875.5" x2="990" y2="875.5" class="grid" />
+<text x="78" y="879.5" text-anchor="end" font-size="11" class="muted">1486.6</text>
+<line x1="88" y1="833.0" x2="990" y2="833.0" class="grid" />
+<text x="78" y="837.0" text-anchor="end" font-size="11" class="muted">2693.9</text>
+<line x1="88" y1="790.5" x2="990" y2="790.5" class="grid" />
+<text x="78" y="794.5" text-anchor="end" font-size="11" class="muted">3901.1</text>
+<line x1="88" y1="748.0" x2="990" y2="748.0" class="grid" />
+<text x="78" y="752.0" text-anchor="end" font-size="11" class="muted">5108.4</text>
+<line x1="88.0" y1="748" x2="88.0" y2="918" class="grid" />
+<text x="88.0" y="942" text-anchor="middle" font-size="12">8</text>
+<line x1="990.0" y1="748" x2="990.0" y2="918" class="grid" />
+<text x="990.0" y="942" text-anchor="middle" font-size="12">16</text>
+<line x1="88" y1="918" x2="990" y2="918" class="axis" />
+<path d="M 88.0 773.4 L 990.0 759.7" fill="none" stroke="#d62728" stroke-width="2.5" />
+<circle cx="88.0" cy="773.4" r="4.5" fill="#d62728" />
+<circle cx="990.0" cy="759.7" r="4.5" fill="#d62728" />
+<text x="998.0" y="763.7" font-size="11" fill="#d62728">4775.4</text>
+<path d="M 88.0 773.9 L 990.0 761.2" fill="none" stroke="#1f77b4" stroke-width="2.5" />
+<circle cx="88.0" cy="773.9" r="4.5" fill="#1f77b4" />
+<circle cx="990.0" cy="761.2" r="4.5" fill="#1f77b4" />
+<text x="998.0" y="765.2" font-size="11" fill="#1f77b4">4733.6</text>
+<path d="M 88.0 773.9 L 990.0 761.5" fill="none" stroke="#2ca02c" stroke-width="2.5" />
+<circle cx="88.0" cy="773.9" r="4.5" fill="#2ca02c" />
+<circle cx="990.0" cy="761.5" r="4.5" fill="#2ca02c" />
+<text x="998.0" y="765.5" font-size="11" fill="#2ca02c">4725.3</text>
+<text x="539.0" y="968" text-anchor="middle" font-size="13">Request rate (requests/s)</text>
+<text x="1024" y="88" font-size="13" font-weight="700">Assignment</text>
+<circle cx="1024" cy="106" r="5" fill="#d62728" />
+<text x="1037" y="110" font-size="12">P1/D3</text>
+<circle cx="1024" cy="130" r="5" fill="#1f77b4" />
+<text x="1037" y="134" font-size="12">P2/D2</text>
+<circle cx="1024" cy="154" r="5" fill="#2ca02c" />
+<text x="1037" y="158" font-size="12">P3/D1</text>
+</svg>

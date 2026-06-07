@@ -26,6 +26,18 @@ std::string to_string(ServingSchedulerPolicy policy) {
         return "prefill_first";
     case ServingSchedulerPolicy::Balanced:
         return "balanced";
+    case ServingSchedulerPolicy::Fcfs:
+        return "fcfs";
+    }
+    return "unknown";
+}
+
+std::string to_string(ServingFirstTokenTiming timing) {
+    switch (timing) {
+    case ServingFirstTokenTiming::DecodeEnd:
+        return "decode_end";
+    case ServingFirstTokenTiming::DecodeStart:
+        return "decode_start";
     }
     return "unknown";
 }

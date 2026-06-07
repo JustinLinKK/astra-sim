@@ -7,7 +7,8 @@ This repository includes a unified analytical layer for three inference studies:
 1. `tp_pp_crossover`
    Sweeps TP versus PP tradeoffs for 70B-class dense models.
 2. `serving_disagg_colocated`
-   Runs the existing disaggregated-versus-colocated serving simulator through the analytical frontend without changing TTFT, TPOT, E2E, queueing, or goodput behavior.
+   Runs the upgraded serving simulator for serial, colocated, chunked-prefill,
+   and prefill/decode-disaggregated inference studies.
 3. `attention_ffn_disaggregation`
    Compares homogeneous GPU against heterogeneous GPU+LPU placement for trillion-parameter MoE decode.
 
@@ -63,6 +64,36 @@ These YAMLs are fully explicit. Output paths are resolved relative to the YAML f
 - `homogeneous_gpu`
 - `heterogeneous_gpu_lpu`
 
+## Calibrated PD-Disaggregated Serving Result
+
+The first calibrated PD-disaggregated serving result is intentionally scoped to
+unchunked serving:
+
+- calibrated modes: `colocated` and `pd_disaggregated`
+- calibration hardware: two same-node NVIDIA `L40S` GPUs on the same
+  motherboard
+- colocated baseline: one `L40S` handles both prefill and decode
+- PD run: one `L40S` prefill worker and one `L40S` decode worker
+- handoff path: same-node GPU-to-GPU KV handoff; no inter-node network is in the
+  calibrated setup
+
+The tracked result package is
+[results/serving_pd_disaggregated_unchunked](/home/justin/astra-sim/results/serving_pd_disaggregated_unchunked).
+It contains calibration-vs-simulation plots and extrapolation studies without
+including the massive raw `build/` or `calibrations/` trees.
+
+Reproduce the unchunked calibration closure with:
+
+```bash
+python3 tools/calibration/run_golden_calibration_loop.py \
+  --calibration-root calibrations/unchunked_scaling_20260530_075459 \
+  --fail-on-acceptance
+```
+
+The current acceptance gate passes for non-overloaded unchunked runs. Chunked
+prefill is implemented and has diagnostic replay artifacts, but it remains out
+of the primary result until broader chunked calibration data is collected.
+
 ## Tests
 Run the full regression suite with:
 
@@ -83,7 +114,11 @@ Run the analytical logic tests directly with:
 ```
 
 ## Documentation
-For a focused usage guide covering config structure, commands, outputs, and extension points, see [docs/project/analytical-guide.md](/home/justin/astra-sim/docs/project/analytical-guide.md).
+For focused usage guides covering config structure, commands, outputs, serving
+runtime fields, and calibration artifacts, see
+[docs/project/analytical-guide.md](/home/justin/astra-sim/docs/project/analytical-guide.md)
+and
+[docs/project/serving-runtime-guide.md](/home/justin/astra-sim/docs/project/serving-runtime-guide.md).
 
 
 ### Overview and Documentation

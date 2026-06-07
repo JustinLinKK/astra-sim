@@ -85,6 +85,35 @@ struct ServingTransferConfig {
     bool override_bytes_per_prompt_token = false;
 };
 
+struct ServingDecodeStepLatencyPoint {
+    double request_rate_per_second = 0.0;
+    Tick decode_step_latency_ns = 0;
+};
+
+struct ServingDecodeStepLatencyCurveConfig {
+    bool enabled = false;
+    std::string signal = "target_request_rate_per_second";
+    std::string interpolation = "linear";
+    std::string extrapolation = "clamp";
+    std::vector<ServingDecodeStepLatencyPoint> points;
+};
+
+struct ServingFirstTokenBackpressurePoint {
+    double request_rate_per_second = 0.0;
+    Tick base_latency_ns = 0;
+    double knee_request_index = 0.0;
+    double latency_ns_per_request_after_knee = 0.0;
+};
+
+struct ServingFirstTokenBackpressureCurveConfig {
+    bool enabled = false;
+    std::string signal = "target_request_rate_per_second";
+    std::string model = "arrival_rank_linear";
+    std::string interpolation = "linear";
+    std::string extrapolation = "clamp";
+    std::vector<ServingFirstTokenBackpressurePoint> points;
+};
+
 struct ServingPdConfig {
     uint64_t prefill_workers = 0;
     uint64_t decode_workers = 0;
@@ -118,6 +147,12 @@ struct ServingCostModelConfig {
     Tick prefill_compute_ns_per_token = 0;
     Tick decode_base_latency_ns = 0;
     Tick decode_compute_ns_per_token = 0;
+    Tick decode_step_latency_ns = 0;
+    Tick first_token_latency_ns = 0;
+    ServingFirstTokenTiming first_token_timing =
+        ServingFirstTokenTiming::DecodeEnd;
+    ServingDecodeStepLatencyCurveConfig decode_step_latency_curve;
+    ServingFirstTokenBackpressureCurveConfig first_token_backpressure_curve;
     double prefill_batch_efficiency = 1.0;
     double decode_batch_efficiency = 1.0;
     double decode_interference_factor = 1.0;
@@ -150,6 +185,9 @@ struct ServingConfig {
     std::vector<InterconnectSpec> interconnects;
     std::vector<ServingRequestSpec> requests;
     std::optional<uint64_t> trace_seed;
+    std::optional<double> target_request_rate_per_second;
+    std::optional<Tick> benchmark_start_ns;
+    std::optional<Tick> benchmark_duration_ns;
 
     static ServingConfig load_from_file(const std::string& path);
     static ServingConfig load_from_json_text(const std::string& json_text,
