@@ -57,3 +57,11 @@ calibrations/
 
 # Massive build artifacts
 build/
+
+# Unused doc files
+docs/
+paper/
+
+# Python cache files
+__pycache__/
+*.pyc
