@@ -1,0 +1,1153 @@
+{
+  "accepted": true,
+  "winner_counts": {
+    "C4": 37,
+    "P1/D3": 9,
+    "P2/D2": 13,
+    "P3/D1": 11
+  },
+  "winner_fractions": {
+    "C4": 0.5285714285714286,
+    "P1/D3": 0.12857142857142856,
+    "P2/D2": 0.18571428571428572,
+    "P3/D1": 0.15714285714285714
+  },
+  "pd_labels_with_global_wins": [
+    "P1/D3",
+    "P2/D2",
+    "P3/D1"
+  ],
+  "pd_labels_above_5pct": [
+    "P1/D3",
+    "P2/D2",
+    "P3/D1"
+  ],
+  "total_cells": 70,
+  "observed_cells": 70,
+  "invalid_cells_without_c4_vs_pd": [],
+  "complete_candidate_cells": 70,
+  "invalid_or_missing_candidate_cells": [],
+  "winners": [
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 8.022272462418698,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 419.1777453007812,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.9397816000783,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 791.1954196992187,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.779853281870007,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1552.1034233710936,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 128,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.481259333880332,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3052.997580523437,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 256,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.935998887977525,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 6040.9803502578125,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 512,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.070212136822741,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 11921.558267136717,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 128,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.4262965192874795,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 26350.731292167966,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 8.024536736316014,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 428.6716847226562,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.936900325137729,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 806.51307709375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.781192807907062,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1568.4594461914062,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 128,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.478996501720245,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3096.3663957851563,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 256,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.943642165586046,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 6119.412515410156,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 512,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.067817074672388,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 12058.798257441405,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 256,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.423757855757218,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 26365.210883042968,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 8.018652683158097,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 445.34886784375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.931144044238391,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 833.592568578125,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.778168997397134,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1619.5146609609374,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 128,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.476718081748576,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3181.547476015625,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 256,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.926898745776097,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 6278.215084410156,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 512,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.0585364358733145,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 12330.520258984374,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 512,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.422725130230747,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 26383.729858023435,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 8.013068669948659,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 483.14372671875,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.930049494098867,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 897.4835768124999,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.75082651189049,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1729.7211489726562,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 128,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.470168395503029,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3373.3841588085934,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 256,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.936776495126074,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 6610.24756475,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 512,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 6.0634526578395915,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 12937.720248335936,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1024,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.416744848526847,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 26453.07236883203,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.989985803477806,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 525.245608484375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.924611723914626,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 968.7163416132812,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.743621899215463,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1832.923568390625,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 128,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.46699519034287,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3580.7822128437497,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 256,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 6.667759380115718,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 6908.857577675781,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 512,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 5.693158144913758,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 13481.422657027344,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 1536,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.405335579029137,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 26628.45311411328,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.978327293020016,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 572.4548202421875,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.889479233129763,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1042.8030168398436,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 64,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.731465987789188,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1980.2957381796873,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 128,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 7.268948415727434,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3764.6527666875,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 256,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 6.601137759355756,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 7330.564782335937,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 512,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 4.951557409933582,
+      "winner_slo_attainment_fraction": 0.875,
+      "winner_e2e_mean_ms": 14205.443822359375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 2048,
+      "output_tokens": 1024,
+      "winner": "P1/D3",
+      "winner_goodput_reqs_per_sec": 3.8357596916983367,
+      "winner_slo_attainment_fraction": 0.875,
+      "winner_e2e_mean_ms": 27353.132619390624,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.991158663464671,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 684.6818457773437,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.907427504777919,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1229.9264859375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 64,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 7.6012970624555845,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 2145.6360013203125,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 128,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 7.219420495572542,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 3926.1518680273434,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 256,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 6.559041987393166,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 7491.805201566406,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 512,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 5.546422427847416,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 14617.60275759375,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 3072,
+      "output_tokens": 1024,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 4.2378874984172015,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 28870.18499260156,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.932031505003799,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 859.3720633593749,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 32,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 7.779404953638427,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1424.8217752539063,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 64,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 7.533799627761294,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 2497.618159253906,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 128,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 6.3074031973112925,
+      "winner_slo_attainment_fraction": 0.87890625,
+      "winner_e2e_mean_ms": 4610.657279003906,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 256,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 5.7068389031478715,
+      "winner_slo_attainment_fraction": 0.875,
+      "winner_e2e_mean_ms": 8177.855025152343,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 512,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 4.82998660604112,
+      "winner_slo_attainment_fraction": 0.875,
+      "winner_e2e_mean_ms": 15303.643441152342,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 4096,
+      "output_tokens": 1024,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 3.694631024507447,
+      "winner_slo_attainment_fraction": 0.875,
+      "winner_e2e_mean_ms": 29556.179976023435,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.8857910449411435,
+      "winner_slo_attainment_fraction": 1.0,
+      "winner_e2e_mean_ms": 1638.0104809765623,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 32,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 6.038624470878202,
+      "winner_slo_attainment_fraction": 0.7890625,
+      "winner_e2e_mean_ms": 2300.329349738281,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 64,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 5.8509813414425205,
+      "winner_slo_attainment_fraction": 0.7890625,
+      "winner_e2e_mean_ms": 3373.1257337382813,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 128,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 5.508632813239378,
+      "winner_slo_attainment_fraction": 0.7890625,
+      "winner_e2e_mean_ms": 5518.718501738281,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 256,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 4.9315320989065645,
+      "winner_slo_attainment_fraction": 0.7890625,
+      "winner_e2e_mean_ms": 9809.90403773828,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 512,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 4.0498393819556755,
+      "winner_slo_attainment_fraction": 0.7890625,
+      "winner_e2e_mean_ms": 19466.512016226563,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 6144,
+      "output_tokens": 1024,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 0.30717101945029857,
+      "winner_slo_attainment_fraction": 0.08984375,
+      "winner_e2e_mean_ms": 36360.69201666797,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 16,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.690788915692766,
+      "winner_slo_attainment_fraction": 0.97265625,
+      "winner_e2e_mean_ms": 2288.505263011719,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 32,
+      "winner": "C4",
+      "winner_goodput_reqs_per_sec": 7.15292977169673,
+      "winner_slo_attainment_fraction": 0.921875,
+      "winner_e2e_mean_ms": 3654.496678175781,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 64,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 2.5175829510406658,
+      "winner_slo_attainment_fraction": 0.375,
+      "winner_e2e_mean_ms": 4836.793445816406,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 128,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 2.383470343930714,
+      "winner_slo_attainment_fraction": 0.375,
+      "winner_e2e_mean_ms": 6982.386213816406,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 256,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 2.153983313359173,
+      "winner_slo_attainment_fraction": 0.375,
+      "winner_e2e_mean_ms": 11273.571749816405,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 512,
+      "winner": "P3/D1",
+      "winner_goodput_reqs_per_sec": 1.806176169901173,
+      "winner_slo_attainment_fraction": 0.375,
+      "winner_e2e_mean_ms": 19855.942821816407,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    },
+    {
+      "request_rate_per_second": 8,
+      "prompt_tokens": 7168,
+      "output_tokens": 1024,
+      "winner": "P2/D2",
+      "winner_goodput_reqs_per_sec": 0.19558424851998596,
+      "winner_slo_attainment_fraction": 0.0625,
+      "winner_e2e_mean_ms": 39844.342852617185,
+      "valid_assignments": [
+        "C4",
+        "P1/D3",
+        "P2/D2",
+        "P3/D1"
+      ],
+      "invalid_or_missing_assignments": []
+    }
+  ],
+  "grid_name": "token_shape_8rps"
+}

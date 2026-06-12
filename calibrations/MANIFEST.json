@@ -1,0 +1,143 @@
+{
+  "format": "astra-sim compact calibration artifacts",
+  "included_policy": {
+    "excluded": [
+      ".DS_Store",
+      "available_metrics_summary.json",
+      "run.log",
+      "run.pid",
+      "scheduler_trace_decode_raw.csv",
+      "scheduler_trace_prefill_raw.csv",
+      "scheduler_trace_raw.csv",
+      "system_timeseries.csv",
+      "sim_vs_calibrated/simulation_runs/**"
+    ],
+    "included": [
+      "chunked_prefill_gap_closure_summary.md",
+      "comparison_summary.csv",
+      "excluded_runs.json",
+      "fitted_chunked_prefill_latency_cost_model.json",
+      "fitted_unchunked_latency_cost_model.json",
+      "pd_stage_metrics.csv",
+      "request_metrics.csv",
+      "run_command.sh",
+      "run_config.json",
+      "scheduler_trace.csv",
+      "unchunked_gap_closure_summary.md",
+      "validation_summary.csv",
+      "validation_summary.json",
+      "benchmark_result.json compacted",
+      "request_traces/**",
+      "sim_vs_calibrated/plots/*.svg"
+    ]
+  },
+  "part_size": "1800M",
+  "roots": [
+    {
+      "archive_parts": [
+        {
+          "bytes": 32586919,
+          "path": "calibrations/unchunked_scaling_20260530_075459.compact.tar.zst.part-000",
+          "sha256": "5509d4c3f0a9a9ef71d393e03e028174cde70b9e66ed7668f9781adabe9f2c46"
+        }
+      ],
+      "compacted_benchmark_results": 33,
+      "excluded_by_name": {
+        ".DS_Store": {
+          "bytes": 6148,
+          "count": 1
+        },
+        "available_metrics_summary.json": {
+          "bytes": 8245899,
+          "count": 33
+        },
+        "scheduler_trace_decode_raw.csv": {
+          "bytes": 808917574,
+          "count": 16
+        },
+        "scheduler_trace_prefill_raw.csv": {
+          "bytes": 5176948,
+          "count": 16
+        },
+        "scheduler_trace_raw.csv": {
+          "bytes": 389354990,
+          "count": 17
+        },
+        "sim_vs_calibrated/simulation_runs/**": {
+          "bytes": 91064858,
+          "count": 264
+        },
+        "system_timeseries.csv": {
+          "bytes": 5180278220,
+          "count": 33
+        }
+      },
+      "included_files": 191,
+      "included_original_bytes": 712580339,
+      "name": "unchunked_scaling_20260530_075459",
+      "restore_command": "cat calibrations/unchunked_scaling_20260530_075459.compact.tar.zst.part-* | tar --use-compress-program=zstd -xf - -C calibrations",
+      "source_bytes": 7195624976,
+      "source_files": 571,
+      "source_path": "calibrations/unchunked_scaling_20260530_075459",
+      "staged_bytes": 542282498,
+      "staged_path": "build/calibration_artifact_staging/unchunked_scaling_20260530_075459",
+      "stream_sha256": "5509d4c3f0a9a9ef71d393e03e028174cde70b9e66ed7668f9781adabe9f2c46"
+    },
+    {
+      "archive_parts": [
+        {
+          "bytes": 134226840,
+          "path": "calibrations/chunked_prefill_scaling_20260605_105450.compact.tar.zst.part-000",
+          "sha256": "21f181c20f57f5c4fecf7ef509d55f0995987b3a7cefa039559cd7893dd9c0ed"
+        }
+      ],
+      "compacted_benchmark_results": 131,
+      "excluded_by_name": {
+        "available_metrics_summary.json": {
+          "bytes": 33412084,
+          "count": 131
+        },
+        "run.log": {
+          "bytes": 4528608,
+          "count": 1
+        },
+        "run.pid": {
+          "bytes": 8,
+          "count": 1
+        },
+        "scheduler_trace_decode_raw.csv": {
+          "bytes": 2529207008,
+          "count": 66
+        },
+        "scheduler_trace_prefill_raw.csv": {
+          "bytes": 25944052,
+          "count": 66
+        },
+        "scheduler_trace_raw.csv": {
+          "bytes": 1692923616,
+          "count": 66
+        },
+        "sim_vs_calibrated/simulation_runs/**": {
+          "bytes": 142809932,
+          "count": 1000
+        },
+        "system_timeseries.csv": {
+          "bytes": 29152283905,
+          "count": 131
+        }
+      },
+      "included_files": 754,
+      "included_original_bytes": 2706908123,
+      "name": "chunked_prefill_scaling_20260605_105450",
+      "restore_command": "cat calibrations/chunked_prefill_scaling_20260605_105450.compact.tar.zst.part-* | tar --use-compress-program=zstd -xf - -C calibrations",
+      "source_bytes": 36288017336,
+      "source_files": 2216,
+      "source_path": "calibrations/chunked_prefill_scaling_20260605_105450",
+      "staged_bytes": 2100462653,
+      "staged_path": "build/calibration_artifact_staging/chunked_prefill_scaling_20260605_105450",
+      "stream_sha256": "21f181c20f57f5c4fecf7ef509d55f0995987b3a7cefa039559cd7893dd9c0ed"
+    }
+  ],
+  "version": 1,
+  "zstd_level": "-19"
+}

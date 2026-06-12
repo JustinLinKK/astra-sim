@@ -1,0 +1,59 @@
+{
+  "description": "Worker-allocation sweep for PD serving under a 4-GPU budget. TP stays fixed at 1, so each prefill or decode worker consumes one GPU.",
+  "cases": [
+    {
+      "case_name": "gpu2__p1_d1__calibrated_reference",
+      "scale_family": "calibrated_reference",
+      "calibration_scope": "calibrated_reference",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu3__p2_d1__prefill_heavy",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu3__p1_d2__decode_heavy",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__balanced",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p3_d1__prefill_heavy",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p1_d3__decode_heavy",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    }
+  ]
+}

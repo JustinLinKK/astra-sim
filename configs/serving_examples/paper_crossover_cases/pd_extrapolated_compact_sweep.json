@@ -1,0 +1,203 @@
+{
+  "description": "Compact PD extrapolation sweep. The 1xTP1 prefill plus 1xTP1 decode case is the calibrated reference; all other rows are extrapolated until matching measurements exist.",
+  "cases": [
+    {
+      "case_name": "calibrated_reference__p_w1_tp1__d_w1_tp1",
+      "scale_family": "calibrated_reference",
+      "calibration_scope": "calibrated_reference",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "balanced_workers__p_w2_tp1__d_w2_tp1",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "balanced_workers__p_w4_tp1__d_w4_tp1",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 4,
+      "decode_gpu_count": 4
+    },
+    {
+      "case_name": "balanced_workers__p_w8_tp1__d_w8_tp1",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 8,
+      "decode_gpu_count": 8
+    },
+    {
+      "case_name": "balanced_tp__p_w1_tp2__d_w1_tp2",
+      "scale_family": "balanced_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 2,
+      "decode_tp_degree": 2,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "balanced_tp__p_w1_tp4__d_w1_tp4",
+      "scale_family": "balanced_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 4,
+      "decode_tp_degree": 4,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "balanced_tp__p_w1_tp8__d_w1_tp8",
+      "scale_family": "balanced_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 8,
+      "decode_tp_degree": 8,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "prefill_worker_only__p_w2_tp1__d_w1_tp1",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "prefill_worker_only__p_w4_tp1__d_w1_tp1",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 4,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "prefill_worker_only__p_w8_tp1__d_w1_tp1",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 8,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "decode_worker_only__p_w1_tp1__d_w2_tp1",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "decode_worker_only__p_w1_tp1__d_w4_tp1",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 4
+    },
+    {
+      "case_name": "decode_worker_only__p_w1_tp1__d_w8_tp1",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 8
+    },
+    {
+      "case_name": "prefill_tp_only__p_w1_tp2__d_w1_tp1",
+      "scale_family": "prefill_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 2,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "prefill_tp_only__p_w1_tp4__d_w1_tp1",
+      "scale_family": "prefill_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 4,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "prefill_tp_only__p_w1_tp8__d_w1_tp1",
+      "scale_family": "prefill_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 8,
+      "decode_tp_degree": 1,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "decode_tp_only__p_w1_tp1__d_w1_tp2",
+      "scale_family": "decode_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 2,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "decode_tp_only__p_w1_tp1__d_w1_tp4",
+      "scale_family": "decode_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 4,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "decode_tp_only__p_w1_tp1__d_w1_tp8",
+      "scale_family": "decode_tp_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 8,
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "mixed_balanced__p_w2_tp2__d_w2_tp2",
+      "scale_family": "mixed_balanced_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 2,
+      "decode_tp_degree": 2,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "mixed_balanced__p_w4_tp2__d_w4_tp2",
+      "scale_family": "mixed_balanced_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 2,
+      "decode_tp_degree": 2,
+      "prefill_gpu_count": 4,
+      "decode_gpu_count": 4
+    },
+    {
+      "case_name": "mixed_balanced__p_w2_tp4__d_w2_tp4",
+      "scale_family": "mixed_balanced_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 4,
+      "decode_tp_degree": 4,
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    }
+  ]
+}

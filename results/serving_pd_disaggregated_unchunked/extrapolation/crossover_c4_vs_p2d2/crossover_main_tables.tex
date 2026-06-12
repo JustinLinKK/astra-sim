@@ -1,0 +1,53 @@
+\begin{table}[t]
+\caption{Decode-heavy Crossover: first output-token global transition into \texttt{P1/D3} at 8 req/s. Winners are selected by lowest mean E2E latency; margin is runner-up E2E minus winner E2E.}
+\label{tab:crossover-p1d3}
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrlrlrr@{}}
+\toprule
+Point & In & Out & Winner & E2E & Runner-up & E2E & Margin \\
+ & tok. & tok. & & ms & & ms & ms \\
+\midrule
+Before & 128 & 512 & \texttt{C4} & 11922 & \texttt{P1/D3} & 13204 & 1283 \\
+After & 128 & 1024 & \texttt{P1/D3} & 26351 & \texttt{C4} & 26745 & 394 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{Balanced Crossover: first input-token global transition into \texttt{P2/D2} at 8 req/s. Winners are selected by lowest mean E2E latency; margin is runner-up E2E minus winner E2E.}
+\label{tab:crossover-p2d2}
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrlrlrr@{}}
+\toprule
+Point & In & Out & Winner & E2E & Runner-up & E2E & Margin \\
+ & tok. & tok. & & ms & & ms & ms \\
+\midrule
+Before & 2048 & 64 & \texttt{C4} & 1980 & \texttt{P2/D2} & 1983 & 3 \\
+After & 3072 & 64 & \texttt{P2/D2} & 2146 & \texttt{C4} & 2275 & 129 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[t]
+\caption{Prefill-heavy Crossover: first input-token global transition into \texttt{P3/D1} at 8 req/s. Winners are selected by lowest mean E2E latency; margin is runner-up E2E minus winner E2E.}
+\label{tab:crossover-p3d1}
+\centering
+\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrlrlrr@{}}
+\toprule
+Point & In & Out & Winner & E2E & Runner-up & E2E & Margin \\
+ & tok. & tok. & & ms & & ms & ms \\
+\midrule
+Before & 3072 & 32 & \texttt{C4} & 1230 & \texttt{P2/D2} & 1256 & 26 \\
+After & 4096 & 32 & \texttt{P3/D1} & 1425 & \texttt{C4} & 1452 & 28 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}

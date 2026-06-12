@@ -1,0 +1,34 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{2.0pt}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llcccccccc}
+\toprule
+Rate & Mean input & Out 16 & Out 32 & Out 64 & Out 128 & Out 256 & Out 512 & Out 1024 & Out 2048 \\
+\midrule
+4 rps & 128 & \texttt{C4} (+29) & \texttt{C4} (+64) & \texttt{C4} (+118) & \texttt{C4} (+221) & \texttt{C4} (+444) & \texttt{C4} (+895) & \texttt{C4} (+1879) & \texttt{P1/D3} (-2331) \\
+4 rps & 256 & \texttt{C4} (+31) & \texttt{C4} (+64) & \texttt{C4} (+114) & \texttt{C4} (+211) & \texttt{C4} (+413) & \texttt{C4} (+835) & \texttt{C4} (+1766) & \texttt{P1/D3} (-2560) \\
+4 rps & 512 & \texttt{C4} (+35) & \texttt{C4} (+65) & \texttt{C4} (+110) & \texttt{C4} (+185) & \texttt{C4} (+353) & \texttt{C4} (+714) & \texttt{C4} (+1534) & \texttt{P1/D3} (-3011) \\
+4 rps & 1024 & \texttt{C4} (+44) & \texttt{C4} (+73) & \texttt{C4} (+104) & \texttt{C4} (+148) & \texttt{C4} (+241) & \texttt{C4} (+469) & \texttt{C4} (+1071) & \texttt{P1/D3} (-3911) \\
+4 rps & 1536 & \texttt{C4} (+48) & \texttt{C4} (+79) & \texttt{C4} (+106) & \texttt{C4} (+111) & \texttt{C4} (+130) & \texttt{C4} (+218) & \texttt{C4} (+594) & \texttt{P1/D3} (-4797) \\
+4 rps & 2048 & \texttt{C4} (+52) & \texttt{C4} (+75) & \texttt{C4} (+101) & \texttt{C4} (+69) & \texttt{C4} (+31) & \texttt{P1/D3} (-25) & \texttt{C4} (+91) & \texttt{P1/D3} (-5684) \\
+4 rps & 3072 & \texttt{C4} (+63) & \texttt{C4} (+71) & \texttt{C4} (+45) & \texttt{P2/D2} (-11) & \texttt{P2/D2} (-111) & \texttt{P1/D3} (-440) & \texttt{P1/D3} (-821) & \texttt{P1/D3} (-7301) \\
+4 rps & 4096 & \texttt{C4} (+81) & \texttt{C4} (+69) & \texttt{P2/D2} (-18) & \texttt{P2/D2} (-172) & \texttt{P2/D2} (-435) & \texttt{P2/D2} (-946) & \texttt{P2/D2} (-1438) & \texttt{P1/D3} (-7905) \\
+4 rps & 6144 & \texttt{C4} (+66) & \texttt{C4} (+47) & \texttt{P2/D2} (-64) & \texttt{P2/D2} (-440) & \texttt{P2/D2} (-1161) & \texttt{P2/D2} (-2477) & \texttt{P2/D2} (-4512) & \texttt{P2/D2} (-11070) \\
+4 rps & 7168 & \texttt{C4} (+56) & \texttt{P3/D1} (-8) & \texttt{P3/D1} (-173) & \texttt{P3/D1} (-473) & \texttt{P2/D2} (-1412) & \texttt{P2/D2} (-3168) & \texttt{P2/D2} (-5938) & \texttt{P2/D2} (-12561) \\
+4 rps & 10000 & \texttt{C4} (+41) & \texttt{P3/D1} (-123) & \texttt{P3/D1} (-511) & \texttt{P3/D1} (-1379) & \texttt{P3/D1} (-3069) & \texttt{P3/D1} (-5588) & \texttt{P3/D1} (-7981) & \texttt{P2/D2} (-13171) \\
+\bottomrule
+\end{tabular}
+}
+\caption{Expanded global token-shape crossover matrix for a four-GPU server at 4 req/s, extended to 10000 mean input tokens and 2048 mean output tokens. Cells show
+the global winner among colocated DP (\texttt{C4}) and PD splits
+\texttt{P1/D3}, \texttt{P2/D2}, and \texttt{P3/D1}. Each winner is
+the candidate with the lowest mean E2E latency in that token-shape cell.
+Parentheses report best-PD-minus-\texttt{C4} mean E2E latency in
+milliseconds; negative values mean the best PD split is faster than \texttt{C4}.
+At this higher request rate, the 10000-token prompt row keeps \texttt{P2/D2}
+as the best global winner for the 2048-output corner, while very large prompts
+make \texttt{P3/D1} win several shorter-output cells. All cells are extrapolated.}
+\label{tab:global-crossover-matrix-rps4}
+\end{table*}

@@ -1,0 +1,32 @@
+{
+  "run_root": "build/repro/chunked_rps4",
+  "request_rate_per_second": 4,
+  "output_tokens": 2048,
+  "trace_num_requests": 256,
+  "prompt_lengths": [
+    128,
+    256,
+    512,
+    1024,
+    1536,
+    2048,
+    3072,
+    4096,
+    6144,
+    7168,
+    10000
+  ],
+  "chunk_sizes": [
+    64,
+    128,
+    256,
+    512,
+    1024
+  ],
+  "case_files": {
+    "p2d2_chunk_size_sweep.json": "configs/serving_examples/chunked_rps4_cases/p2d2_chunk_size_sweep.json",
+    "c4_chunk256_compare.json": "configs/serving_examples/chunked_rps4_cases/c4_chunk256_compare.json",
+    "c4_chunk_size_sweep.json": "configs/serving_examples/chunked_rps4_cases/c4_chunk_size_sweep.json",
+    "pd_chunk256_assignment_compare.json": "configs/serving_examples/chunked_rps4_cases/pd_chunk256_assignment_compare.json"
+  }
+}

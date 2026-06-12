@@ -1,0 +1,833 @@
+{
+  "description": "Pressure sweep for exact 4-GPU PD worker assignments. TP stays fixed at 1; each worker consumes one logical GPU. Request rate and exact average input-token length are swept. Generated paper refresh excludes request rates above 12 req/s.",
+  "cases": [
+    {
+      "case_name": "gpu4__p3_d1__rps_04__in_0128",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_04__in_0256",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_04__in_0512",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_04__in_1024",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_08__in_0128",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_08__in_0256",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_08__in_0512",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_08__in_1024",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_12__in_0128",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_12__in_0256",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_12__in_0512",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p3_d1__rps_12__in_1024",
+      "scale_family": "prefill_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "prefill_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 3,
+      "decode_gpu_count": 1
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_04__in_0128",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_04__in_0256",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_04__in_0512",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_04__in_1024",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_08__in_0128",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_08__in_0256",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_08__in_0512",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_08__in_1024",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_12__in_0128",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_12__in_0256",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_12__in_0512",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p2_d2__rps_12__in_1024",
+      "scale_family": "balanced_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "balanced",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 2,
+      "decode_gpu_count": 2
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_04__in_0128",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_04__in_0256",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_04__in_0512",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_04__in_1024",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 4,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 4,
+        "trace.request_rate_per_second": 4,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_08__in_0128",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_08__in_0256",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_08__in_0512",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_08__in_1024",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 8,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 8,
+        "trace.request_rate_per_second": 8,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_12__in_0128",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 128,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 128,
+        "trace.prompt_tokens.max": 128
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_12__in_0256",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 256,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 256,
+        "trace.prompt_tokens.max": 256
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_12__in_0512",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 512,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 512,
+        "trace.prompt_tokens.max": 512
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    },
+    {
+      "case_name": "gpu4__p1_d3__rps_12__in_1024",
+      "scale_family": "decode_worker_scaling",
+      "calibration_scope": "extrapolated",
+      "prefill_tp_degree": 1,
+      "decode_tp_degree": 1,
+      "sweep": {
+        "pressure_family": "decode_heavy",
+        "request_rate_per_second": 12,
+        "avg_input_tokens": 1024,
+        "trace_num_requests": 256
+      },
+      "overrides": {
+        "target_request_rate_per_second": 12,
+        "trace.request_rate_per_second": 12,
+        "trace.num_requests": 256,
+        "trace.prompt_tokens.distribution": "uniform",
+        "trace.prompt_tokens.min": 1024,
+        "trace.prompt_tokens.max": 1024
+      },
+      "prefill_gpu_count": 1,
+      "decode_gpu_count": 3
+    }
+  ]
+}
